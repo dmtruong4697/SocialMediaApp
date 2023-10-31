@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, Image, TouchableOpacity, ScrollView} from 'react-native'
 import React from 'react'
-import HomeScreen from '../HomeScreen'
 import { useNavigation } from '@react-navigation/native'
 import { Button } from '@rneui/themed';
 import { Input, Icon } from '@rneui/themed';
