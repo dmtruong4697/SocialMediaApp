@@ -1,64 +1,82 @@
-import { StyleSheet, Text, View, ScrollView } from 'react-native'
-import React from 'react'
-import CommentCard from '../../../components/CommentCard'
+import { StyleSheet, Text, View, ScrollView } from "react-native";
+import React from "react";
+import PostCard from "../../../components/PostCard";
 
 const FeedScreen = () => {
-  const commentData= [
+  const postData = [
     {
-      userId: '1',
-      userName: 'Peter Griffin',
-      avatarImage: 'https://static.wikia.nocookie.net/familyguy/images/a/aa/FamilyGuy_Single_PeterDrink_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20230815202349',
-      contentCmt: 'this is content of comment 1',
-      timeCmt: 'Just now',
-      countReact: '1 like'
+      user: {
+        avatar:
+          "https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png",
+        fullname: "John Doe",
+      },
+      post: {
+        createdAt: "2021-01-01",
+        userId: "user123",
+        content: "Hello, this is my first post   !",
+        images: [
+          "https://th.bing.com/th/id/R.dcc7a232e55ef6fb90ae0fa7f04505b0?rik=6OD%2feyagC3qLjA&pid=ImgRaw&r=0",
+        ],
+        likes: [],
+      },
     },
     {
-      userId: '2',
-      userName: 'Meg Griffin',
-      avatarImage: 'https://static.wikia.nocookie.net/familyguy/images/1/1b/FamilyGuy_Single_MegMakeup_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20200526171840',
-      contentCmt: 'this is content of comment 2',
-      timeCmt: '1m',
-      countReact: '2 like'
-    },    
+      user: {
+        avatar:
+          "https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png",
+        fullname: "Jane Smith",
+      },
+      post: {
+        createdAt: "2021-02-15",
+        userId: "user456",
+        content: "Check out this amazing photo!",
+        images: [
+          "https://th.bing.com/th/id/R.dcc7a232e55ef6fb90ae0fa7f04505b0?rik=6OD%2feyagC3qLjA&pid=ImgRaw&r=0",
+        ],
+        likes: [],
+      },
+    },
+    // Add more posts below
     {
-      userId: '3',
-      userName: 'Lois Griffin',
-      avatarImage: 'https://static.wikia.nocookie.net/familyguy/images/7/7c/FamilyGuy_Single_LoisPose_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20200526171843',
-      contentCmt: 'this is content of comment 3',
-      timeCmt: '3m',
-      countReact: ''
-    },    
-    {
-      userId: '4',
-      userName: 'Stewie Griffin',
-      avatarImage: 'https://static.wikia.nocookie.net/familyguy/images/9/90/FamilyGuy_Single_StewieBackpack_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20200526171841',
-      contentCmt: 'this is content of comment 4',
-      timeCmt: '1h',
-      countReact: '15 like'
-    },    
-    {
-      userId: '5',
-      userName: 'Chris Griffin',
-      avatarImage: 'https://static.wikia.nocookie.net/familyguy/images/e/ee/FamilyGuy_Single_ChrisText_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20230815202356',
-      contentCmt: 'this is content of comment 5',
-      timeCmt: '2h',
-      countReact: ''
+      user: {
+        avatar:
+          "https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png",
+        fullname: "Michael Johnson",
+      },
+      post: {
+        createdAt: "2021-03-20",
+        userId: "user789",
+        content: "I'm excited to share my new project!",
+        images: [
+          "https://th.bing.com/th/id/R.dcc7a232e55ef6fb90ae0fa7f04505b0?rik=6OD%2feyagC3qLjA&pid=ImgRaw&r=0",
+        ],
+        likes: [],
+      },
     },
     {
-      userId: '6',
-      userName: 'Brian Griffin',
-      avatarImage: 'https://static.wikia.nocookie.net/familyguy/images/c/c2/FamilyGuy_Single_BrianWriter_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20230807152447',
-      contentCmt: 'this is content of comment 6',
-      timeCmt: '1w',
-      countReact: '1 like'
+      user: {
+        avatar:
+          "https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png",
+        fullname: "Emily Thompson",
+      },
+      post: {
+        createdAt: "2021-04-10",
+        userId: "user1011",
+        content: "Happy weekend everyone!",
+        images: [
+          "https://th.bing.com/th/id/R.dcc7a232e55ef6fb90ae0fa7f04505b0?rik=6OD%2feyagC3qLjA&pid=ImgRaw&r=0",
+        ],
+        likes: [],
+      },
     },
-  ]
+    // Add more posts here if needed
+  ];
   return (
     <ScrollView>
       <View style={styles.Container}>
-        <Text style={styles.title}>Top comments</Text>
+        <Text style={styles.title}>Top posts</Text>
 
-        {commentData.map((item) => <CommentCard
+        {/* {commentData.map((item) => <CommentCard
             userId={item.userId}
             avatarImage={item.avatarImage}
             userName={item.userName}
@@ -67,13 +85,21 @@ const FeedScreen = () => {
             timeCmt={item.timeCmt}
             countReact={item.countReact}
           />)
-        }
+        } */}
+        {postData.map((item, key) => (
+          <PostCard
+            style={styles.postCard}
+            user={item.user}
+            post={item.post}
+            key={key}
+          />
+        ))}
       </View>
     </ScrollView>
-  )
-}
+  );
+};
 
-export default FeedScreen
+export default FeedScreen;
 
 const styles = StyleSheet.create({
   Container: {
@@ -82,7 +108,10 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 25,
-    fontWeight: '500',
+    fontWeight: "500",
     padding: 10,
-  }
-})
+  },
+  postCard: {
+    padding: 20,
+  },
+});
