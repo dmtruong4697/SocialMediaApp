@@ -1,7 +1,21 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
-import React from "react";
-import { Button, Icon } from "@rneui/themed";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  Pressable,
+  ScrollView,
+  KeyboardAvoidingView,
+} from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import React, { useState, useRef } from "react";
+import { Button, Icon, Input } from "@rneui/themed";
 import PropTypes from "prop-types";
+import CommentCard from "./CommentCard";
+import Modal from "react-native-modal";
+import { useKeyboard } from "@react-native-community/hooks";
+import { useWindowDimensions } from "react-native";
 PostCard.propTypes = {
   user: PropTypes.shape({
     avatar: PropTypes.string,
@@ -15,14 +29,81 @@ PostCard.propTypes = {
     likes: PropTypes.array,
   }),
 };
-function handleLike() {
-  return;
+function CommandModal({ showComment, setShowComment }) {
+  const keyBoard = useKeyboard();
+  const window = useWindowDimensions();
+  // console.log(window, keyBoard);
+  const scrollViewRef = useRef(null);
+  const [scrollOffset, setScrollOffset] = useState(null);
+  return (
+    <Modal
+      style={{
+        justifyContent: "flex-end",
+        margin: 0,
+      }}
+      isVisible={showComment}
+      // onBackdropPress={() => setShowComment(false)}
+      onSwipeComplete={() => setShowComment(false)}
+      swipeDirection={["down"]}
+      animationIn="slideInUp"
+      animationOut="slideOutDown"
+      scrollOffset={scrollOffset}
+      scrollTo={(p) => {
+        if (scrollViewRef.current) {
+          scrollViewRef.current.scrollTo(p);
+        }
+      }}
+      scrollOffsetMax={100000} //content height - ScrollView height
+      propagateSwipe={true}
+    >
+      <View style={styles.commentModal}>
+        <View style={styles.CommentHeader}>
+          <Text style={{ fontSize: 25, fontWeight: 500 }}> Bình luận</Text>
+        </View>
+        <ScrollView
+          ref={scrollViewRef}
+          onScroll={(e) => {
+            setScrollOffset(e.nativeEvent.contentOffset.y);
+          }}
+          scrollEventThrottle={16}
+          style={{
+            height: !keyBoard.keyboardShown
+              ? window.height - 180
+              : window.height - keyBoard.keyboardHeight - 180,
+          }}
+        >
+          <View style={styles.commentContent}>
+            {[...Array(20).keys()].map((v, i) => (
+              <CommentCard key={i} />
+            ))}
+          </View>
+        </ScrollView>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingRight: 30,
+          }}
+        >
+          <Input style={styles.commentInput} placeholder="Viết bình luận..." />
+          <Icon type="material" name="send" />
+        </View>
+      </View>
+    </Modal>
+  );
+}
+function ShareModal({ showModal, setShowModal }) {
+  return <Modal></Modal>;
 }
 function PostCard(prop) {
   const { user, post } = prop;
   post.likes = [];
+  const [like, setLike] = useState(true);
+  const [showComment, setShowComment] = useState(false);
+  const [showShare, setShowShare] = useState(false);
   return (
-    <>
+    <View>
       <View style={styles.post}>
         <View style={styles.container}>
           <View style={styles.user}>
@@ -85,32 +166,51 @@ function PostCard(prop) {
           </View>
 
           <View style={styles.info}>
+            {/* Like section */}
             <View style={styles.item}>
-              {false ? (
+              <Pressable
+                onPress={() => {
+                  setLike((like) => !like);
+                }}
+              >
                 <Icon
-                  name="favorite"
+                  name="thumb-up"
                   type="material"
-                  style={{ color: "red" }}
-                  onClick={handleLike}
+                  color={like ? "black" : "#4267B2"}
+                  onClick={() => {
+                    console.log(123);
+                    setLike((like) => !like);
+                  }}
                 />
-              ) : (
-                <Icon name="favorite" type="material" onClick={handleLike} />
-              )}
+              </Pressable>
               <Text>{post.likes?.length} Likes</Text>
             </View>
-            <View style={styles.item}>
-              <Icon type="material" name="textsms"></Icon>
-              <Text>Comments</Text>
-            </View>
-            <View
-              style={styles.item}
-              //   onClick={() => {
-              //     setOpenShare(true);
-              //   }}
+            {/* Comment section */}
+            <Pressable
+              onPress={() => {
+                setShowComment(true);
+              }}
             >
-              <Icon type="material" name="share"></Icon>
-              <Text>Share</Text>
-            </View>
+              <View style={styles.item}>
+                <Icon type="material" name="textsms"></Icon>
+                <Text>Comments</Text>
+              </View>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                setShowShare((showShare) => !showShare);
+              }}
+            >
+              <View
+                style={styles.item}
+                //   onClick={() => {
+                //     setOpenShare(true);
+                //   }}
+              >
+                <Icon type="material" name="share"></Icon>
+                <Text>Share</Text>
+              </View>
+            </Pressable>
           </View>
 
           {/* {commentOpen && (
@@ -118,7 +218,17 @@ function PostCard(prop) {
           )} */}
         </View>
       </View>
-    </>
+
+      <View>
+        <CommandModal
+          showComment={showComment}
+          setShowComment={setShowComment}
+        />
+      </View>
+      <View>
+        <ShareModal showModal={showShare} setShowModal={setShowShare} />
+      </View>
+    </View>
   );
 }
 export default PostCard;
@@ -128,7 +238,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: "white", // Replace "themed" with your theme function or color value
     color: "#000", // Replace "themed" with your theme function or color value
-    margin: 10,
+    margin: 0,
+    marginVertical: 10,
   },
   container: {
     padding: 20,
@@ -199,5 +310,21 @@ const styles = StyleSheet.create({
     gap: 10,
     cursor: "pointer",
     fontSize: 14,
+  },
+  commentModal: {
+    backgroundColor: "white",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  CommentHeader: {
+    padding: 10,
+  },
+  commentContent: {
+    paddingLeft: 10,
+  },
+  commentInput: {
+    backgroundColor: "rgba(219, 210, 214, 0.3)",
+    borderRadius: 9999,
+    flex: 80,
   },
 });
