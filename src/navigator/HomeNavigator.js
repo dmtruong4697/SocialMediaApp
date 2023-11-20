@@ -41,8 +41,8 @@ const HomeNavigator = () => {
         }}}
     />
       <Tab.Screen 
-        name="Profile" 
-        component={ProfileScreen} 
+        name="Setting" 
+        component={SettingScreen} 
         options={{tabBarIcon: () => {
             return(
                 <FontAwesomeIcon icon={faGear} />
