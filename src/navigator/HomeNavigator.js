@@ -3,6 +3,7 @@ import FeedScreen from '../screens/Home/Post/FeedScreen';
 import FriendRequestScreen from '../screens/Home/Friend/FriendRequestScreen';
 import NotificationScreen from '../screens/Home/Notification/NotificationScreen';
 import SettingScreen from '../screens/Home/Setting/SettingScreen';
+import ProfileScreen from '../screens/Home/Profile/ProfileScreen';
 import { Icon } from '@rneui/base';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHome, faUserFriends, faBell, faGear } from '@fortawesome/free-solid-svg-icons';
@@ -40,14 +41,15 @@ const HomeNavigator = () => {
         }}}
     />
       <Tab.Screen 
-        name="Setting" 
-        component={SettingScreen} 
+        name="Profile" 
+        component={ProfileScreen} 
         options={{tabBarIcon: () => {
             return(
                 <FontAwesomeIcon icon={faGear} />
             )
         }}}
     />
+      
     </Tab.Navigator>
   );
 }
