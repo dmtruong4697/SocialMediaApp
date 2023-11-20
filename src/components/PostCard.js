@@ -7,15 +7,25 @@ import {
   Pressable,
   ScrollView,
   KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  LayoutAnimation,
+  UIManager,
+  TextInput,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button, Icon, Input } from "@rneui/themed";
 import PropTypes from "prop-types";
 import CommentCard from "./CommentCard";
 import Modal from "react-native-modal";
 import { useKeyboard } from "@react-native-community/hooks";
 import { useWindowDimensions } from "react-native";
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 PostCard.propTypes = {
   user: PropTypes.shape({
     avatar: PropTypes.string,
@@ -29,14 +39,25 @@ PostCard.propTypes = {
     likes: PropTypes.array,
   }),
 };
-function CommandModal({ showComment, setShowComment }) {
+function CommentModal({ showComment, setShowComment, user }) {
   const keyBoard = useKeyboard();
   const window = useWindowDimensions();
+  const commentViewHeight =
+    window.height - keyBoard.coordinates.end.height - 180;
+  console.log(keyBoard, commentViewHeight);
+  useEffect(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  }, [keyBoard.keyboardShown]);
   // console.log(window, keyBoard);
   const scrollViewRef = useRef(null);
   const [scrollOffset, setScrollOffset] = useState(null);
   return (
     <Modal
+      // customBackdrop={
+      //   <TouchableWithoutFeedback>
+      //     <View style={{ flex: 1 }} />
+      //   </TouchableWithoutFeedback>
+      // }
       style={{
         justifyContent: "flex-end",
         margin: 0,
@@ -67,9 +88,7 @@ function CommandModal({ showComment, setShowComment }) {
           }}
           scrollEventThrottle={16}
           style={{
-            height: !keyBoard.keyboardShown
-              ? window.height - 180
-              : window.height - keyBoard.keyboardHeight - 180,
+            height: commentViewHeight,
           }}
         >
           <View style={styles.commentContent}>
@@ -93,8 +112,96 @@ function CommandModal({ showComment, setShowComment }) {
     </Modal>
   );
 }
-function ShareModal({ showModal, setShowModal }) {
-  return <Modal></Modal>;
+function ShareModal({ showModal, setShowModal, user }) {
+  const keyBoard = useKeyboard();
+  const window = useWindowDimensions();
+  const commentViewHeight = window.height - keyBoard.keyboardHeight - 300;
+  console.log(keyBoard, commentViewHeight);
+  useEffect(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  }, [keyBoard.keyboardShown]);
+  // console.log(window, keyBoard);
+  const scrollViewRef = useRef(null);
+  const [scrollOffset, setScrollOffset] = useState(null);
+  const [textInputSize, setTextInputSize] = useState(35);
+  return (
+    <Modal
+      // customBackdrop={
+      //   <TouchableWithoutFeedback>
+      //     <View style={{ flex: 1 }} />
+      //   </TouchableWithoutFeedback>
+      // }
+      style={{
+        justifyContent: "flex-end",
+        margin: 0,
+      }}
+      isVisible={showModal}
+      // onBackdropPress={() => setShowComment(false)}
+      onSwipeComplete={() => setShowModal(false)}
+      swipeDirection={["down"]}
+      animationIn="slideInUp"
+      animationOut="slideOutDown"
+      scrollOffset={scrollOffset}
+      scrollTo={(p) => {
+        if (scrollViewRef.current) {
+          scrollViewRef.current.scrollTo(p);
+        }
+      }}
+      scrollOffsetMax={100} //content height - ScrollView height
+      propagateSwipe={true}
+    >
+      <View style={styles.commentModal}>
+        <View style={styles.CommentHeader}>
+          <Text style={{ fontSize: 25, fontWeight: 500 }}> Chia sẻ</Text>
+        </View>
+        <View style={styles.userInfo}>
+          <Image
+            source={{
+              uri: user.avatar,
+            }}
+            style={styles.avatar}
+          />
+          <View style={styles.details}>
+            <View style={{ textDecoration: "none", color: "inherit" }}>
+              <Text style={styles.name}>{user.fullname}</Text>
+            </View>
+            {/* <Text style={styles.date}>
+              {moment(post.createdAt).fromNow()}
+              {post.createdAt}
+            </Text> */}
+          </View>
+        </View>
+        <ScrollView
+          ref={scrollViewRef}
+          onScroll={(e) => {
+            setScrollOffset(e.nativeEvent.contentOffset.y);
+          }}
+          scrollEventThrottle={16}
+          style={{
+            height: commentViewHeight + Math.min(textInputSize - 35, 50) - 20,
+          }}
+        >
+          <TextInput
+            editable
+            multiline
+            numberOfLines={20}
+            maxLength={999}
+            placeholder="Hãy nói gì đó về nội dung này..."
+            onContentSizeChange={(e) => {
+              setTextInputSize(e.nativeEvent.contentSize.height);
+            }}
+            style={{
+              ...styles.shareTextInput,
+              ...{ height: Math.max(35, textInputSize) },
+            }}
+          />
+        </ScrollView>
+        <Button type="solid" style={styles.shareButton}>
+          Chia sẻ
+        </Button>
+      </View>
+    </Modal>
+  );
 }
 function PostCard(prop) {
   const { user, post } = prop;
@@ -118,10 +225,6 @@ function PostCard(prop) {
                 <View style={{ textDecoration: "none", color: "inherit" }}>
                   <Text style={styles.name}>{user.fullname}</Text>
                 </View>
-                <Text style={styles.date}>
-                  {/* {moment(post.createdAt).fromNow()} */}
-                  {post.createdAt}
-                </Text>
               </View>
             </View>
             {/* {showAction && post.userId === currentUser._id && (
@@ -220,13 +323,17 @@ function PostCard(prop) {
       </View>
 
       <View>
-        <CommandModal
+        <CommentModal
           showComment={showComment}
           setShowComment={setShowComment}
         />
       </View>
       <View>
-        <ShareModal showModal={showShare} setShowModal={setShowShare} />
+        <ShareModal
+          showModal={showShare}
+          setShowModal={setShowShare}
+          user={user}
+        />
       </View>
     </View>
   );
@@ -327,4 +434,11 @@ const styles = StyleSheet.create({
     borderRadius: 9999,
     flex: 80,
   },
+  shareTextInput: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    fontSize: 20,
+    padding: 10,
+  },
+  shareButton: {},
 });
