@@ -6,6 +6,9 @@ import LoginScreen from '../screens/Login/LoginScreen';
 import SignUpScreen from '../screens/Login/SignUpScreen';
 import ForgotPasswordScreen from '../screens/Login/ForgotPasswordScreen';
 import HomeNavigator from './HomeNavigator';
+import SearchResultScreen from '../screens/Home/Search/SearchResultScreen';
+
+import SearchScreen from '../screens/Home/Search/SearchScreen'; 
 
 const Stack = createNativeStackNavigator();
 const MainNavigator = () => {
@@ -32,6 +35,20 @@ const MainNavigator = () => {
                     component={HomeNavigator}
                     options={{headerShown: false}}
                 />
+
+                {/* NDH */}
+                <Stack.Screen
+                    name='Search'
+                    component={SearchScreen}
+                    options={{headerShown: false}}
+                />
+
+                <Stack.Screen
+                    name='SearchResult'
+                    component={SearchResultScreen}
+                    options={{headerShown: false}}
+                />
+
 
         </Stack.Navigator>
   )
