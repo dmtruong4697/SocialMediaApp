@@ -50,7 +50,21 @@ const ProfileCard = (props) => {
           </View>
           
         </View>
-        ):(null)
+        ):(<View style = {[styles.button_1, {marginTop: 10}]}>
+          <Button
+            title="Nhắn tin"
+            type="clear"
+            titleStyle={{ fontSize: 16, color: '#0780DC',fontWeight: 600 }}
+            style={{
+              
+              borderRadius: 8,
+              backgroundColor: '#BADFFC'
+            }}
+            onPress={() => {
+              console.log('Nhắn tin');
+            }}
+          />
+        </View>)
             }
       </View>
     </View>
