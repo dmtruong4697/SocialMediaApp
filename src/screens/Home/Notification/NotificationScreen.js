@@ -1,3 +1,5 @@
+
+
 import { StyleSheet, Text, View, FlatList, ScrollView } from 'react-native'
 import React from 'react'
 import NotificationCard from '../../../components/NotificationCard'
@@ -64,6 +66,7 @@ const NotificationScreen = () => {
       />)
       }
     </ScrollView>
+
   )
 }
 
