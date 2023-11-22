@@ -108,12 +108,7 @@ const FeedScreen = () => {
           />)
         } */}
         {postData.map((item, key) => (
-          <PostCard
-            style={styles.postCard}
-            user={item.user}
-            post={item.post}
-            key={key}
-          />
+          <PostCard user={item.user} post={item.post} key={key} />
         ))}
       </View>
     </ScrollView>
@@ -123,17 +118,11 @@ const FeedScreen = () => {
 export default FeedScreen;
 
 const styles = StyleSheet.create({
-  Container: {
-    padding: 10,
-  },
-
   title: {
     fontSize: 25,
     fontWeight: "500",
     padding: 10,
-  },
-  postCard: {
-    padding: 20,
+    marginLeft: 10,
   },
 
 
