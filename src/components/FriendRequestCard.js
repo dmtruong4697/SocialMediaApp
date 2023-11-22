@@ -47,12 +47,12 @@ function FriendRequestCard(props) {
             title="Xóa"
             color={"gray"}
             type="clear"
-            titleStyle={{ fontSize: 16, color: "#ffffff" }}
+            titleStyle={{ fontSize: 16, color: "#000000" }}
             style={{
               marginRight: 10,
               width: 140,
               borderRadius: 8,
-              backgroundColor: "gray",
+              backgroundColor: "#cdd4cf",
             }}
             onPress={() => {
               console.log("Xóa");

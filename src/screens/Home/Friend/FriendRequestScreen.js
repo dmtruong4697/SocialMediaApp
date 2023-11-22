@@ -1,8 +1,12 @@
 import { StyleSheet, Text, View, FlatList, ScrollView } from 'react-native'
 import React from 'react'
 import FriendRequestCard from '../../../components/FriendRequestCard'
+import { Button } from "@rneui/themed";
+import { useNavigation } from '@react-navigation/native';
 
 const FriendRequestScreen = () => {
+
+  const navigation = useNavigation();
 
   const friendRequestData = [
     {
@@ -38,9 +42,44 @@ const FriendRequestScreen = () => {
   ]
 
   return (
-    <ScrollView>
-      <Text style={styles.title}>Lời mời kết bạn</Text>
+    <ScrollView style={styles.container}>
+      <View style={styles.buttonView}>
+      <Button
+            title="Bạn bè"
+            type='clear'
+            titleStyle={{ fontSize: 16, color: "#000000" }}
+            style={{
+              marginRight: 10,
+              width: 'auto',
+              paddingLeft: 5,
+              paddingRight: 5,
+              borderRadius: 20,
+              backgroundColor: "#cdd4cf",
+            }}
+            onPress={() => {
+              navigation.navigate("FriendList")
+            }}
+          />
 
+          <Button
+            title="Gợi ý"
+            type='clear'
+            titleStyle={{ fontSize: 16, color: "#000000" }}
+            style={{
+              marginRight: 10,
+              width: 'auto',
+              paddingLeft: 5,
+              paddingRight: 5,
+              borderRadius: 20,
+              backgroundColor: "#cdd4cf",
+            }}
+            onPress={() => {
+              console.log("Gợi ý");
+            }}
+          />
+      </View>
+      <Text style={styles.title}>Lời mời kết bạn</Text>
+      <View>
       {friendRequestData.map((item) => <FriendRequestCard
           userId={item.userId}
           avatarImage={item.avatarImage}
@@ -48,6 +87,7 @@ const FriendRequestScreen = () => {
           key={item.userId}
         />)
       }
+      </View>
     </ScrollView>
   )
 }
@@ -55,9 +95,22 @@ const FriendRequestScreen = () => {
 export default FriendRequestScreen
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#ffffff',
+    height: '100%'
+  },
+
   title: {
     fontSize: 25,
     fontWeight: '500',
     padding: 10,
-  }
+  },
+
+  buttonView: {
+    //backgroundColor: 'pink',
+    padding: 10,
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: "#cdd4cf",
+  },
 })
