@@ -6,7 +6,8 @@ import LoginScreen from '../screens/Login/LoginScreen';
 import SignUpScreen from '../screens/Login/SignUpScreen';
 import ForgotPasswordScreen from '../screens/Login/ForgotPasswordScreen';
 import HomeNavigator from './HomeNavigator';
-
+import EditProfileScreen from '../screens/Home/Profile/EditProfileScreen';
+import ProfileScreen from '../screens/Home/Profile/ProfileScreen';
 const Stack = createNativeStackNavigator();
 const MainNavigator = () => {
   return (
@@ -31,6 +32,16 @@ const MainNavigator = () => {
                     name='Home'
                     component={HomeNavigator}
                     options={{headerShown: false}}
+                />
+
+                <Stack.Screen
+                    name = 'EditProfile'
+                    component={EditProfileScreen}
+                    
+                />
+                <Stack.Screen
+                    name = 'Profile'
+                    component={ProfileScreen}
                 />
 
         </Stack.Navigator>

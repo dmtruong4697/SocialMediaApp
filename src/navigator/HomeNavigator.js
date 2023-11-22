@@ -41,7 +41,7 @@ const HomeNavigator = () => {
         }}}
     />
       <Tab.Screen 
-        name="Profile" 
+        name="Trang cá nhân" 
         component={ProfileScreen} 
         options={{tabBarIcon: () => {
             return(
