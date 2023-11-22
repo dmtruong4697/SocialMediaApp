@@ -6,6 +6,7 @@ import LoginScreen from '../screens/Login/LoginScreen';
 import SignUpScreen from '../screens/Login/SignUpScreen';
 import ForgotPasswordScreen from '../screens/Login/ForgotPasswordScreen';
 import HomeNavigator from './HomeNavigator';
+import FriendListScreen from '../screens/Home/Friend/FriendListScreen';
 import SearchResultScreen from '../screens/Home/Search/SearchResultScreen';
 
 import SearchScreen from '../screens/Home/Search/SearchScreen'; 
@@ -34,6 +35,11 @@ const MainNavigator = () => {
                     name='Home'
                     component={HomeNavigator}
                     options={{headerShown: false}}
+                />
+
+                <Stack.Screen
+                    name='FriendList'
+                    component={FriendListScreen}
                 />
 
                 {/* NDH */}
