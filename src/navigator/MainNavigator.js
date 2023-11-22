@@ -8,6 +8,11 @@ import ForgotPasswordScreen from '../screens/Login/ForgotPasswordScreen';
 import HomeNavigator from './HomeNavigator';
 import EditProfileScreen from '../screens/Home/Profile/EditProfileScreen';
 import ProfileScreen from '../screens/Home/Profile/ProfileScreen';
+import FriendListScreen from '../screens/Home/Friend/FriendListScreen';
+import SearchResultScreen from '../screens/Home/Search/SearchResultScreen';
+
+import SearchScreen from '../screens/Home/Search/SearchScreen'; 
+
 const Stack = createNativeStackNavigator();
 const MainNavigator = () => {
   return (
@@ -43,6 +48,24 @@ const MainNavigator = () => {
                     name = 'Profile'
                     component={ProfileScreen}
                 />
+                <Stack.Screen
+                    name='FriendList'
+                    component={FriendListScreen}
+                />
+
+                {/* NDH */}
+                <Stack.Screen
+                    name='Search'
+                    component={SearchScreen}
+                    options={{headerShown: false}}
+                />
+
+                <Stack.Screen
+                    name='SearchResult'
+                    component={SearchResultScreen}
+                    options={{headerShown: false}}
+                />
+
 
         </Stack.Navigator>
   )

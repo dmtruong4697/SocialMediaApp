@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginTop: 15,
     
-    flexDirection: 'column', // default is column, you can change to 'row' if needed
+    flexDirection: 'column', 
     alignItems: 'stretch',
   },
   friend_container:{
