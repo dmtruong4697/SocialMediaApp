@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useNavigation } from '@react-navigation/native';
 import FriendRequestCard from '../../../components/FriendRequestCard';
-
+import ProfileCard from '../../../components/ProfileCard';
 const FriendListScreen = () => {
 
   const friendListData = [
@@ -87,7 +87,7 @@ const FriendListScreen = () => {
 
       <View style={styles.friendList}>
         <View>
-        {friendListData.map((item) => <FriendRequestCard
+        {friendListData.map((item) => <ProfileCard
             userId={item.userId}
             avatarImage={item.avatarImage}
             userName={item.userName}
