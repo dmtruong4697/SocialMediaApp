@@ -21,12 +21,18 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.hoang2008.SocialMediaApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "sdkVersion": "49.0.0"
+    "sdkVersion": "49.0.0",
+    "extra": {
+      "eas": {
+        "projectId": "feaeeae7-0f35-4a72-b92d-9119a4d35464"
+      }
+    }
   },
   "name": "socialmediaapp"
 }
