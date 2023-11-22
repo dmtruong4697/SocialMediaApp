@@ -132,7 +132,7 @@ const ProfileScreen = () => {
       </View>
       <View style = {styles.container_add_post}>
         <View style = {styles.add_post_avatar}>
-          <Image style = {{borderRadius: 1000, width: 50,height: 50}}  source={{uri: avatar_link}}/>
+          <Image style = {{borderRadius: 1000, width: 50,height: 50}}  source={{uri: profile_infor.avatar_link}}/>
         </View>
         <View style = {{marginLeft: 10}}>
           <Text style = {{fontSize: 16}}>Bạn đang nghĩ gì?</Text>

@@ -6,6 +6,7 @@ import SettingScreen from '../screens/Home/Setting/SettingScreen';
 import { Icon } from '@rneui/base';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHome, faUserFriends, faBell, faGear } from '@fortawesome/free-solid-svg-icons';
+import ProfileScreen from '../screens/Home/Profile/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -43,7 +44,7 @@ const HomeNavigator = () => {
         
         
         name="Setting" 
-        component={SettingScreen} 
+        component={ProfileScreen} 
         options={{tabBarIcon: () => {
             return(
                 <FontAwesomeIcon icon={faGear} />

@@ -23,6 +23,21 @@ const SettingScreen = () => {
           navigation.navigate('Login');
         }}
       />
+
+      <Button 
+        title="Profile" 
+        type='clear'
+        titleStyle={{ fontSize: 16, color: '#ffffff' }}
+        style={{
+          marginRight: 10,
+          width: 140,
+          borderRadius: 10,
+          backgroundColor: '#2069a1'
+        }}
+        onPress={() => {
+          navigation.navigate('Profile');
+        }}
+      />
     </View>
   )
 }
