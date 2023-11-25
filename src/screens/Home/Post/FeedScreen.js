@@ -1,13 +1,9 @@
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
 import React from "react";
 import PostCard from "../../../components/PostCard";
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';//NDH
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';//NDH
-import { useNavigation } from '@react-navigation/native';//NDH
 
 const FeedScreen = () => {
 
-  const navigation = useNavigation();//NDH
 
   const postData = [
     {
@@ -81,22 +77,7 @@ const FeedScreen = () => {
     <ScrollView>
       
       <View style={styles.Container}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text style={styles.title}>Top posts</Text>
-        
-            {/* NDH */}
-            <TouchableOpacity onPress={() =>
-              navigation.navigate({name: 'Search'})
-              }>
-              <FontAwesomeIcon
-                style={styles.searchIcon}
-                icon={faMagnifyingGlass}
-              />
-            </TouchableOpacity>
-            {/* NDH */}
-        </View>
-        
-
+        <Text style={styles.title}>Top posts</Text>
         {/* {commentData.map((item) => <CommentCard
             userId={item.userId}
             avatarImage={item.avatarImage}
