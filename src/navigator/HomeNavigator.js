@@ -107,7 +107,9 @@ const HomeNavigator = () => {
         }}
     />
       <Tab.Screen 
-        name="Profile" 
+        
+        
+        name="Setting" 
         component={ProfileScreen} 
         options={{tabBarIcon: () => {
             return(
