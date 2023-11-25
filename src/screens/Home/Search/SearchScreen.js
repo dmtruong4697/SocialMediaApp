@@ -12,7 +12,6 @@ const SearchScreen = () => {
   return (
     <ScrollView style={styles.searchHeader}>
     <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 15}}>
-      {/* <FontAwesomeIcon style={styles.iconSearch} icon={faAngleLeft} /> */}
       <TouchableOpacity onPress={() =>
               navigation.navigate({name: 'Home'})
               }>
@@ -23,7 +22,7 @@ const SearchScreen = () => {
         placeholder='Tìm kiếm trên Facebook'
         value={inputSearch}
         onChangeText={setinputSearch}
-        onSubmitEditing={() => navigation.navigate({name: 'SearchResult'})}
+        onSubmitEditing={() => navigation.navigate('SearchResult', { searchQuery: inputSearch })}
       />
     </View>
     </ScrollView>

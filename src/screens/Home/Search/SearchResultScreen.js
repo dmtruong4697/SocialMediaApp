@@ -6,11 +6,12 @@ import ProfileCard from '../../../components/ProfileCard';
 import { Button } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 
-const SearchResultScreen = () => {
+const SearchResultScreen = ({ route }) => {
+  const { searchQuery } = route.params || {};
 
 const navigation = useNavigation();
 const [pressBtn, setPressBtn] = useState('people');
-const [inputSearch, setinputSearch] = useState('');
+const [inputSearch, setinputSearch] = useState(searchQuery || '');
 
 const handlePress = (buttonName) => {
   setPressBtn(buttonName);
