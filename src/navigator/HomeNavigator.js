@@ -7,7 +7,6 @@ import ProfileScreen from '../screens/Home/Profile/ProfileScreen';
 import { Icon } from '@rneui/base';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHome, faUserFriends, faBell, faGear } from '@fortawesome/free-solid-svg-icons';
-import ProfileScreen from '../screens/Home/Profile/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
 
