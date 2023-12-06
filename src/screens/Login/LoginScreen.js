@@ -22,8 +22,10 @@ const LoginScreen = () => {
     const [uuid, setUuid] = useState('uuid')
 
     useEffect(() => {
-      if (currentUser) {
+      if (currentUser && (currentUser.userName !== '')) {
         navigation.navigate({name:'Home'});
+      } else if (currentUser && currentUser.userName == '') {
+        navigation.navigate({name:'ChangeInfo'});
       }
     }, [currentUser, navigation]);
 
