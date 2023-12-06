@@ -13,6 +13,7 @@ import SearchResultScreen from '../screens/Home/Search/SearchResultScreen';
 import AllSearchRecent from '../screens/Home/Search/AllSearchRecent';
 import VerifyCode from '../screens/Login/VerifyCode';
 import SearchScreen from '../screens/Home/Search/SearchScreen'; 
+import ChangeInfoScreen from '../screens/Login/ChangeInfoScreen';
 
 const Stack = createNativeStackNavigator();
 const MainNavigator = () => {
@@ -75,6 +76,12 @@ const MainNavigator = () => {
                 <Stack.Screen
                     name='VerifyCode'
                     component={VerifyCode}
+                />
+
+                <Stack.Screen
+                    name='ChangeInfo'
+                    component={ChangeInfoScreen}
+                    options={{headerShown: false}}
                 />
 
         </Stack.Navigator>
