@@ -1,14 +1,31 @@
 import { StyleSheet, Text, View, SafeAreaView, Image, TouchableOpacity, ScrollView} from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { Button } from '@rneui/themed';
 import { Input, Icon } from '@rneui/themed';
 import userIcon from '../../../assets/icons/user.svg'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faKey, faMugSaucer, faUser } from '@fortawesome/free-solid-svg-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { text } from '@fortawesome/fontawesome-svg-core';
+import { loginRequest } from '../../redux/actions/auth.action';
 
 const LoginScreen = () => {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+    const errorMessage = useSelector((state) => state.auth.errorMessage);
+    const currentUser = useSelector((state) => state.auth.currentUser);
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [uuid, setUuid] = useState('uuid')
+
+    useEffect(() => {
+      if (currentUser) {
+        navigation.navigate({name:'Home'});
+      }
+    }, [currentUser, navigation]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -17,12 +34,14 @@ const LoginScreen = () => {
       <View style={styles.inputField}>
         <Input
           leftIcon={<FontAwesomeIcon icon={faUser} />}
-          placeholder='User name'
+          placeholder='Email'
+          onChangeText={(text) => setEmail(text)}
         />
 
         <Input
           leftIcon={<FontAwesomeIcon icon={faKey}/>}
           placeholder='Password'
+          onChangeText={(text) => setPassword(text)}
           secureTextEntry={true}
         />
 
@@ -46,7 +65,7 @@ const LoginScreen = () => {
             marginBottom: 30,
           }}
           onPress={() =>
-            navigation.navigate({name:'Home'})
+            dispatch(loginRequest(email, password, 'uuid'))
           }
         />
 
@@ -60,6 +79,14 @@ const LoginScreen = () => {
             <Text style={{color: '#2089dc'}}> create a new account</Text>  
           </TouchableOpacity>
         </View>
+
+        <Text
+          style={{
+            color: 'red',
+            alignSelf: 'center',
+            marginTop: 100,
+          }}
+        >{errorMessage}</Text>
 
 
       </View>
