@@ -29,9 +29,7 @@
     },
     "sdkVersion": "49.0.0",
     "extra": {
-      "eas": {
-        "projectId": "feaeeae7-0f35-4a72-b92d-9119a4d35464"
-      }
+      
     }
   },
   "name": "socialmediaapp"

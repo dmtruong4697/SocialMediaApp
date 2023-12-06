@@ -10,7 +10,8 @@ import EditProfileScreen from '../screens/Home/Profile/EditProfileScreen';
 import ProfileScreen from '../screens/Home/Profile/ProfileScreen';
 import FriendListScreen from '../screens/Home/Friend/FriendListScreen';
 import SearchResultScreen from '../screens/Home/Search/SearchResultScreen';
-
+import AllSearchRecent from '../screens/Home/Search/AllSearchRecent';
+import VerifyCode from '../screens/Login/VerifyCode';
 import SearchScreen from '../screens/Home/Search/SearchScreen'; 
 
 const Stack = createNativeStackNavigator();
@@ -53,7 +54,6 @@ const MainNavigator = () => {
                     component={FriendListScreen}
                 />
 
-                {/* NDH */}
                 <Stack.Screen
                     name='Search'
                     component={SearchScreen}
@@ -66,6 +66,16 @@ const MainNavigator = () => {
                     options={{headerShown: false}}
                 />
 
+                <Stack.Screen
+                    name='HistorySearch'
+                    component={AllSearchRecent}
+                    options={{headerShown: false}}
+                />
+
+                <Stack.Screen
+                    name='VerifyCode'
+                    component={VerifyCode}
+                />
 
         </Stack.Navigator>
   )
