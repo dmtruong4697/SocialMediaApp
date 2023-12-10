@@ -18,8 +18,8 @@ function* login(action) {
         token: response.data.data.token,
         id: response.data.data.id,
         userName: response.data.data.username,
-        email: response.data.email,
-        role: response.data.role,
+        avatar: response.data.data.avatar,
+        coins: response.data.data.coins,
       };
 
       //yield call(AsyncStorage.setItem, 'token', currentUser.token);

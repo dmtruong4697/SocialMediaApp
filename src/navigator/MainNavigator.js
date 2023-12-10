@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import LoginScreen from '../screens/Login/LoginScreen';
 import SignUpScreen from '../screens/Login/SignUpScreen';
 import ForgotPasswordScreen from '../screens/Login/ForgotPasswordScreen';
@@ -14,9 +14,15 @@ import AllSearchRecent from '../screens/Home/Search/AllSearchRecent';
 import VerifyCode from '../screens/Login/VerifyCode';
 import SearchScreen from '../screens/Home/Search/SearchScreen'; 
 import ChangeInfoScreen from '../screens/Login/ChangeInfoScreen';
+import CreatePostScreen from '../screens/Home/Post/CreatePostScreen';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faArrowLeft, faCancel, faMultiply } from '@fortawesome/free-solid-svg-icons';
+import { Pressable } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 const Stack = createNativeStackNavigator();
 const MainNavigator = () => {
+    const navigation = useNavigation();
   return (
         <Stack.Navigator>
                 <Stack.Screen
@@ -82,6 +88,29 @@ const MainNavigator = () => {
                     name='ChangeInfo'
                     component={ChangeInfoScreen}
                     options={{headerShown: false}}
+                />
+
+                <Stack.Screen
+                    name='CreatePost'
+                    component={CreatePostScreen}
+                    options={{
+                       title: 'Tạo bài viết',
+                       headerLeft: () => 
+                            <TouchableOpacity onPress={() => {navigation.navigate({name: 'Feed'})}}>
+                                <FontAwesomeIcon size={20} icon={faMultiply}/>
+                            </TouchableOpacity>,
+
+                        // headerRight: () =>
+                        //     <TouchableOpacity>
+                        //         <Text
+                        //             style={{
+                        //                 color: '#348feb',
+                        //                 fontSize: 17,
+                        //                 fontWeight: 'bold'
+                        //             }}
+                        //         >Tiếp</Text>
+                        //     </TouchableOpacity>
+                    }}
                 />
 
         </Stack.Navigator>

@@ -32,7 +32,7 @@ const MyHeaderRightFeed = () => {
       <TouchableOpacity style={styles.buttonHeader} onPress={() => navigation.navigate({name: 'Search'})}>
               <FontAwesomeIcon size={18} icon={faMagnifyingGlass} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonHeader} onPress={() => navigation.navigate({name: ''})}>
+      <TouchableOpacity style={styles.buttonHeader} onPress={() => navigation.navigate({name: 'CreatePost'})}>
               <FontAwesomeIcon size={18} icon={faPlus} />
       </TouchableOpacity>
     </View>

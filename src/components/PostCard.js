@@ -44,7 +44,7 @@ function CommentModal({ showComment, setShowComment, user }) {
   const window = useWindowDimensions();
   const commentViewHeight =
     window.height - keyBoard.coordinates.end.height - 180;
-  console.log(keyBoard, commentViewHeight);
+  //console.log(keyBoard, commentViewHeight);
   useEffect(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
   }, [keyBoard.keyboardShown]);
@@ -116,7 +116,7 @@ function ShareModal({ showModal, setShowModal, user }) {
   const keyBoard = useKeyboard();
   const window = useWindowDimensions();
   const commentViewHeight = window.height - keyBoard.keyboardHeight - 300;
-  console.log(keyBoard, commentViewHeight);
+  //console.log(keyBoard, commentViewHeight);
   useEffect(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
   }, [keyBoard.keyboardShown]);
@@ -281,7 +281,7 @@ function PostCard(prop) {
                   type="material"
                   color={like ? "black" : "#4267B2"}
                   onClick={() => {
-                    console.log(123);
+                    //console.log(123);
                     setLike((like) => !like);
                   }}
                 />
