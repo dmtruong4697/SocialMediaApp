@@ -8,6 +8,7 @@ import { Button } from 'react-native';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import {Entypo} from '@expo/vector-icons';
 
 const PostCard = (props) => {
 
@@ -196,7 +197,8 @@ const PostCard = (props) => {
                 // if (isFelt == "-1") handleDeleteFeel();
               }}
             >
-              <Image style={{height: 24, width: 24, marginRight: 5,}} source={(isFelt == "1")? require('../../assets/icons/upvote-on.png'):require('../../assets/icons/upvote-off.png')}/>
+              {/* <Image style={{height: 24, width: 24, marginRight: 5,}} source={(isFelt == "1")? require('../../assets/icons/upvote-on.png'):require('../../assets/icons/upvote-off.png')}/> */}
+              <Entypo name='thumbs-up' size={28} color={isFelt === "1"? "#1603A0":"#000000"} />
             </TouchableOpacity>
 
           {/* nut downvote */}
@@ -210,7 +212,8 @@ const PostCard = (props) => {
                 // if (isFelt == "-1") handleDeleteFeel();
               }}
             >
-              <Image style={{height: 24, width: 24, marginRight: 5,}} source={(isFelt == "0")? require('../../assets/icons/downvote-on.png'):require('../../assets/icons/downvote-off.png')}/>
+              <Entypo name='thumbs-down' size={28} color={isFelt === "0"? "#1603A0":"#000000"} />
+              {/* <Image style={{height: 24, width: 24, marginRight: 5,}} source={(isFelt == "0")? require('../../assets/icons/downvote-on.png'):require('../../assets/icons/downvote-off.png')}/> */}
             </TouchableOpacity>
 
         </View>
