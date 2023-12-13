@@ -9,6 +9,7 @@ import HomeNavigator from './HomeNavigator';
 import EditProfileScreen from '../screens/Home/Profile/EditProfileScreen';
 import ProfileScreen from '../screens/Home/Profile/ProfileScreen';
 import FriendListScreen from '../screens/Home/Friend/FriendListScreen';
+import FriendSuggestedScreen from '../screens/Home/Friend/FriendSuggestedScreen';
 import SearchResultScreen from '../screens/Home/Search/SearchResultScreen';
 import AllSearchRecent from '../screens/Home/Search/AllSearchRecent';
 import VerifyCode from '../screens/Login/VerifyCode';
@@ -16,7 +17,7 @@ import SearchScreen from '../screens/Home/Search/SearchScreen';
 import ChangeInfoScreen from '../screens/Login/ChangeInfoScreen';
 import CreatePostScreen from '../screens/Home/Post/CreatePostScreen';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faArrowLeft, faCancel, faMultiply } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faCancel, faMultiply, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { Pressable } from 'react-native';
 import { TouchableOpacity } from 'react-native';
 import PostDetailScreen from '../screens/Home/Post/PostDetailScreen';
@@ -60,6 +61,18 @@ const MainNavigator = () => {
                 <Stack.Screen
                     name='FriendList'
                     component={FriendListScreen}
+                />
+
+                <Stack.Screen
+                    name='FriendSuggest'
+                    component={FriendSuggestedScreen}
+                    options={{
+                        headerTitle: 'Suggestions',
+                        headerRight: () => 
+                            <TouchableOpacity onPress={() => {navigation.navigate({name: 'Search'})}}>
+                                <FontAwesomeIcon size={20} icon={faMagnifyingGlass}/>
+                            </TouchableOpacity>,
+                    }}
                 />
 
                 <Stack.Screen

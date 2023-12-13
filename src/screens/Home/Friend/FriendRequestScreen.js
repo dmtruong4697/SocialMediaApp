@@ -20,8 +20,6 @@ const FriendRequestScreen = () => {
       const response = await axios.post('https://it4788.catan.io.vn/get_requested_friends', {
         index: startFr,
         count: '10',
-        // user_id: `Bearer ${currentUser.id}`
-        // user_id: "619"
       },
       {
         headers: {
@@ -30,7 +28,7 @@ const FriendRequestScreen = () => {
       });
 
       if (response.status === 200) {
-        console.log('Get list friends successful:', response.data);
+        console.log('Get list friends request successful:', response.data);
         // responseData = response.data;
         setFriendRequestData(response.data?.data?.requests || []);
       } else {
@@ -140,7 +138,7 @@ const FriendRequestScreen = () => {
     <ScrollView style={styles.container}>
       <View style={styles.buttonView}>
       <Button
-            title="Bạn bè"
+            title="Your friends"
             type='clear'
             titleStyle={{ fontSize: 16, color: "#000000" }}
             style={{
@@ -157,7 +155,7 @@ const FriendRequestScreen = () => {
           />
 
           <Button
-            title="Gợi ý"
+            title="Suggestions"
             type='clear'
             titleStyle={{ fontSize: 16, color: "#000000" }}
             style={{
@@ -169,11 +167,12 @@ const FriendRequestScreen = () => {
               backgroundColor: "#cdd4cf",
             }}
             onPress={() => {
+              navigation.navigate({name: 'FriendSuggest'})
               console.log("Gợi ý");
             }}
           />
       </View>
-      <Text style={styles.title}>Lời mời kết bạn</Text>
+      <Text style={styles.title}>Friend requests</Text>
       {loading ? (
         <Text>Loading...</Text>
       ) : (
@@ -186,6 +185,7 @@ const FriendRequestScreen = () => {
                 userName={item.username}
                 pressAccept={() => handleAcceptFr(item.id)}
                 pressDel={() => {handleDelRequest(item.id)}}
+                mutualFriend={item.same_friends}
                 key={item.id}
               />
             ))

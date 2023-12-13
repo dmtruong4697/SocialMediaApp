@@ -9,18 +9,11 @@ FriendRequestCard.propTypes = {
   userId: PropTypes.string,
   pressAccept: PropTypes.func,
   pressDel: PropTypes.func,
+  mutualFriend: PropTypes.string,
 };
 
-FriendRequestCard.defaultProps = {
-  avatarImage:
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSczWMXADUdpzXqlMtq4iW6-epspP9EcPF5Qw&usqp=CAU",
-  userName: "User name",
-  userId: "",
-  pressAccept: () => {},
-  pressDel: () => {},
-};
 function FriendRequestCard(props) {
-  const { avatarImage, userName, userId, pressAccept, pressDel } = props;
+  const { avatarImage, userName, userId, pressAccept, pressDel, mutualFriend } = props;
   const [isHidden, setIsHidden] = useState(false);
 
   return (
@@ -34,6 +27,8 @@ function FriendRequestCard(props) {
 
         <View style={styles.contentView}>
           <Text style={{ fontSize: 18, fontWeight: "500" }}>{userName}</Text>
+
+          <Text style={{ fontSize: 14, color: '#A8A8A8' }}>{mutualFriend} mutual friends</Text> 
 
           <View style={styles.buttonView}>
             <Button
