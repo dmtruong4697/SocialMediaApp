@@ -1,123 +1,101 @@
-import React from "react";
-import propTypes from 'prop-types';
-import { Button } from "@rneui/themed";
-import { TouchableOpacity, StyleSheet, View, Text, Image } from "react-native";
+import { ImageBackground, StyleSheet, Text, View } from 'react-native'
+import React from 'react'
+import { differenceInSeconds, differenceInMinutes, differenceInHours, differenceInDays, parseISO } from 'date-fns';
 
-CommentCard.propTypes = {
-    avatarImage: propTypes.string,
-    userName: propTypes.string,
-    userId: propTypes.string,
-    contentCmt: propTypes.string,
-    timeCmt: propTypes.string,
-    countReact: propTypes.string,
-}
+const CommentCard = (props) => {
 
-CommentCard.defaultProps = {
-    avatarImage: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSczWMXADUdpzXqlMtq4iW6-epspP9EcPF5Qw&usqp=CAU',
-    userName: 'User Name',
-    userId: '',
-    contentCmt: 'Main content of the comment',
-    timeCmt: 'Just now',
-    countReact: ''
-}
+    const {commentDetail} = props;
 
-function CommentCard(props) {
-    const {avatarImage, userName, userId, contentCmt, timeCmt, countReact} =  props;
+    const apiTime = commentDetail.created;
 
-    return (
-    <View style={styles.Container}>
-        <View style={{flexDirection: 'row'}}>
-            <View style={styles.avatarImage}>
-                <TouchableOpacity style={styles.avatarImage}>
-                <Image style={styles.image} source={{uri: avatarImage}}/>
-                </TouchableOpacity>
-            </View>
-            <View style={styles.contentView}>
-                    <Text style={{fontSize: 15, fontWeight: '500'}}>{userName}</Text>
-                    <Text style={{fontSize: 15, fontWeight: '300'}}>{contentCmt}</Text>
-            </View>
-        </View>
-
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: "center"}}>
-        <View style={styles.ReactView}>
-            <Text style={{fontSize: 13, fontWeight: '200', paddingRight: 7}}>{timeCmt}</Text>
-            <View style={styles.buttonView}>
-                <Button
-                    title="Like"
-                    type='clear'
-                    titleStyle={{fontSize: 13, color: '#696969',}}
-                    onPress={() => {
-                        console.log('like')
-                    }}
-                />
-            </View>
-            <View style={styles.buttonView}>
-                <Button
-                    title="Reply"
-                    type='clear'
-                    titleStyle={{fontSize: 13, color: '#696969',}}
-                    onPress={() => {
-                        console.log('reply')
-                    }}
-                />
-            </View>
-
-        </View>
-
-        <View>
-                <Text style={{fontSize: 13, color: '#696969',}}>{countReact}</Text>
-        </View>
-        </View>
-
-
-        
-    </View>
+    const apiDate = parseISO(apiTime);
     
-    )
+    const timeDifferenceInSeconds = differenceInSeconds(new Date(), apiDate);
+    const timeDifferenceInMinutes = differenceInMinutes(new Date(), apiDate);
+    const timeDifferenceInHours = differenceInHours(new Date(), apiDate);
+    const timeDifferenceInDays = differenceInDays(new Date(), apiDate);
+    
+    let time;
+    
+    if (timeDifferenceInDays >= 1) {
+      time = `${timeDifferenceInDays} ngày`;
+    } else if (timeDifferenceInHours >= 1) {
+      time = `${timeDifferenceInHours} giờ`;
+    } else if (timeDifferenceInMinutes >= 1) {
+      time = `${timeDifferenceInMinutes} phút`;
+    } else {
+      time = `${timeDifferenceInSeconds} giây`;
+    }
+
+  return (
+    <View style={styles.container}>
+
+      <View style={styles.avatar}>
+        <ImageBackground
+            source={{uri: (commentDetail.poster.avatar != '')? commentDetail.poster.avatar:"a"}}
+            imageStyle={{
+              width: 30,
+              height: 30,
+              borderRadius: 1000,
+            }}
+          />
+      </View>
+
+      <View style={styles.content}>
+
+        <View style={styles.comment}>
+            <Text style={{fontWeight: 'bold'}}>{commentDetail.poster.name}</Text>
+            <Text>{commentDetail.content}</Text>
+        </View>
+
+        <View style={styles.time}>
+            <Text style={{fontSize: 12, color: '#8c8c8c', fontWeight: '500'}}>{time}</Text>
+        </View>
+
+      </View>
+    </View>
+  )
 }
 
-export default CommentCard;
+export default CommentCard
 
 const styles = StyleSheet.create({
-    Container: {
+    container: {
+        padding: 5,
         width: '100%',
-        alignSelf: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        borderRadius: 5,
-        marginBottom: 5,
-    },
-
-    avatarImage: {
-        flex: 1,
-        borderRadius: 1000,
-    },
-
-    image: {
-        height: '80%',
-        width: '80%',
-        borderRadius: 1000,
-    },
-
-    contentView: {
-        flexDirection: 'column',
-        backgroundColor: '#E0E0E0',
-        borderRadius: 5,
-        padding: 10,
-        flex: 5,
-    },
-
-    ReactView: {
+        height: 'auto',
         flexDirection: 'row',
-        paddingLeft: '16.67%',
-        alignItems: 'center',
+        //justifyContent: 'center'
     },
 
-    buttonView: {
-        
+    avatar: {
+        height: 30,
+        width: 30,
+        borderRadius: 1000,
+        backgroundColor: 'gray',
+        marginLeft: 2,
     },
 
-    ReactLike: {
-        marginRight: 10,
-    }
+    content: {
+        height: '100%',
+        flex: 1,
+        //backgroundColor: 'yellow',
+        marginLeft: 8,
+        //marginRight: 8,
+        flexDirection: 'column',
+    },
+
+    comment: {
+        width: '100%',
+        height: 'auto',
+        backgroundColor: '#ededed',
+        borderRadius: 10,
+        padding: 7,
+    },
+
+    time: {
+        paddingLeft: 7,
+        marginTop: 3,
+    },
+
 })

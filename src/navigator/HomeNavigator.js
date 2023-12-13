@@ -26,9 +26,9 @@ const MyHeaderRightFeed = () => {
   const navigation = useNavigation();
   return (
     <View style={{ marginLeft: 16, flexDirection: 'row-reverse' }}>
-      <TouchableOpacity style={styles.buttonHeader} onPress={() => navigation.navigate({name: ''})}>
+      {/* <TouchableOpacity style={styles.buttonHeader} onPress={() => navigation.navigate({name: ''})}>
               <FontAwesomeIcon size={18} icon={faFacebookMessenger} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <TouchableOpacity style={styles.buttonHeader} onPress={() => navigation.navigate({name: 'Search'})}>
               <FontAwesomeIcon size={18} icon={faMagnifyingGlass} />
       </TouchableOpacity>
@@ -72,12 +72,13 @@ const HomeNavigator = () => {
         component={FeedScreen} 
         options={{tabBarIcon: () => {
             return(
-                <FontAwesomeIcon icon={faHome} />
+                <FontAwesomeIcon size={24} icon={faHome} />
             )
         },
           headerTitle: () => null,
           headerLeft: () => <MyHeaderLeftComponent text='facebook'/>,
           headerRight: () => <MyHeaderRightFeed/>,
+          tabBarShowLabel: false
         }}
     />
       <Tab.Screen 
@@ -85,12 +86,13 @@ const HomeNavigator = () => {
         component={FriendRequestScreen} 
         options={{tabBarIcon: () => {
             return(
-                <FontAwesomeIcon icon={faUserFriends} />
+                <FontAwesomeIcon size={24} icon={faUserFriends} />
             )
         },
         headerTitle: () => null,
         headerLeft: () => <MyHeaderLeftComponent text='Friends'/>,
         headerRight: () => <HeaderRightFriend/>,
+        tabBarShowLabel: false,
         }}
     />
       <Tab.Screen 
@@ -98,12 +100,13 @@ const HomeNavigator = () => {
         component={NotificationScreen} 
         options={{tabBarIcon: () => {
             return(
-                <FontAwesomeIcon icon={faBell} />
+                <FontAwesomeIcon size={24} icon={faBell} />
             )
         },
         headerTitle: () => null,
         headerLeft: () => <MyHeaderLeftComponent text='Notifications'/>,
         headerRight: () => <HeaderRightNotiAndMenu/>,
+        tabBarShowLabel: false,
         }}
     />
       <Tab.Screen 
@@ -113,12 +116,13 @@ const HomeNavigator = () => {
         component={ProfileScreen} 
         options={{tabBarIcon: () => {
             return(
-                <FontAwesomeIcon icon={faGear} />
+                <FontAwesomeIcon size={24} icon={faGear} />
             )
         },
         headerTitle: () => null,
         headerLeft: () => <MyHeaderLeftComponent text='Menu'/>,
         headerRight: () => <HeaderRightNotiAndMenu/>,
+        tabBarShowLabel: false,
         }}
     />
       
