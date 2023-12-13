@@ -24,7 +24,7 @@ const VerifyCode = ({route}) => {
                 console.log('Verify Success', response.data);
                 Alert.alert('Verify Success', 'U can continue login!');
                 console.log(emailQuery, code);
-                navigation.navigate({name: 'Home'});
+                navigation.navigate({name: 'Login'});
             } else {
                 console.log('Verify failed:', response.data);
                 console.log('Response Status:', response.status);

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
-import React from "react";
+import React, {useState} from "react";
 import { Button } from "@rneui/themed";
 import PropTypes from "prop-types";
 
@@ -7,6 +7,8 @@ FriendRequestCard.propTypes = {
   avatarImage: PropTypes.string,
   userName: PropTypes.string,
   userId: PropTypes.string,
+  pressAccept: PropTypes.func,
+  pressDel: PropTypes.func,
 };
 
 FriendRequestCard.defaultProps = {
@@ -14,52 +16,64 @@ FriendRequestCard.defaultProps = {
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSczWMXADUdpzXqlMtq4iW6-epspP9EcPF5Qw&usqp=CAU",
   userName: "User name",
   userId: "",
+  pressAccept: () => {},
+  pressDel: () => {},
 };
 function FriendRequestCard(props) {
-  const { avatarImage, userName, userId } = props;
+  const { avatarImage, userName, userId, pressAccept, pressDel } = props;
+  const [isHidden, setIsHidden] = useState(false);
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.avatarImage}>
-        <Image style={styles.image} source={{ uri: avatarImage }} />
-      </TouchableOpacity>
+    <View>
+     {isHidden ? 
+       null : 
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.avatarImage}>
+          <Image style={styles.image} source={{ uri: avatarImage }} />
+        </TouchableOpacity>
 
-      <View style={styles.contentView}>
-        <Text style={{ fontSize: 18, fontWeight: "500" }}>{userName}</Text>
+        <View style={styles.contentView}>
+          <Text style={{ fontSize: 18, fontWeight: "500" }}>{userName}</Text>
 
-        <View style={styles.buttonView}>
-          <Button
-            title="Xác nhận"
-            type="clear"
-            titleStyle={{ fontSize: 16, color: "#ffffff" }}
-            style={{
-              marginRight: 10,
-              width: 140,
-              borderRadius: 8,
-              backgroundColor: "#1373ab",
-            }}
-            onPress={() => {
-              console.log("Xác nhận");
-            }}
-          />
+          <View style={styles.buttonView}>
+            <Button
+              title="Xác nhận"
+              type="clear"
+              titleStyle={{ fontSize: 16, color: "#ffffff" }}
+              style={{
+                marginRight: 10,
+                width: 140,
+                borderRadius: 8,
+                backgroundColor: "#1373ab",
+              }}
+              onPress={() => {
+                pressAccept();
+                setIsHidden(true);
+                console.log("Xác nhận");
+              }}
+            />
 
-          <Button
-            title="Xóa"
-            color={"gray"}
-            type="clear"
-            titleStyle={{ fontSize: 16, color: "#000000" }}
-            style={{
-              marginRight: 10,
-              width: 140,
-              borderRadius: 8,
-              backgroundColor: "#cdd4cf",
-            }}
-            onPress={() => {
-              console.log("Xóa");
-            }}
-          />
+            <Button
+              title="Xóa"
+              color={"gray"}
+              type="clear"
+              titleStyle={{ fontSize: 16, color: "#000000" }}
+              style={{
+                marginRight: 10,
+                width: 140,
+                borderRadius: 8,
+                backgroundColor: "#cdd4cf",
+              }}
+              onPress={() => {
+                pressDel();
+                setIsHidden(true);
+                console.log("Xóa");
+              }}
+            />
+          </View>
         </View>
       </View>
+     }
     </View>
   );
 }

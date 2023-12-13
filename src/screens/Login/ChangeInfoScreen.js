@@ -54,12 +54,11 @@ const ChangeInfoScreen = () => {
       );
 
       console.log('Upload response:', response.data);
-      if (response.status === 201) {
+      if (response.status === 200) {
         navigation.navigate({name:'Home'})
       }
     } catch (error) {
-      console.error('Error uploading image:', error.response.data);
-      Alert.alert('Error', 'Lỗi khi cập nhật thông tin, vui lòng thử lại');
+      console.error('Error login:', error.response.data);
     }
   }
 
