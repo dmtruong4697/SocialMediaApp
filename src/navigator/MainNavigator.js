@@ -19,6 +19,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faArrowLeft, faCancel, faMultiply } from '@fortawesome/free-solid-svg-icons';
 import { Pressable } from 'react-native';
 import { TouchableOpacity } from 'react-native';
+import PostDetailScreen from '../screens/Home/Post/PostDetailScreen';
 
 const Stack = createNativeStackNavigator();
 const MainNavigator = () => {
@@ -99,17 +100,14 @@ const MainNavigator = () => {
                             <TouchableOpacity onPress={() => {navigation.navigate({name: 'Feed'})}}>
                                 <FontAwesomeIcon size={20} icon={faMultiply}/>
                             </TouchableOpacity>,
+                    }}
+                />
 
-                        // headerRight: () =>
-                        //     <TouchableOpacity>
-                        //         <Text
-                        //             style={{
-                        //                 color: '#348feb',
-                        //                 fontSize: 17,
-                        //                 fontWeight: 'bold'
-                        //             }}
-                        //         >Tiếp</Text>
-                        //     </TouchableOpacity>
+                <Stack.Screen
+                    name='PostDetail'
+                    component={PostDetailScreen}
+                    options={{
+                        title: "Bài đăng"
                     }}
                 />
 
