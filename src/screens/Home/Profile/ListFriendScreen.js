@@ -1,6 +1,6 @@
 
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
-import {React, useState} from 'react';
+import {React, useState, useEffect} from 'react';
 
 import { Input } from '@rneui/themed'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -8,45 +8,57 @@ import { faListSquares, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import ProfileCard from '../../../components/ProfileCard';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 const ListFriendScreen = () => {
-  const friendListData = [
-    {
-      userId: '1',
-      userName: 'Peter Griffin',
-      avatarImage: 'https://static.wikia.nocookie.net/familyguy/images/a/aa/FamilyGuy_Single_PeterDrink_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20230815202349',
-      isNotFriend: false
-    },
-    {
-      userId: '2',
-      userName: 'Meg Griffin',
-      avatarImage: 'https://static.wikia.nocookie.net/familyguy/images/1/1b/FamilyGuy_Single_MegMakeup_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20200526171840',
-      isNotFriend: false
-    },    
-    {
-      userId: '3',
-      userName: 'Lois Griffin',
-      avatarImage: 'https://static.wikia.nocookie.net/familyguy/images/7/7c/FamilyGuy_Single_LoisPose_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20200526171843',
-      isNotFriend: false
-    },    
-    {
-      userId: '4',
-      userName: 'Stewie Griffin',
-      avatarImage: 'https://static.wikia.nocookie.net/familyguy/images/9/90/FamilyGuy_Single_StewieBackpack_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20200526171841',
-      isNotFriend: false,
-    },    
-    {
-      userId: '5',
-      userName: 'Chris Griffin',
-      avatarImage: 'https://static.wikia.nocookie.net/familyguy/images/e/ee/FamilyGuy_Single_ChrisText_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20230815202356',
-      isNotFriend: false
-    },
-    {
-      userId: '6',
-      userName: 'Brian Griffin',
-      avatarImage: 'https://static.wikia.nocookie.net/familyguy/images/c/c2/FamilyGuy_Single_BrianWriter_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20230807152447',
-      isNotFriend: false
-    },
-  ]
+
+  //******************************************************** */
+  const [index, setIndex] = useState("0");
+  const [friendListData, setFriendListData] = useState([]);
+  const currentUser = useSelector((state) => state.auth.currentUser);
+  const [count, setCount] = useState(0);
+  const handleListFriend = async () => {
+    try {
+      const response = await axios.post('https://it4788.catan.io.vn/get_user_friends', {
+        index: index,
+        count: "10", 
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        console.log('Get friends success');
+        setFriendListData(response.data?.data?.friends || []);
+        setCount(response.data?.data?.total || 0);
+      } else {
+        console.log('Get friends fail, response data:', response.data);
+        console.log('response status: ', response.status);
+        Alert.alert('Get fail','please try again');
+      }
+    } catch (error) {
+      console.error('Get friends false:', error)
+      Alert.alert('Get friends false', 'Please try again.');
+      if (error.response) {
+        console.error('response data: ', error.response.data);
+        console.error('response status: ', error.response.status);
+        console.error('Response headers:', error.response.headers);
+      } else if (error.request) {
+        // Yêu cầu đã được gửi nhưng không nhận được response
+        console.error('Request data:', error.request);
+      } else {
+        // Các lỗi khác
+        console.error('Lỗi không xác định:', error.message);
+      }
+    }
+  }
+  useEffect(() => {
+    handleListFriend();
+  }, []);
+
+  
   const [inputValue, setInputValue] = useState('');
   const handleSearch = ()=>{
     console.log("search")
@@ -89,13 +101,16 @@ const ListFriendScreen = () => {
           />
         </View>
         <View style = {styles.listfriend_contain}>
-          {friendListData.map((item)=><ProfileCard
-            avatarImage = {item.avatarImage}
-            userName={item.userName}
-            userId={item.userId}
-            isNotFriend= {item.isNotFriend}
-            key = {item.userId}
-          />)}
+        {friendListData.map((item) => <ProfileCard
+              userId={item.id}
+              avatarImage={item.avatar}
+              userName={item.username}
+              pressUnFriend={() => {handleUnFriend(item.id); setCount(count-'0'-1)}}
+              blockUser={() => {handleBlock(item.id); setCount(count-'0'-1)}}
+              mutualFriend={item.same_friends}
+              key={item.id}
+            />)
+          }
         </View>
       </View>
     </ScrollView>

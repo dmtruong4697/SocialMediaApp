@@ -1,266 +1,141 @@
-import React, {useState} from "react";
-import { StyleSheet, Platform, Text, View, SafeAreaView, TextInput, KeyboardAvoidingView, ScrollView, Pressable, TouchableOpacity} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Button } from '@rneui/themed';
-import { RadioButton } from 'react-native-paper';
-import RNPickerSelect from 'react-native-picker-select';
-import { faSortDown } from '@fortawesome/free-solid-svg-icons';
+import React, { useState, useEffect } from 'react'
+import { ScrollView, Text, StyleSheet, View, TextInput, TouchableOpacity, Alert } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons';
+import { Button } from '@rneui/themed';
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
 const SignUpScreen = () => {
+
+    const [email, setEmail] = useState('');
+    const [password, setPassWord] = useState('');
+    const [uuid, setUuid] = useState('');
+    const [hiddenPw, setHiddenPw] = useState(true)
     const navigation = useNavigation();
-    const [firstName, setFirstName] = React.useState('');
-    const [lastName, setLastName] = React.useState('');
-    const [phoneNum, setPhoneNum] = React.useState('');
-    const [passWork, setPassWork] = React.useState('');
 
-    const [checked, setChecked] = useState('Nam');
+  //   const getCodeVerify = async () => {
+  //     const response = await axios.post('https://it4788.catan.io.vn/get_verify_code', {
+  //       email: email,
+  //     });
 
-    const handleRadioChange = (value) => {
-        setChecked(value);
-    };
+  //     if (response.status === 200) {
+  //         console.log('Verify Success', response.data);
+  //     } else {
+  //         console.log('Verify failed:', response.data);
+  //         console.log('Response Status:', response.status);
+  //     }
+  // }
 
-    const [date, setDate] = useState(new Date());
-    const [showPicker, setShowPicker] = useState(false);
-    const toggleDatePicker = () => {
-        setShowPicker(!showPicker);
+    const handleSignUp = async () => {
+    try {
+      const response = await axios.post('https://it4788.catan.io.vn/signup', {
+        email: email,
+        password: password,
+        uuid: uuid,
+      });
+
+      if (response.status === 201) {
+        // Xử lý phản hồi thành công
+        console.log('Sign up successful:', response.data);
+        Alert.alert('Sign Up Successful', 'Account created successfully!');
+        // getCodeVerify();
+        navigation.navigate('VerifyCode', {emailQuery: email})
+      } else {
+        // Xử lý phản hồi không thành công (mã lỗi 400)
+        console.log('Sign up failed:', response.data);
+        console.log('Response Status:', response.status);
+        Alert.alert('Sign Up Failed', 'Invalid input. Please check your data and try again.');
+      }
+    } catch (error) {
+      // Xử lý lỗi kết nối hoặc lỗi khác
+      console.error('Sign up failed:', error)
+      Alert.alert('Sign Up Failed', 'Unable to create account. Please try again.');
+        //chi tiết lỗi
+      if (error.response) {
+        // Server trả về response với mã lỗi
+        console.error('Response data:', error.response.data);
+        console.error('Response status:', error.response.status);
+        console.error('Response headers:', error.response.headers);
+      } else if (error.request) {
+        // Yêu cầu đã được gửi nhưng không nhận được response
+        console.error('Request data:', error.request);
+      } else {
+        // Các lỗi khác
+        console.error('Lỗi không xác định:', error.message);
+      }
     }
 
-    const onChange = ({type}, selectedDate) => {
-        if (type == 'set') {
-            const currentDate = selectedDate;
-            setDate(currentDate);
 
-            if (Platform.OS === "android") {
-                toggleDatePicker();
-                setDateOfBirth(formatDate(currentDate));
-            }
-        } else {
-            toggleDatePicker();
-        }
-    };
-
-    const confirmIOSDate = () => {
-        setDateOfBirth(formatDate(date));
-        toggleDatePicker();
-    }
-
-    const formatDate = (rawDate) => {
-        let date = new Date(rawDate);
-
-        let year = date.getFullYear();
-        const month = date.toLocaleString('default', { month: 'long' });
-        let day = date.getDate(); 
-
-        return `${day} ${month} ${year}`;
-    }
-
-    const [dateOfBirth, setDateOfBirth] = useState(formatDate(new Date()));
-
-    const setDefault = () => {
-        date = new Date();
-        return date.toDateString();
-    }
-    return (
-        <KeyboardAvoidingView style={styles.containerS}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <ScrollView contentContainerStyle={styles.bigContainer}>
-                <View style={styles.container}>
-                    <Text style={{fontWeight: 'bold', fontSize: 30}}>Register</Text>
-                    <SafeAreaView>
-                        <Text style={styles.fontText}>Enter the name you use in real life.</Text>
-                        <View style={{flexDirection: "row"}}>
-                            <TextInput
-                                style={[styles.input, {marginRight: 10, flex: 1}]}
-                                onChangeText={setLastName}
-                                value={lastName}
-                                placeholder="First name"
-                            />
-                            <TextInput
-                                style={[styles.input, {flex: 1}]}
-                                onChangeText={setFirstName}
-                                value={firstName}
-                                placeholder="Last name"
-                            />
-                        </View>
-                        <Text style={styles.fontText}>What's your birthday?</Text>
-                        
-
-                        <View style={styles.birthDay}>
-                           
-                            {showPicker && (
-                                <DateTimePicker
-                                mode="date"
-                                display="spinner"
-                                value={date}
-                                onChange={onChange}
-                                style={styles.datePicker}
-                            />
-                            )}
-
-                            {showPicker && Platform.OS === "ios" && (
-                                <View style={{flexDirection: 'row', justifyContent: "space-around", }}>
-                                    <TouchableOpacity style={[styles.pickerButton, {backgroundColor: "#11182711", borderRadius: 30,},]}
-                                    onPress={toggleDatePicker}>
-                                        <Text style={[styles.buttonText, {color: "#075985"}]}>
-                                            Cancel
-                                        </Text>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity style={[styles.pickerButton, {backgroundColor: "#0080FF",borderRadius: 30,},]}
-                                    onPress={confirmIOSDate}>
-                                        <Text style={[styles.buttonText, {color: "#fff"}]}>
-                                            Confirm
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            )}
-
-                        
-
-                            {!showPicker && (
-                                <Pressable
-                                    onPress={toggleDatePicker}
-                                >
-
-                                <TextInput
-                                    style={[styles.containerSelect, styles.input, styles.birthDay,]}
-                                    value={dateOfBirth}
-                                    onChangeText={setDateOfBirth}
-                                    placeholderTextColor='#11182744'
-                                    editable={false}
-                                    onPressIn={toggleDatePicker}
-                                />
-                                </Pressable>
-                            )}
-
-                            
-
-                        </View>                                            
-
-
-                        <Text style={styles.fontText}>What's your gender?</Text>
-                        <View style={styles.containerRadio}>
-                            <View style={styles.radioButton}>
-                                <RadioButton
-                                value="Male"
-                                status={checked === 'Male' ? 'checked' : 'unchecked'}
-                                onPress={() => handleRadioChange('Male')}
-                                />
-                                <Text style={{flex: 1}}>Male</Text>
-                            </View>
-
-                            <View style={styles.radioButton}>
-                                <RadioButton
-                                // icon=
-                                value="Female"
-                                status={checked === 'Female' ? 'checked' : 'unchecked'}
-                                onPress={() => handleRadioChange('Female')}
-                                />
-                                <Text style={{flex: 1}}>Female</Text>
-                            </View>
-                                <View style={[styles.radioButton, {borderBottomWidth: 0}]}>
-                                    <RadioButton
-                                        value="Other"
-                                        status={checked === 'Other' ? 'checked' : 'unchecked'}
-                                        onPress={() => handleRadioChange('Other')}
-                                    />
-                                    <Text style={{flex: 1}}>Other</Text>
-                                </View>
-                        </View>
-                        
-                        <Text style={styles.fontText}>What your mobile number?</Text>
+  };
+    return(
+        <ScrollView>
+            <View style={styles.container}>
+                <Text style={{fontWeight: 'bold', fontSize: 30}}>Register</Text>
+                <View style={styles.infoSignUp}>
+                    <Text style={{fontSize: 15}}>What your email?</Text>
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={setEmail}
+                        value={email}
+                        placeholder="Email"
+                    />
+                    <Text style={{fontSize: 15}}>Create a password?</Text>
+                    <View style={styles.componentPass}>
                         <TextInput
-                                style={styles.input}
-                                onChangeText={setPhoneNum}
-                                value={phoneNum}
-                                placeholder="Mobile number"
-                                keyboardType="numeric"
-                                
+                            style={{height: '100%', flex: 1,}}
+                            onChangeText={setPassWord}
+                            value={password}
+                            placeholder="PassWord"
+                            secureTextEntry={hiddenPw}
                         />
-                        <Text style={styles.fontText}>Create a password</Text>
-                        <TextInput
-                                style={styles.input}
-                                onChangeText={setPassWork}
-                                value={passWork}
-                                placeholder="Password"
-                        />
-                    </SafeAreaView>
-                    <Button
-                        buttonStyle = {[styles.buttonFB, {marginBottom: 20,}]}
-                        title="Register" 
-                        onPress={() =>
-                            navigation.navigate({name: 'Home'})
-                        }
+                        <TouchableOpacity style={{ padding: 8,}} onPress={() => {setHiddenPw(!hiddenPw)}}>
+                            <FontAwesomeIcon icon={hiddenPw ? (faEye):(faEyeSlash)} />
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={{fontSize: 15}}>What your uuid?</Text>
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={setUuid}
+                        value={uuid}
+                        placeholder="Uuid"
                     />
                 </View>
+                <View>
+                    <Button
+                        buttonStyle = {{borderRadius: 30}}
+                        title="Register" 
+                        // onPress={() =>
+                        //     navigation.navigate({name: 'VerifyCode'})
+                        // }
+                        onPress={handleSignUp}
+                    />
+                </View>
+            </View>
         </ScrollView>
-        </KeyboardAvoidingView>
     )
 }
 
 export default SignUpScreen;
 
 const styles = StyleSheet.create({
-    containerS: {
-        flex: 1,
-        justifyContent: 'center',
-      },
-    bigContainer: {
-        flexDirection: 'column',
-    },
     container: {
         paddingHorizontal: 15,
     },
-    fontText: {
-        fontSize: 15,
-    },
     input: {
-        height: 40,
+        height: '17%',
+        borderWidth: 1,
+        borderRadius: 10,
         marginVertical: 12,
-        borderWidth: 1,
-        borderRadius: 10,
         padding: 10,
     },
-    radioButton: {
+    componentPass: {
+        height: '17%',
         flexDirection: 'row',
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderColor: '#ccd0d5',
-    },
-    containerRadio: {
-        alignItems: 'center',
-        justifyContent: 'center',
         borderWidth: 1,
-        borderColor: '#ccd0d5',
         borderRadius: 10,
-        marginVertical: 10,
-    },
-    containerSelect: {
-        paddingHorizontal: 15,
-        flexDirection: 'row',
         justifyContent: 'space-between',
-      },
-    birthDay: {
-        flexDirection: "column",
-        justifyContent: "space-between",
-    },
-
-    datePicker: {
-        height: 250,
-        marginTop: -10,
-    },
-    pickerButton: {
+        alignItems: 'center',
         padding: 10,
     },
-    buttonText: {
-        fontSize: 14,
-        fontWeight: "500",
-    }, 
-    buttonFB: {
-        borderRadius: 30,
-        height: 50,
-        
-    }
 })

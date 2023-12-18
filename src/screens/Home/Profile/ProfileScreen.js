@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView } from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView ,FlatList} from 'react-native';
+import React ,{useEffect, useState} from 'react';
 import { Button } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import address_icon from '../../../../assets/icons/address.png'
@@ -7,40 +7,147 @@ import city_icon from '../../../../assets/icons/location.png'
 import countries_icon from '../../../../assets/icons/countries.png'
 import description_icon from "../../../../assets/icons/cv.png"
 import ListFriendScreen from './ListFriendScreen';
+import PostCard from "../../../components/PostCard";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import CreatePostScreen from '../Post/CreatePostScreen';
 const ProfileScreen = () => {
   const navigation = useNavigation();
-  const profile_infor = {
-    cover_link : "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Panoramic_santiago_bernabeu.jpg/1200px-Panoramic_santiago_bernabeu.jpg",
-    avatar_link : "https://images2.thanhnien.vn/528068263637045248/2023/10/25/cristiano-ronaldo--1698197155420641244536.jpeg",
-    username : "Mai Đình Công",
-    address : "Số nhà 19, ngõ 169 đường Hoàng Mai",
-    city : "Hà Nội",
-    country : "Việt Nam",
-    description: "Tôi là Mai Đình Công, hiện là sinh viên đại học bách khoa hà nội"
-  }
+  const [postData, setPostData] = useState([]);
+  const currentUser = useSelector((state) => state.auth.currentUser);
+  const [profileData, setProfileData] = useState({});
+  const [countFriend, setCountFriend] = useState(0);
+  const [index, setIndex] = useState("0")
+  const handleGetPosts = async (pageNumber) => {
   
+    try {
+     
 
+      const response = await axios.post(
+        "https://it4788.catan.io.vn/get_list_posts",
+        {
+          user_id: 381,
+          latitude: 1.0,
+          longitude: 1.0,
+          last_id: 0,
+          index: (pageNumber - 1) * 20,
+          count: 20,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+        }
+      );
+      setPostData(response.data.data.post);
+      
+     
+    } catch (error) {
+      console.error("Lỗi:", error);
+     
+    }
+  };
+  
+  
+  
+  const handleProfile = async () => {
+   
+    try {
+      const response = await axios.post('https://it4788.catan.io.vn/get_user_info', {
+        user_id: currentUser.id
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`,
+        },
+      });
+      setProfileData(response.data.data);
+      // console.log(profileData)
+      console.log(response.data.data)
+      if (response.status === 200) {
+        console.log('Get profile data succcess');
+        setProfileData(response.data.data);
+        
+      } else {
+        
+        console.log('response status: ', response.status);
+        
+      }
+    } catch (error) {
+      console.error('Get data fail')
+      
+      if (error.response) {
+        console.error('response data: ', error.response.data);
+  
+      } else if (error.request) {
+        // Yêu cầu đã được gửi nhưng không nhận được response
+        console.error('Request data:', error.request);
+      } else {
+        // Các lỗi khác
+        console.error('Lỗi không xác định:', error.message);
+      }
+    }
+  }
+  const handleCountFriend = async () => {
+    
+    try {
+      const response = await axios.post('https://it4788.catan.io.vn/get_user_friends', {
+        index: index,
+        count: "5", 
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`,
+        },
+      });
+      setCountFriend(response.data?.data?.total || 0);
+      console.log("number of friend")
+      if (response.status === 200||response.status === 201) {
+        setCountFriend(response.data?.data?.total || 0);
+      } else {      
+        Alert.alert('Get fail');
+      }
+    } catch (error) {     
+      if (error.response) {
+        console.error('response data: ', error.response.data);
+        ;
+      } 
+    }
+  }
+   useEffect(() => {
+    // alert("handle get post")
+    handleGetPosts(1);
+  }, []);
+  useEffect(() => {
+    // alert("hello world")
+    handleProfile();
+    
+  }, [profileData.avatar]);
+  useEffect(()=>{
+    handleCountFriend();
+  })
+  
   return (
     <ScrollView>
     <View style={styles.container}>
       <View style={styles.image_profile}>
         <View style={styles.cover_image}>
           <TouchableOpacity style={styles.coverImage}>
-              <Image style = {styles.image_cover}  source={{uri: profile_infor.cover_link}}/>
+              <Image style = {styles.image_cover}  source={{uri: profileData.cover_image}}/>
           </TouchableOpacity>
         </View>
         <View style={styles.avatar_image}>
           <TouchableOpacity style={styles.avatarImage}>
-            <Image style = {styles.image_avatar}  source={{uri: profile_infor.avatar_link}}/>
+            <Image style = {styles.image_avatar}  source={{uri: profileData.avatar}}/>
           </TouchableOpacity>
         </View>
       </View>
       <View style = {styles.inforAndEdit}>
         <View style = {styles.name_profile}>
-          <Text style = {{fontSize: 20, fontWeight: 700}} >{profile_infor.username}</Text>
+          <Text style = {{fontSize: 20, fontWeight: 700}} >{profileData.username}</Text>
         </View>
         <View style = {styles.friend_count}>
-          <Text >999 Bạn Bè</Text>
+          <Text >{countFriend} Bạn Bè</Text>
         </View>
         <View style = {styles.edit_profile}>
           <Button
@@ -55,13 +162,13 @@ const ProfileScreen = () => {
             onPress={() => {
               
               navigation.navigate('EditProfile', {
-                avatarLink: profile_infor.avatar_link,
-                coverLink: profile_infor.cover_link,
-                username: profile_infor.username,
-                address: profile_infor.address,
-                city: profile_infor.city,
-                country: profile_infor.country,
-                description: profile_infor.description
+                avatar: profileData.avatar,
+                cover_image: profileData.cover_image,
+                username: profileData.username,
+                address: profileData.address,
+                city: profileData.city,
+                country: profileData.country,
+                description: profileData.description
               });
             }}
           />
@@ -98,26 +205,26 @@ const ProfileScreen = () => {
         </View>
           <View style = {styles.infor}>
             <Image source={description_icon} style = {styles.icon_infor}/>
-            <Text style = {{fontSize: 15, flexShrink:1}}>{profile_infor.description}</Text>
+            <Text style = {{fontSize: 15, flexShrink:1}}>{profileData.description}</Text>
           </View>
           <View style = {styles.infor}>
             
             <Image source={address_icon} style = {styles.icon_infor}/>
-            <Text style = {{fontSize: 15}}>{profile_infor.address}</Text>
+            <Text style = {{fontSize: 15}}>{profileData.address}</Text>
           </View>
           <View style = {styles.infor}>
             <Image source={city_icon} style = {styles.icon_infor}/>
-            <Text style = {{fontSize: 15}}>{profile_infor.city}</Text>
+            <Text style = {{fontSize: 15}}>{profileData.city}</Text>
           </View>
           <View style = {styles.infor}>
             <Image source={countries_icon} style = {styles.icon_infor}/>
-            <Text style = {{fontSize: 15}}>{profile_infor.country}</Text>
+            <Text style = {{fontSize: 15}}>{profileData.country}</Text>
           </View>
           
       </View>
       <View style = {styles.friend_container}>
         <Text style = {{fontSize: 18, fontWeight: 700}}>Bạn bè</Text>
-        <Text style = {{fontSize: 18}}>999 bạn bè</Text>
+        <Text style = {{fontSize: 18}}>{countFriend} bạn bè</Text>
         <View style = {{marginTop: 10}}>
         <Button
             title="Xem tất cả bạn bè"
@@ -128,26 +235,35 @@ const ProfileScreen = () => {
               backgroundColor: '#E0E0E0'         
             }}
             onPress={()=>{
-              navigation.navigate('ListFriend', {
-                avatarLink: profile_infor.avatar_link,
-                coverLink: profile_infor.cover_link,
-                username: profile_infor.username,
-                address: profile_infor.address,
-                city: profile_infor.city,
-                country: profile_infor.country,
-                description: profile_infor.description
-              });
+              navigation.navigate('FriendList');
             }}
           />
         </View>
       </View>
       <View style = {styles.container_add_post}>
         <View style = {styles.add_post_avatar}>
-          <Image style = {{borderRadius: 1000, width: 50,height: 50}}  source={{uri: profile_infor.avatar_link}}/>
+          <Image style = {{borderRadius: 1000, width: 50,height: 50}}  source={{uri: profileData.avatar}}/>
         </View>
         <View style = {{marginLeft: 10}}>
-          <Text style = {{fontSize: 16}}>Bạn đang nghĩ gì?</Text>
+          <Button style = {{fontSize: 16, backgroundColor:'none'}}
+          title="Bạn đang nghĩ gì"
+          onPress={()=>{
+            navigation.navigate('CreatePost')
+          }}
+          />
         </View>
+      </View>
+      <View style = {{flex: 1}}>
+        <FlatList
+          data={postData}
+          renderItem={({ item }) => <PostCard postDetail={item} />}
+          keyExtractor={(item) => item.id.toString()}
+          onEndReachedThreshold={0.5}
+          // onEndReached={handleLoadMore}
+          // refreshControl={
+          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          // }
+        />
       </View>
     </View>
     </ScrollView>
@@ -230,10 +346,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   container_add_post:{
-    marginTop: 30,
+    marginTop: 20,
     marginLeft: 10,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingBottom: 15,
   },
   icon_infor:{
     width: 20,

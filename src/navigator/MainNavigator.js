@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import LoginScreen from '../screens/Login/LoginScreen';
 import SignUpScreen from '../screens/Login/SignUpScreen';
 import ForgotPasswordScreen from '../screens/Login/ForgotPasswordScreen';
@@ -9,14 +9,28 @@ import HomeNavigator from './HomeNavigator';
 import EditProfileScreen from '../screens/Home/Profile/EditProfileScreen';
 import ProfileScreen from '../screens/Home/Profile/ProfileScreen';
 import FriendListScreen from '../screens/Home/Friend/FriendListScreen';
+import FriendSuggestedScreen from '../screens/Home/Friend/FriendSuggestedScreen';
 import SearchResultScreen from '../screens/Home/Search/SearchResultScreen';
 import EditDetailProfile from '../screens/Home/Profile/EditDetailProfile';
 import SearchScreen from '../screens/Home/Search/SearchScreen'; 
 import ListFriendScreen from '../screens/Home/Profile/ListFriendScreen';
 import { faL } from '@fortawesome/free-solid-svg-icons';
+import AllSearchRecent from '../screens/Home/Search/AllSearchRecent';
+import VerifyCode from '../screens/Login/VerifyCode';
+
+import ChangeInfoScreen from '../screens/Login/ChangeInfoScreen';
+import CreatePostScreen from '../screens/Home/Post/CreatePostScreen';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faArrowLeft, faCancel, faMultiply, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { Pressable } from 'react-native';
+import { TouchableOpacity } from 'react-native';
+import PostDetailScreen from '../screens/Home/Post/PostDetailScreen';
+import EditAvatar from '../screens/Home/Profile/EditAvatar';
+import EditCover from '../screens/Home/Profile/EditCover';
 
 const Stack = createNativeStackNavigator();
 const MainNavigator = () => {
+    const navigation = useNavigation();
   return (
         <Stack.Navigator>
                 <Stack.Screen
@@ -47,6 +61,16 @@ const MainNavigator = () => {
                     
                 />
                 <Stack.Screen
+                    name = 'EditAvatar'
+                    component={EditAvatar}
+                    
+                />
+                <Stack.Screen
+                    name = 'EditCover'
+                    component={EditCover}
+                    
+                />
+                <Stack.Screen
                     name = 'ListFriend'
                     component={ListFriendScreen}
                 />
@@ -59,7 +83,18 @@ const MainNavigator = () => {
                     component={FriendListScreen}
                 />
 
-                {/* NDH */}
+                <Stack.Screen
+                    name='FriendSuggest'
+                    component={FriendSuggestedScreen}
+                    options={{
+                        headerTitle: 'Suggestions',
+                        headerRight: () => 
+                            <TouchableOpacity onPress={() => {navigation.navigate({name: 'Search'})}}>
+                                <FontAwesomeIcon size={20} icon={faMagnifyingGlass}/>
+                            </TouchableOpacity>,
+                    }}
+                />
+
                 <Stack.Screen
                     name='Search'
                     component={SearchScreen}
@@ -77,6 +112,43 @@ const MainNavigator = () => {
                     component={EditDetailProfile}
                     
                 />
+                <Stack.Screen
+                    name='HistorySearch'
+                    component={AllSearchRecent}
+                    options={{headerShown: false}}
+                />
+
+                <Stack.Screen
+                    name='VerifyCode'
+                    component={VerifyCode}
+                />
+
+                <Stack.Screen
+                    name='ChangeInfo'
+                    component={ChangeInfoScreen}
+                    options={{headerShown: false}}
+                />
+
+                <Stack.Screen
+                    name='CreatePost'
+                    component={CreatePostScreen}
+                    options={{
+                       title: 'Tạo bài viết',
+                       headerLeft: () => 
+                            <TouchableOpacity onPress={() => {navigation.navigate({name: 'Feed'})}}>
+                                <FontAwesomeIcon size={20} icon={faMultiply}/>
+                            </TouchableOpacity>,
+                    }}
+                />
+
+                <Stack.Screen
+                    name='PostDetail'
+                    component={PostDetailScreen}
+                    options={{
+                        title: "Bài đăng"
+                    }}
+                />
+
         </Stack.Navigator>
     
   )

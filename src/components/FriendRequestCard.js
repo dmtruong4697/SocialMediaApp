@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
-import React from "react";
+import React, {useState} from "react";
 import { Button } from "@rneui/themed";
 import PropTypes from "prop-types";
 
@@ -7,59 +7,68 @@ FriendRequestCard.propTypes = {
   avatarImage: PropTypes.string,
   userName: PropTypes.string,
   userId: PropTypes.string,
+  pressAccept: PropTypes.func,
+  pressDel: PropTypes.func,
+  mutualFriend: PropTypes.string,
 };
 
-FriendRequestCard.defaultProps = {
-  avatarImage:
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSczWMXADUdpzXqlMtq4iW6-epspP9EcPF5Qw&usqp=CAU",
-  userName: "User name",
-  userId: "",
-};
 function FriendRequestCard(props) {
-  const { avatarImage, userName, userId } = props;
+  const { avatarImage, userName, userId, pressAccept, pressDel, mutualFriend } = props;
+  const [isHidden, setIsHidden] = useState(false);
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.avatarImage}>
-        <Image style={styles.image} source={{ uri: avatarImage }} />
-      </TouchableOpacity>
+    <View>
+     {isHidden ? 
+       null : 
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.avatarImage}>
+          <Image style={styles.image} source={{ uri: avatarImage }} />
+        </TouchableOpacity>
 
-      <View style={styles.contentView}>
-        <Text style={{ fontSize: 18, fontWeight: "500" }}>{userName}</Text>
+        <View style={styles.contentView}>
+          <Text style={{ fontSize: 18, fontWeight: "500" }}>{userName}</Text>
 
-        <View style={styles.buttonView}>
-          <Button
-            title="Xác nhận"
-            type="clear"
-            titleStyle={{ fontSize: 16, color: "#ffffff" }}
-            style={{
-              marginRight: 10,
-              width: 140,
-              borderRadius: 8,
-              backgroundColor: "#1373ab",
-            }}
-            onPress={() => {
-              console.log("Xác nhận");
-            }}
-          />
+          <Text style={{ fontSize: 14, color: '#A8A8A8' }}>{mutualFriend} bạn chung</Text> 
 
-          <Button
-            title="Xóa"
-            color={"gray"}
-            type="clear"
-            titleStyle={{ fontSize: 16, color: "#000000" }}
-            style={{
-              marginRight: 10,
-              width: 140,
-              borderRadius: 8,
-              backgroundColor: "#cdd4cf",
-            }}
-            onPress={() => {
-              console.log("Xóa");
-            }}
-          />
+          <View style={styles.buttonView}>
+            <Button
+              title="Xác nhận"
+              type="clear"
+              titleStyle={{ fontSize: 16, color: "#ffffff" }}
+              style={{
+                marginRight: 10,
+                width: 140,
+                borderRadius: 8,
+                backgroundColor: "#1373ab",
+              }}
+              onPress={() => {
+                pressAccept();
+                setIsHidden(true);
+                console.log("Xác nhận");
+              }}
+            />
+
+            <Button
+              title="Xóa"
+              color={"gray"}
+              type="clear"
+              titleStyle={{ fontSize: 16, color: "#000000" }}
+              style={{
+                marginRight: 10,
+                width: 140,
+                borderRadius: 8,
+                backgroundColor: "#cdd4cf",
+              }}
+              onPress={() => {
+                pressDel();
+                setIsHidden(true);
+                console.log("Xóa");
+              }}
+            />
+          </View>
         </View>
       </View>
+     }
     </View>
   );
 }
@@ -68,20 +77,20 @@ export default FriendRequestCard;
 
 const styles = StyleSheet.create({
   container: {
-    //backgroundColor: '#e4e9ed',
-    height: 90,
+    // backgroundColor: '#e4e9ed',
+    // height: 90,
     width: "95%",
     alignSelf: "center",
     justifyContent: "center",
-    padding: 10,
+    paddingHorizontal: 10,
     flexDirection: "row",
     borderRadius: 5,
-    marginBottom: 5,
+    marginBottom: '4%',
   },
 
   avatarImage: {
-    width: 75,
-    height: 75,
+    width: '23%',
+    aspectRatio: 1,
     borderRadius: 1000,
     backgroundColor: "gray",
   },
@@ -96,7 +105,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     width: "80%",
-    padding: 5,
+    paddingHorizontal: 10,
   },
 
   buttonView: {

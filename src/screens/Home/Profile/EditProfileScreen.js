@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View,Modal, TouchableOpacity, Image, ScrollView,TextInput } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@rneui/themed';
 import address_icon from '../../../../assets/icons/address.png'
 import city_icon from '../../../../assets/icons/location.png'
@@ -8,8 +8,9 @@ import description_icon from '../../../../assets/icons/cv.png'
 //import EditDescriptionScreen from './EditDescriptionScreen';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
+import ProfileCard from '../../../components/ProfileCard';
 const EditProfileScreen = ({route}) => {
-  const { avatarLink, coverLink, username,address, city, country, description } = route.params;
+  const { avatar, cover_image, username,address, city, country, description } = route.params;
   const navigation = useNavigation();
   const [isEditDescription, setEditDescription] = useState(false)
   const [isMainEdit, setMainEdit] = useState(true)
@@ -34,6 +35,9 @@ const EditProfileScreen = ({route}) => {
       setEditAvatarImage(result.assets[0].uri);
     }
   }
+  useEffect(()=>{
+    console.log(cover_image)
+  })
   return (
     <ScrollView style = {styles.container} >
       {isMainEdit && (
@@ -42,13 +46,27 @@ const EditProfileScreen = ({route}) => {
         <View style = {{flexDirection:'row', alignItems: 'center', justifyContent:'space-between'}}>
           <Text style = {{fontWeight: 600, fontSize: 19,}}>Ảnh đại diện</Text>
           <Button title="Chỉnh sửa" style = {{fontSize: 18, color: '#1E90FF'}}
-            onPress={pickAvatarImage}
+            onPress={()=>{
+              navigation.navigate('EditAvatar',{
+                avatar: avatar,
+                cover_image: cover_image,
+                
+                username: username,
+                address: address,
+                city: city,
+                country: country,
+                description: description
+                
+              }
+              
+              );
+            }}
           />
           {/* <Text style = {{fontSize: 18, color: '#1E90FF'}}>Chỉnh sửa</Text> */}
         </View>
         <View style={styles.avatar_image}>
           <TouchableOpacity style = {{marginTop: 20, marginBottom: 20}}>
-            <Image style = {{width: 140, height: 140, borderRadius: 1000}}  source={{uri: avatarLink}}/>
+            <Image style = {{width: 140, height: 140, borderRadius: 1000}}  source={{uri: avatar}}/>
           </TouchableOpacity>
         </View>
       </View>
@@ -56,11 +74,26 @@ const EditProfileScreen = ({route}) => {
       <View style = {styles.container_edit_cover}>
         <View style = {{flexDirection:'row', alignItems: 'center', justifyContent:'space-between'}}>
           <Text style = {{fontWeight: 600, fontSize: 19,}}>Ảnh bìa</Text>
-          <Text style = {{fontSize: 18, color: '#1E90FF'}}>Chỉnh sửa</Text>
+          <Button title="Chỉnh sửa" style = {{fontSize: 18, color: '#1E90FF'}}
+            onPress={()=>{
+              navigation.navigate('EditCover',{
+                avatar: avatar,
+                cover_image: cover_image,
+                
+                username: username,
+                address: address,
+                city: city,
+                country: country,
+                description: description
+              }
+              
+              );
+            }}
+          />
         </View>
         <View style={styles.cover_image}>
           <TouchableOpacity style = {{marginTop: 20, marginBottom: 20}}>
-            <Image style = {{width: '100%',height: 200,resizeMode: 'cover'}}  source={{uri: coverLink}}/>
+            <Image style = {{width: '100%',height: 200,resizeMode: 'cover'}}  source={{uri: cover_image}}/>
           </TouchableOpacity>
         </View>
       </View>
@@ -161,7 +194,7 @@ const EditProfileScreen = ({route}) => {
           </View>
       <View style = {styles.profile}>
         <View style = {styles.avartar}>
-          <Image style = {{width: 40, height: 40, borderRadius: 1000}}  source={{uri: avatarLink}}/>
+          <Image style = {{width: 40, height: 40, borderRadius: 1000}}  source={{uri: avatar}}/>
         </View>
         <View style = {{marginTop: 3}}>
           <Text style = {{fontSize: 14, fontWeight: 500}}>{username}</Text>
