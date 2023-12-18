@@ -1,20 +1,50 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView } from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View,Modal, TouchableOpacity, Image, ScrollView,TextInput } from 'react-native';
+import React, { useState } from 'react';
 import { Button } from '@rneui/themed';
 import address_icon from '../../../../assets/icons/address.png'
 import city_icon from '../../../../assets/icons/location.png'
 import countries_icon from '../../../../assets/icons/countries.png'
 import description_icon from '../../../../assets/icons/cv.png'
+//import EditDescriptionScreen from './EditDescriptionScreen';
+import { useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
 const EditProfileScreen = ({route}) => {
   const { avatarLink, coverLink, username,address, city, country, description } = route.params;
+  const navigation = useNavigation();
+  const [isEditDescription, setEditDescription] = useState(false)
+  const [isMainEdit, setMainEdit] = useState(true)
+  const handleSubmitDescription = ()=>{
+    console.log("hello")
+  }
 
+  const [editAvatarImage, setEditAvatarImage] = useState(null);
+//***************Edit avatar *************************** */
+  const pickAvatarImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setEditAvatarImage(result.assets[0].uri);
+    }
+  }
   return (
-    <ScrollView style = {styles.container}>
-     
+    <ScrollView style = {styles.container} >
+      {isMainEdit && (
+     <View>
       <View style = {styles.container_edit_avatar}>
         <View style = {{flexDirection:'row', alignItems: 'center', justifyContent:'space-between'}}>
           <Text style = {{fontWeight: 600, fontSize: 19,}}>Ảnh đại diện</Text>
-          <Text style = {{fontSize: 18, color: '#1E90FF'}}>Chỉnh sửa</Text>
+          <Button title="Chỉnh sửa" style = {{fontSize: 18, color: '#1E90FF'}}
+            onPress={pickAvatarImage}
+          />
+          {/* <Text style = {{fontSize: 18, color: '#1E90FF'}}>Chỉnh sửa</Text> */}
         </View>
         <View style={styles.avatar_image}>
           <TouchableOpacity style = {{marginTop: 20, marginBottom: 20}}>
@@ -50,8 +80,13 @@ const EditProfileScreen = ({route}) => {
                 backgroundColor: '#E0E0E0',
                 alignItems: 'center' ,
                 borderRadius: 8        
-              }}
-            
+              }
+              
+              }
+            onPress={()=>{
+              setEditDescription(true)
+              setMainEdit(false)
+            }}
             />
         </View>
 
@@ -60,7 +95,9 @@ const EditProfileScreen = ({route}) => {
       <View style = {styles.container_detail_infor}>
         <View style = {{flexDirection:'row', alignItems: 'center', justifyContent:'space-between'}}>
             <Text style = {{fontWeight: 600, fontSize: 19,}}>Chi tiết</Text>
-            <Text style = {{fontSize: 18, color: '#1E90FF'}}>Chỉnh sửa</Text>
+            <Button style = {styles.EditDetail} onPress={()=>{
+              navigation.navigate('Edit Detail Profile')
+            }}>Chỉnh sửa</Button>
         </View>
         
         <View style = {styles.detail_infor}>
@@ -85,6 +122,62 @@ const EditProfileScreen = ({route}) => {
           
         </View>
       </View> 
+      </View>
+      )}
+      <Modal
+        visible={isEditDescription}
+        animationType="slide"
+        transparent={true}
+      >
+        <View style={styles.modalContainer}>
+          <View style = {styles.header}>
+            <Button
+              title="Hủy"
+              type="clear"
+              titleStyle={{ fontSize: 18, color: '#0780DC',fontWeight: 600 }}
+              style={{
+                borderRadius: 8,
+                
+                paddingLeft: 5
+              }}
+              onPress={() => {
+                setEditDescription(false)
+                setMainEdit(true)
+              }}
+            />
+            <Button
+              title="Lưu"
+              type="clear"
+              titleStyle={{ fontSize: 18, color: '#0780DC',fontWeight: 600 }}
+              style={{
+                borderRadius: 8,
+                paddingRight: 5,
+              }}
+              onPress={()=>{
+                setEditDescription(false)
+                setMainEdit(true)
+              }}
+            />
+          </View>
+      <View style = {styles.profile}>
+        <View style = {styles.avartar}>
+          <Image style = {{width: 40, height: 40, borderRadius: 1000}}  source={{uri: avatarLink}}/>
+        </View>
+        <View style = {{marginTop: 3}}>
+          <Text style = {{fontSize: 14, fontWeight: 500}}>{username}</Text>
+        </View>
+      </View>
+      <View style = {styles.content}>
+        <TextInput
+              
+            placeholder='Thêm giới thiệu ngắn hoặc tiểu sử của bản thân, chẳng hạn như bạn thích gì, bạn có ước mơ gì sau này hay những điều làm bạn cảm thấy hạnh phúc!'
+            onSubmitEditing={handleSubmitDescription}
+            multiline
+            placeholderTextColor= "#717172"
+        />
+      </View>
+        </View>
+      </Modal>
     </ScrollView>
   )
 }
@@ -135,5 +228,38 @@ const styles = StyleSheet.create({
     
     marginBottom: 15,
     gap: 12
-  }
+  },
+
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    
+    justifyContent: 'flex-start',
+    backgroundColor:"white",
+    
+  },
+  profile:{
+    paddingLeft: 12,
+    paddingRight: 12,
+    flexDirection:'row',
+    gap: 15,
+    marginTop: 10,
+    paddingBottom: 10,
+    borderBottomWidth:1, 
+    borderBottomColor:'#EAEAEA'
+  },
+  content:{
+    paddingLeft: 12, 
+    paddingRight: 12
+  },
+  header:{
+    flexDirection: 'row',
+    justifyContent:'space-between',
+    display:'flex',
+    marginTop: '7%',
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor:'#EAEAEA'
+  },
+  
 })

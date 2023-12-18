@@ -6,6 +6,7 @@ import address_icon from '../../../../assets/icons/address.png'
 import city_icon from '../../../../assets/icons/location.png'
 import countries_icon from '../../../../assets/icons/countries.png'
 import description_icon from "../../../../assets/icons/cv.png"
+import ListFriendScreen from './ListFriendScreen';
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const profile_infor = {
@@ -126,13 +127,23 @@ const ProfileScreen = () => {
               borderRadius: 8,     
               backgroundColor: '#E0E0E0'         
             }}
-           
+            onPress={()=>{
+              navigation.navigate('ListFriend', {
+                avatarLink: profile_infor.avatar_link,
+                coverLink: profile_infor.cover_link,
+                username: profile_infor.username,
+                address: profile_infor.address,
+                city: profile_infor.city,
+                country: profile_infor.country,
+                description: profile_infor.description
+              });
+            }}
           />
         </View>
       </View>
       <View style = {styles.container_add_post}>
         <View style = {styles.add_post_avatar}>
-          <Image style = {{borderRadius: 1000, width: 50,height: 50}}  source={{uri: avatar_link}}/>
+          <Image style = {{borderRadius: 1000, width: 50,height: 50}}  source={{uri: profile_infor.avatar_link}}/>
         </View>
         <View style = {{marginLeft: 10}}>
           <Text style = {{fontSize: 16}}>Bạn đang nghĩ gì?</Text>
