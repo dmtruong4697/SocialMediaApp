@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import ProfileCard from '../../../components/ProfileCard';
 import { Button } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const SearchResultScreen = ({ route }) => {
   const { searchQuery } = route.params || {};
@@ -12,6 +14,7 @@ const SearchResultScreen = ({ route }) => {
 const navigation = useNavigation();
 const [pressBtn, setPressBtn] = useState('people');
 const [inputSearch, setinputSearch] = useState(searchQuery || '');
+const currentUser = useSelector((state) => state.auth.currentUser);
 
 const handlePress = (buttonName) => {
   setPressBtn(buttonName);
@@ -36,6 +39,51 @@ const searchData = [
     isNotFriend: true,
   }
 ]
+
+const [index, setIndex] = useState('1');
+const [listFrSearchData, setListFrSearchData] = useState([]);
+const handleSearchUser = async () => {
+  try {
+    const response = await axios.post('https://it4788.catan.io.vn/search_user', {
+      keyword: searchQuery,
+      index: (index-'0'-1)*20,
+      count: 20
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${currentUser.token}`,
+      },
+    })
+
+    if (response.status === 200) {
+      console.log('Search friends success');
+      setListFrSearchData(response.data?.data || []);
+    } else {
+      console.log('Search friends fail, response data:', response.data);
+      console.log('response status: ', response.status);
+      Alert.alert('Search fail','please try again');
+    }
+
+  } catch (error) {
+    console.error('Search friends false:', error)
+    Alert.alert('Search friends false', 'Please try again.');
+    if (error.response) {
+      console.error('response data: ', error.response.data);
+      console.error('response status: ', error.response.status);
+      console.error('Response headers:', error.response.headers);
+    } else if (error.request) {
+      // Yêu cầu đã được gửi nhưng không nhận được response
+      console.error('Request data:', error.request);
+    } else {
+      // Các lỗi khác
+      console.error('Lỗi không xác định:', error.message);
+    }
+  }
+}
+
+  useEffect(() => {
+    handleSearchUser();
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
@@ -157,11 +205,11 @@ const searchData = [
     </View>
     <View style={styles.all}>
       <Text style={{fontSize: 20, fontWeight: 600, padding: 18,}}>People</Text>
-      {searchData.map((item, key) => <ProfileCard
-          avatarImage={item.avatarImage}
-          userName={item.userName}
-          userId={item.userId}
-          isNotFriend={item.isNotFriend}
+      {listFrSearchData.map((item, key) => <ProfileCard
+          avatarImage={item.avatar}
+          userName={item.username}
+          userId={item.id}
+          // isNotFriend={item.isNotFriend}
           key={key}
         />)
       }
