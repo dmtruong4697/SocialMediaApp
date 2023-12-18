@@ -1,15 +1,15 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Modal, Pressable } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Pressable } from 'react-native';
 import { Button } from '@rneui/themed';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faDotCircle, faEllipsis } from '@fortawesome/free-solid-svg-icons';
-import ReactNativeModal from 'react-native-modal';
+import Modal from 'react-native-modal';
 
 const ProfileCard = (props) => {
 
-  const { avatarImage, userName, userId ,isNotFriend, mutualFriends, pressUnFriend, mutualFriend, pressAddFriend, pressCancel} = props;
+  const { avatarImage, userName, userId ,isNotFriend, mutualFriends, pressUnFriend, mutualFriend, pressAddFriend, pressCancel, blockUser} = props;
   const [optionVisible, setOptionVisible] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [actionAdd, setActionAdd] = useState(false)
@@ -104,15 +104,13 @@ const ProfileCard = (props) => {
 
         </View>
         
-        <ReactNativeModal
+        <Modal
           isVisible={optionVisible}
           onBackdropPress={() => setOptionVisible(false)}
           style={styles.optionModal}
           backdropColor={'#919492'}
-          animationIn={'fadeIn'}
-          animationInTiming={1}
-          animationOut={'fadeIn'}
-          animationOutTiming={1}
+          animationIn={'slideInUp'}
+          animationOut={'slideOutDown'}
         >
           <View style={{
             height: 'auto',
@@ -120,19 +118,25 @@ const ProfileCard = (props) => {
             backgroundColor: 'white',
             borderRadius: 10,
           }}>
+            
+            <TouchableOpacity style={[styles.optionAction, {flexDirection: 'row', justifyContent: 'flex-start', gap: 10}]} onPress={() => {}}>
+              <Image style={{height: '100%', aspectRatio: 1, borderRadius: 100,}} source={{uri: avatarImage}}/>
+              <Text style={{fontSize: 18}}>{userName}</Text>
+            </TouchableOpacity>
+            
             <TouchableOpacity style={styles.optionAction} onPress={() => {pressUnFriend(); console.log('huy'); setIsHidden(true);}}>
               <Text style={{
                 fontSize: 20,
               }}>Hủy kết bạn</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.optionAction}>
+            <TouchableOpacity style={styles.optionAction} onPress={() => {blockUser();setIsHidden(true);}}>
               <Text style={{
                 fontSize: 20,
               }}>Chặn người dùng</Text>
             </TouchableOpacity>
           </View>
-        </ReactNativeModal>
+        </Modal>
         </View>}
 
       </View>
@@ -150,6 +154,7 @@ ProfileCard.propTypes = {
   mutualFriend: PropTypes.string,
   pressAddFriend: PropTypes.func,
   pressCancel: PropTypes.func,
+  blockUser: PropTypes.func,
 };
 
 
@@ -217,6 +222,8 @@ const styles = StyleSheet.create({
 
   optionModal: {
     justifyContent: 'flex-end',
+    margin: 0,
+    borderRadius: 0,
   },
 
   optionAction: {

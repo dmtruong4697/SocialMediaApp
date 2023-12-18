@@ -28,7 +28,7 @@ function FriendRequestCard(props) {
         <View style={styles.contentView}>
           <Text style={{ fontSize: 18, fontWeight: "500" }}>{userName}</Text>
 
-          <Text style={{ fontSize: 14, color: '#A8A8A8' }}>{mutualFriend} mutual friends</Text> 
+          <Text style={{ fontSize: 14, color: '#A8A8A8' }}>{mutualFriend} bạn chung</Text> 
 
           <View style={styles.buttonView}>
             <Button
@@ -77,20 +77,20 @@ export default FriendRequestCard;
 
 const styles = StyleSheet.create({
   container: {
-    //backgroundColor: '#e4e9ed',
-    height: 90,
+    // backgroundColor: '#e4e9ed',
+    // height: 90,
     width: "95%",
     alignSelf: "center",
     justifyContent: "center",
-    padding: 10,
+    paddingHorizontal: 10,
     flexDirection: "row",
     borderRadius: 5,
-    marginBottom: 5,
+    marginBottom: '4%',
   },
 
   avatarImage: {
-    width: 75,
-    height: 75,
+    width: '23%',
+    aspectRatio: 1,
     borderRadius: 1000,
     backgroundColor: "gray",
   },
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     width: "80%",
-    padding: 5,
+    paddingHorizontal: 10,
   },
 
   buttonView: {

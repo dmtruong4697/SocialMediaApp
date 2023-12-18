@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, FlatList, ScrollView, Alert } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, FlatList, ScrollView, Alert, RefreshControl } from 'react-native'
+import React, { useEffect, useState,  } from 'react'
 import FriendRequestCard from '../../../components/FriendRequestCard'
 import { Button } from "@rneui/themed";
 import { useNavigation } from '@react-navigation/native';
@@ -13,7 +13,15 @@ const FriendRequestScreen = () => {
   const currentUser = useSelector((state) => state.auth.currentUser);
   const [friendRequestData, setFriendRequestData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    handleGetRequestFr();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 500);
+  }, []);
 
   const handleGetRequestFr = async () => {
     try {
@@ -135,8 +143,13 @@ const FriendRequestScreen = () => {
   }, []);
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.buttonView}>
+    <ScrollView 
+      style={styles.container} 
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      } 
+    >
+      <View style={styles.buttonView}> 
       <Button
             title="Your friends"
             type='clear'
@@ -172,23 +185,25 @@ const FriendRequestScreen = () => {
             }}
           />
       </View>
-      <Text style={styles.title}>Friend requests</Text>
-      {loading ? (
+       <Text style={styles.title}>Lời mời kết bạn</Text>
+       {loading ? (
         <Text>Loading...</Text>
       ) : (
         <View>
-          {friendRequestData.length > 0 ? (
-            friendRequestData.map((item) => (
-              <FriendRequestCard
-                userId={item.id}
-                avatarImage={item.avatar}
-                userName={item.username}
-                pressAccept={() => handleAcceptFr(item.id)}
-                pressDel={() => {handleDelRequest(item.id)}}
-                mutualFriend={item.same_friends}
-                key={item.id}
-              />
-            ))
+            {friendRequestData.length > 0 ? (
+              <View>
+                  {friendRequestData.map((item) => ( 
+                  <FriendRequestCard
+                    userId={item.id}
+                    avatarImage={item.avatar}
+                    userName={item.username}
+                    mutualFriend={item.same_friends}
+                    pressAccept={() => handleAcceptFr(item.id)}
+                    pressDel={() => {handleDelRequest(item.id)}}
+                    key={item.id}
+                  />
+                  ))}
+            </View>
           ) : (
             <Text>Không có lời mời kết bạn nào ...</Text>
           )}
@@ -207,7 +222,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: '500',
     padding: 10,
   },
