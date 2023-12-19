@@ -26,7 +26,7 @@ const ProfileScreen = () => {
       const response = await axios.post(
         "https://it4788.catan.io.vn/get_list_posts",
         {
-          user_id: 381,
+          user_id: currentUser.id,
           latitude: 1.0,
           longitude: 1.0,
           last_id: 0,
@@ -71,19 +71,15 @@ const ProfileScreen = () => {
       } else {
         
         console.log('response status: ', response.status);
-        
       }
     } catch (error) {
       console.error('Get data fail')
       
       if (error.response) {
         console.error('response data: ', error.response.data);
-  
       } else if (error.request) {
-        // Yêu cầu đã được gửi nhưng không nhận được response
         console.error('Request data:', error.request);
       } else {
-        // Các lỗi khác
         console.error('Lỗi không xác định:', error.message);
       }
     }
