@@ -9,35 +9,53 @@ import description_icon from '../../../../assets/icons/cv.png'
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import ProfileCard from '../../../components/ProfileCard';
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 const EditProfileScreen = ({route}) => {
   const { avatar, cover_image, username,address, city, country, description } = route.params;
   const navigation = useNavigation();
   const [isEditDescription, setEditDescription] = useState(false)
   const [isMainEdit, setMainEdit] = useState(true)
-  const handleSubmitDescription = ()=>{
-    console.log("hello")
-  }
+  const [descriptionInput, setDescriptionInput] = useState('');
+  const currentUser = useSelector((state) => state.auth.currentUser);
+  const handleSubmitDescription =async ()=>{
+    try {
+      const formData = new FormData();
+      formData.append('username', username); // Empty value as specified in the API
+      formData.append('description', descriptionInput); // Empty value as specified in the API
+      formData.append('avatar', avatar);
+      formData.append('address', address); // Empty value as specified in the API
+      formData.append('city', city); // Empty value as specified in the API
+      formData.append('country', country); // Empty value as specified in the API
+      formData.append('cover_image', cover_image); // Empty value as specified in the API
+      formData.append('link', ''); // Empty value as specified in the API
 
-  const [editAvatarImage, setEditAvatarImage] = useState(null);
-//***************Edit avatar *************************** */
-  const pickAvatarImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+      const response = await axios.post(
+        'https://it4788.catan.io.vn/set_user_info',
+        formData,
+        {
+          headers: {
+            'Accept': 'multipart/form-data',
+            'Authorization': `Bearer ${currentUser.token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
 
-    console.log(result);
+      // Handle the response as needed
+      console.log(response.data);
 
-    if (!result.canceled) {
-      setEditAvatarImage(result.assets[0].uri);
+      // Assuming you want to navigate back to the previous screen after updating the avatar
+      navigation.goBack();
+    } catch (error) {
+      // Handle errors
+      console.error('Error updating avatar:', error);
     }
   }
-  useEffect(()=>{
-    console.log(cover_image)
-  })
+
+
+  
+  
   return (
     <ScrollView style = {styles.container} >
       {isMainEdit && (
@@ -117,8 +135,10 @@ const EditProfileScreen = ({route}) => {
               
               }
             onPress={()=>{
+              
               setEditDescription(true)
               setMainEdit(false)
+              
             }}
             />
         </View>
@@ -129,7 +149,18 @@ const EditProfileScreen = ({route}) => {
         <View style = {{flexDirection:'row', alignItems: 'center', justifyContent:'space-between'}}>
             <Text style = {{fontWeight: 600, fontSize: 19,}}>Chi tiết</Text>
             <Button style = {styles.EditDetail} onPress={()=>{
-              navigation.navigate('Edit Detail Profile')
+              navigation.navigate('Edit Detail Profile',
+              
+              {
+                avatar: avatar,
+                cover_image: cover_image,
+                
+                username: username,
+                address: address,
+                city: city,
+                country: country,
+                description: description
+              })
             }}>Chỉnh sửa</Button>
         </View>
         
@@ -187,6 +218,7 @@ const EditProfileScreen = ({route}) => {
                 paddingRight: 5,
               }}
               onPress={()=>{
+                handleSubmitDescription();
                 setEditDescription(false)
                 setMainEdit(true)
               }}
@@ -207,6 +239,9 @@ const EditProfileScreen = ({route}) => {
             onSubmitEditing={handleSubmitDescription}
             multiline
             placeholderTextColor= "#717172"
+            onChangeText={(text)=>{
+              setDescriptionInput(text)
+            }}
         />
       </View>
         </View>

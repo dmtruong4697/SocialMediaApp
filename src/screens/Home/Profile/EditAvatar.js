@@ -7,7 +7,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 const EditAvatar = ({ route }) => {
   const [image, setImage] = useState(null);
-  const { avatar } = route.params;
+  const { avatar, cover_image, username,address, city, country, description } = route.params;
   const navigation = useNavigation();
   const currentUser = useSelector((state) => state.auth.currentUser);
   const pickImage = async () => {
@@ -27,17 +27,17 @@ const EditAvatar = ({ route }) => {
   const changeAvatar = async () => {
     try {
       const formData = new FormData();
-      formData.append('username', 'mai dinh cong'); // Empty value as specified in the API
-      formData.append('description', 'bach khoa hà nội'); // Empty value as specified in the API
+      formData.append('username', username); // Empty value as specified in the API
+      formData.append('description', description); // Empty value as specified in the API
       formData.append('avatar', {
         uri: image,
         type: 'image/jpeg', 
         name: `avatar.jpg`,  
       });
-      formData.append('address', 'đường thanh niên'); // Empty value as specified in the API
-      formData.append('city', 'thanh hóa'); // Empty value as specified in the API
-      formData.append('country', 'việt nam'); // Empty value as specified in the API
-      formData.append('cover_image', ''); // Empty value as specified in the API
+      formData.append('address', address); // Empty value as specified in the API
+      formData.append('city', city); // Empty value as specified in the API
+      formData.append('country', country); // Empty value as specified in the API
+      formData.append('cover_image', cover_image); // Empty value as specified in the API
       formData.append('link', ''); // Empty value as specified in the API
 
       const response = await axios.post(
