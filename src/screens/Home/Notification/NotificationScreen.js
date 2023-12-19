@@ -1,70 +1,99 @@
-
-
 import { StyleSheet, Text, View, FlatList, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import NotificationCard from '../../../components/NotificationCard'
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const NotificationScreen = () => {
+  const [index, setIndex] = useState("0");
+  const [notificationData, setNotificationData] = useState([]);
+  const currentUser = useSelector((state) => state.auth.currentUser);
+  const [count, setCount] = useState(0);
 
-  const notificationData = [
-    {
-      notificationId: '1',
-      title: 'Peter Griffin',
-      notificationImage: 'https://static.wikia.nocookie.net/familyguy/images/a/aa/FamilyGuy_Single_PeterDrink_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20230815202349',
-      message: 'Đã bày tỏ cảm xúc về bình luận của bạn: nice fam',
-      time: '1 ngày trước'
-    },
-    {
-      notificationId: '2',
-      title: 'Meg Griffin',
-      notificationImage: 'https://static.wikia.nocookie.net/familyguy/images/1/1b/FamilyGuy_Single_MegMakeup_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20200526171840',
-      message: 'Đã bày tỏ cảm xúc về bình luận của bạn: nice fam',
-      time: '1 ngày trước'
-    },
-    {
-      notificationId: '3',
-      title: 'Lois Griffin',
-      notificationImage: 'https://static.wikia.nocookie.net/familyguy/images/7/7c/FamilyGuy_Single_LoisPose_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20200526171843',
-      message: 'Đã bày tỏ cảm xúc về bình luận của bạn: nice fam',
-      time: '1 ngày trước'
+  const typeList = () => {
 
-    },
-    {
-      notificationId: '4',
-      title: 'Stewie Griffin',
-      notificationImage: 'https://static.wikia.nocookie.net/familyguy/images/9/90/FamilyGuy_Single_StewieBackpack_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20200526171841',
-      message: 'Đã bày tỏ cảm xúc về bình luận của bạn: nice fam',
-      time: '2 ngày trước'
-    },
-    {
-      notificationId: '5',
-      title: 'Chris Griffin',
-      notificationImage: 'https://static.wikia.nocookie.net/familyguy/images/e/ee/FamilyGuy_Single_ChrisText_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20230815202356',
-      message: 'Đã bày tỏ cảm xúc về bình luận của bạn: nice fam',
-      time: '3 ngày trước',
-    },
-    {
-      notificationId: '6',
-      title: 'Brian Griffin',
-      notificationImage: 'https://static.wikia.nocookie.net/familyguy/images/c/c2/FamilyGuy_Single_BrianWriter_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20230807152447',
-      message: 'Đã bày tỏ cảm xúc về bình luận của bạn: nice fam',
-      time: 'tuần trước'
-    },
-  ]
+  }
+
+  const handleListNotification = async () => {
+    try {
+      const response = await axios.post('https://it4788.catan.io.vn/get_notification', {
+        index: index,
+        count: "10",
+      },
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+        });
+      if (response.status === 200) {
+        console.log('Get notification success');
+        console.log(response.data?.data);
+        setNotificationData(response.data?.data || []);
+      } else {
+        console.log('Get notifications fail, response data:', response.data);
+        console.log('response status: ', response.status);
+        Alert.alert('Get fail', 'please try again');
+      }
+    } catch (error) {
+      console.error('Get notifications false:', error)
+      Alert.alert('Get notifications false', 'Please try again.');
+      if (error.response) {
+        console.error('response data: ', error.response.data);
+        console.error('response status: ', error.response.status);
+        console.error('Response headers:', error.response.headers);
+      } else if (error.request) {
+        console.error('Request data:', error.request);
+      } else {
+        console.error('Lỗi không xác định:', error.message);
+      }
+    }
+  }
+
+  const formatTime = (timeString) => {
+    const currentTime = new Date();
+    const createdTime = new Date(timeString);
+    const timeDiff = currentTime - createdTime;
+
+    const seconds = Math.floor(timeDiff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) {
+      return `${days} ngày trước`;
+    } else if (hours > 0) {
+      return `${hours} giờ trước`;
+    } else if (minutes > 0) {
+      return `${minutes} phút trước`;
+    } else {
+      return `${seconds} giây trước`;
+    }
+  }
+
+  useEffect(() => {
+    handleListNotification();
+  }, []);
+
 
   return (
-    <ScrollView>
-      <Text style={styles.title}>Thông báo gần đây</Text>
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>Trước đó</Text>
 
-      {notificationData.map((item) => <NotificationCard
-        notificationId={item.notificationId}
-        notificationImage={item.notificationImage}
-        title={item.title}
-        key={item.notificationId}
-        message={item.message}
-        time={item.time}
-      />)
-      }
+      {notificationData && Array.isArray(notificationData) && (
+        notificationData.map((item) => (
+          <NotificationCard
+            notificationId={item.notification_id}
+            notificationImage={item.avatar}
+            key={item.notification_id}
+            title={item.title}
+            time={formatTime(item.created)}
+            type={item.type}
+            objectId={item.object_id}
+            group={item.group}
+            user={item.user}
+          />
+        ))
+      )}
     </ScrollView>
 
   )
@@ -73,6 +102,10 @@ const NotificationScreen = () => {
 export default NotificationScreen
 
 const styles = StyleSheet.create({
+
+  container: {
+    backgroundColor: 'white',
+  },
   title: {
     fontSize: 25,
     fontWeight: '500',

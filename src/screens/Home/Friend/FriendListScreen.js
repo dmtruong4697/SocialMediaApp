@@ -20,22 +20,23 @@ const FriendListScreen = () => {
     try {
       const response = await axios.post('https://it4788.catan.io.vn/get_user_friends', {
         index: index,
-        count: "10", 
+        count: "10",
       },
-      {
-        headers: {
-          Authorization: `Bearer ${currentUser.token}`,
-        },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+        });
 
       if (response.status === 200) {
         console.log('Get friends success');
+        console.log(response.data?.data?.friends);
         setFriendListData(response.data?.data?.friends || []);
         setCount(response.data?.data?.total || 0);
       } else {
         console.log('Get friends fail, response data:', response.data);
         console.log('response status: ', response.status);
-        Alert.alert('Get fail','please try again');
+        Alert.alert('Get fail', 'please try again');
       }
     } catch (error) {
       console.error('Get friends false:', error)
@@ -57,13 +58,13 @@ const FriendListScreen = () => {
   const handleUnFriend = async (id) => {
     try {
       const response = await axios.post('https://it4788.catan.io.vn/unfriend', {
-      user_id: id,
+        user_id: id,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${currentUser.token}`,
-        },
-      })
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+        })
 
       if (response.status === 200) {
         console.log(`UnFiend success id: ${id}, response data: `, response.data);
@@ -91,38 +92,38 @@ const FriendListScreen = () => {
 
   const handleBlock = async (id) => {
     try {
-        const response = await axios.post('https://it4788.catan.io.vn/set_block', {
-            user_id: id,
-        }, 
+      const response = await axios.post('https://it4788.catan.io.vn/set_block', {
+        user_id: id,
+      },
         {
-            headers: {
-                Authorization: `Bearer ${currentUser.token}`,
-            },
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
         })
 
-        if (response.status === 200) {
-            console.log('Block user success');
-          } else {
-            console.log('Block user fail, response data:', response.data);
-            console.log('response status: ', response.status);
-            Alert.alert('Block user fail','please try again');
-          }
-    } catch (error) {
-        console.error('Block user false:', error)
-        Alert.alert('Block user false', 'Please try again.');
-        if (error.response) {
-          console.error('response data: ', error.response.data);
-          console.error('response status: ', error.response.status);
-          console.error('Response headers:', error.response.headers);
-        } else if (error.request) {
-          // Yêu cầu đã được gửi nhưng không nhận được response
-          console.error('Request data:', error.request);
-        } else {
-          // Các lỗi khác
-          console.error('Lỗi không xác định:', error.message);
-        }
+      if (response.status === 200) {
+        console.log('Block user success');
+      } else {
+        console.log('Block user fail, response data:', response.data);
+        console.log('response status: ', response.status);
+        Alert.alert('Block user fail', 'please try again');
       }
-}
+    } catch (error) {
+      console.error('Block user false:', error)
+      Alert.alert('Block user false', 'Please try again.');
+      if (error.response) {
+        console.error('response data: ', error.response.data);
+        console.error('response status: ', error.response.status);
+        console.error('Response headers:', error.response.headers);
+      } else if (error.request) {
+        // Yêu cầu đã được gửi nhưng không nhận được response
+        console.error('Request data:', error.request);
+      } else {
+        // Các lỗi khác
+        console.error('Lỗi không xác định:', error.message);
+      }
+    }
+  }
 
   useEffect(() => {
     handleListFriend();
@@ -138,7 +139,7 @@ const FriendListScreen = () => {
     <ScrollView>
       <View style={styles.searchBar}>
         <Input
-          leftIcon={<FontAwesomeIcon icon={faSearch}/>}
+          leftIcon={<FontAwesomeIcon icon={faSearch} />}
           placeholder='Tìm kiếm bạn bè'
           onSubmitEditing={handleSearch}
         />
@@ -174,14 +175,14 @@ const FriendListScreen = () => {
       <View style={styles.friendList}>
         <View>
           {friendListData.map((item) => <ProfileCard
-              userId={item.id}
-              avatarImage={item.avatar}
-              userName={item.username}
-              pressUnFriend={() => {handleUnFriend(item.id); setCount(count-'0'-1)}}
-              blockUser={() => {handleBlock(item.id); setCount(count-'0'-1)}}
-              mutualFriend={item.same_friends}
-              key={item.id}
-            />)
+            userId={item.id}
+            avatarImage={item.avatar}
+            userName={item.username}
+            pressUnFriend={() => { handleUnFriend(item.id); setCount(count - '0' - 1) }}
+            blockUser={() => { handleBlock(item.id); setCount(count - '0' - 1) }}
+            mutualFriend={item.same_friends}
+            key={item.id}
+          />)
           }
         </View>
       </View>
