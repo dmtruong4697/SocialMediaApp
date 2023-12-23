@@ -9,6 +9,8 @@ import { Button } from '@rneui/themed';
 import axios from 'axios';
 
 const CreatePostScreen = () => {
+
+  const BACKEND_URL = 'https://it4788.catan.io.vn'
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.currentUser);
@@ -62,7 +64,7 @@ const CreatePostScreen = () => {
       formData.append('status', 'Hyped');
 
       const response = await axios.post(
-        'https://it4788.catan.io.vn/add_post',
+        `${BACKEND_URL}/add_post`,
         formData,
         {
           headers: {
