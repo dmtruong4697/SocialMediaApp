@@ -3,11 +3,11 @@ import axios from 'axios';
 import { loginFailure, loginSuccess, loginRequest } from '../actions/auth.action';
 import AsyncStorage from 'react-native';
 
-
 function* login(action) {
   try {
+    const BACKEND_URL = 'https://it4788.catan.io.vn'
     const { email, password, uuid } = action.payload;
-    const response = yield call(axios.post, 'https://it4788.catan.io.vn/login', {
+    const response = yield call(axios.post, `${BACKEND_URL}/login`, {
       email,
       password,
       uuid,
