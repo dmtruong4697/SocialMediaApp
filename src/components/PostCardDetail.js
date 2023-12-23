@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
-const PostCard = (props) => {
+const PostCardDetail = (props) => {
 
   const BACKEND_URL = 'https://it4788.catan.io.vn'
   const navigation = useNavigation();
@@ -178,7 +178,7 @@ const PostCard = (props) => {
 
       <View style={styles.likeView}>
         <Text style={{fontSize: 15}}>{Number(thisPost.kudos) + Number(thisPost.disappointed)} feels</Text>
-        <Text style={{fontSize: 15}}>{postDetail.comment_mark} Marks & Comments</Text>
+        {/* <Text style={{fontSize: 15}}>{postDetail.comment_mark} comments</Text> */}
       </View>
 
       <View style={styles.buttonView}>
@@ -219,10 +219,7 @@ const PostCard = (props) => {
         {/* nut comment */}
         <TouchableOpacity 
           style={styles.button}
-          onPress={() => {
-            handleGetPost();
-            navigation.navigate('PostDetail',{postDetail: thisPost});
-          }}
+          onPress={handleAddMarkButton}
         >
           <Text style={{fontSize: 16, fontWeight: '500',}}>Tạo Mark</Text>
         </TouchableOpacity>
@@ -232,7 +229,7 @@ const PostCard = (props) => {
   )
 }
 
-export default PostCard
+export default PostCardDetail
 
 const styles = StyleSheet.create({
   container: {
@@ -255,7 +252,7 @@ const styles = StyleSheet.create({
     height: 60,
     width:60,
     borderRadius: 1000,
-    //backgroundColor: 'gray',
+    //backgroundColor: 'yellow',
   },
 
   userName: {
