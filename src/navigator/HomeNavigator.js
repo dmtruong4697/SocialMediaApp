@@ -78,7 +78,9 @@ const HeaderRightNotiAndMenu = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.buttonHeader}
-        onPress={() => navigation.navigate({ name: "Search" })}
+        onPress={() => {
+          navigation.navigate({ name: "SettingHeader" });
+        }}
       >
         <FontAwesomeIcon size={18} icon={faGear} />
       </TouchableOpacity>
