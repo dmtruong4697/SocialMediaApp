@@ -8,9 +8,8 @@ import { Button } from 'react-native';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
-import {Entypo} from '@expo/vector-icons';
 
-const PostCard = (props) => {
+const PostCardDetail = (props) => {
 
   const BACKEND_URL = 'https://it4788.catan.io.vn'
   const navigation = useNavigation();
@@ -179,7 +178,7 @@ const PostCard = (props) => {
 
       <View style={styles.likeView}>
         <Text style={{fontSize: 15}}>{Number(thisPost.kudos) + Number(thisPost.disappointed)} feels</Text>
-        <Text style={{fontSize: 15}}>{postDetail.comment_mark} Marks & Comments</Text>
+        {/* <Text style={{fontSize: 15}}>{postDetail.comment_mark} comments</Text> */}
       </View>
 
       <View style={styles.buttonView}>
@@ -198,8 +197,7 @@ const PostCard = (props) => {
                 // if (isFelt == "-1") handleDeleteFeel();
               }}
             >
-              {/* <Image style={{height: 24, width: 24, marginRight: 5,}} source={(isFelt == "1")? require('../../assets/icons/upvote-on.png'):require('../../assets/icons/upvote-off.png')}/> */}
-              <Entypo name='thumbs-up' size={28} color={isFelt === "1"? "#1603A0":"#000000"} />
+              <Image style={{height: 24, width: 24, marginRight: 5,}} source={(isFelt == "1")? require('../../assets/icons/upvote-on.png'):require('../../assets/icons/upvote-off.png')}/>
             </TouchableOpacity>
 
           {/* nut downvote */}
@@ -213,8 +211,7 @@ const PostCard = (props) => {
                 // if (isFelt == "-1") handleDeleteFeel();
               }}
             >
-              <Entypo name='thumbs-down' size={28} color={isFelt === "0"? "#1603A0":"#000000"} />
-              {/* <Image style={{height: 24, width: 24, marginRight: 5,}} source={(isFelt == "0")? require('../../assets/icons/downvote-on.png'):require('../../assets/icons/downvote-off.png')}/> */}
+              <Image style={{height: 24, width: 24, marginRight: 5,}} source={(isFelt == "0")? require('../../assets/icons/downvote-on.png'):require('../../assets/icons/downvote-off.png')}/>
             </TouchableOpacity>
 
         </View>
@@ -222,10 +219,7 @@ const PostCard = (props) => {
         {/* nut comment */}
         <TouchableOpacity 
           style={styles.button}
-          onPress={() => {
-            handleGetPost();
-            navigation.navigate('PostDetail',{postDetail: thisPost});
-          }}
+          onPress={handleAddMarkButton}
         >
           <Text style={{fontSize: 16, fontWeight: '500',}}>Tạo Mark</Text>
         </TouchableOpacity>
@@ -235,7 +229,7 @@ const PostCard = (props) => {
   )
 }
 
-export default PostCard
+export default PostCardDetail
 
 const styles = StyleSheet.create({
   container: {
@@ -258,7 +252,7 @@ const styles = StyleSheet.create({
     height: 60,
     width:60,
     borderRadius: 1000,
-    //backgroundColor: 'gray',
+    //backgroundColor: 'yellow',
   },
 
   userName: {

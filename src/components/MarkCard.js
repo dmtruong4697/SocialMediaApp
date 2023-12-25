@@ -1,11 +1,17 @@
-import { ImageBackground, StyleSheet, Text, View } from 'react-native'
+import { ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import CommentCard from './CommentCard'
 import { differenceInSeconds, differenceInMinutes, differenceInHours, differenceInDays, parseISO } from 'date-fns';
+import { changeInputType, changeMarkId } from '../redux/actions/post.action';
+import { useDispatch, useSelector } from 'react-redux';
 
 const MarkCard = (props) => {
 
+  const BACKEND_URL = 'https://it4788.catan.io.vn'
   const {markDetail, postDetail} = props;
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.auth.currentUser);
+  const inputType = useSelector((state) => state.post.inputType);
 
   const apiTime = markDetail.created;
 
@@ -51,19 +57,51 @@ const MarkCard = (props) => {
 
           <View style={styles.time}>
               <Text style={{fontSize: 12, color: '#8c8c8c', fontWeight: '500'}}>{time}</Text>
+
+              <TouchableOpacity
+                style={{
+                  //backgroundColor: 'pink',
+                  //width: 80,
+                  marginLeft: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                onPress={() => {
+                  dispatch(changeInputType("Reply"));
+                  dispatch(changeMarkId(markDetail.id));
+                }}
+              >
+                <Text style={{fontSize: 12, color: '#8c8c8c', fontWeight: '700'}}>Phản hồi</Text>
+              </TouchableOpacity>
           </View>
 
         </View>
       </View>
 
       <View style={styles.comment}>
-        <View style={styles.line}>
+        <View 
+          style={[
+            {
+              height: 71 * markDetail.comments.length,
+              width: 25,
+              //backgroundColor: 'yellow',
+              borderLeftWidth: 1.5,
+              borderLeftColor: '#c4c4c4',
+              borderBottomWidth: (markDetail.comments.length != 0)? 1.5:0,
+              borderBottomColor: '#c4c4c4',
+              borderEndStartRadius: 10,
+              marginLeft: 25,
+            },
+            styles.line,
+          ]}>
         </View>
 
         <View style={styles.commentList}>
+
           {
             markDetail.comments.map((item) => <CommentCard commentDetail={item}/>)
           }
+
         </View>
       </View>
 
@@ -75,12 +113,12 @@ export default MarkCard
 
 const styles = StyleSheet.create({
     container: {
-      padding: 5,
+      padding: 10,
       width: '100%',
       height: 'auto',
       flexDirection: 'column',
       //backgroundColor: 'pink',
-      marginBottom: 10,
+      marginBottom: 0,
     },
     
     markContainer: {
@@ -115,6 +153,8 @@ const styles = StyleSheet.create({
     time: {
         paddingLeft: 7,
         marginTop: 3,
+        marginBottom: 10,
+        flexDirection: 'row',
     },
 
     comment: {
@@ -125,17 +165,19 @@ const styles = StyleSheet.create({
     },
 
     line: {
-      width: 25,
-      //backgroundColor: 'yellow',
-      borderLeftWidth: 1,
-      borderLeftColor: 'gray',
-      borderBottomWidth: 1,
-      borderBottomColor: 'gray',
-      borderEndStartRadius: 10,
-      marginLeft: 25,
+      // width: 25,
+      // //backgroundColor: 'yellow',
+      // borderLeftWidth: 1.5,
+      // borderLeftColor: '#c4c4c4',
+      // borderBottomWidth: 1.5,
+      // borderBottomColor: '#c4c4c4',
+      // borderEndStartRadius: 10,
+      // marginLeft: 25,
     },
 
     commentList: {
       flex: 1,
+      //backgroundColor: 'blue',
     },
+
 })
