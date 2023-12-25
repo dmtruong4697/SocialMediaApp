@@ -10,15 +10,12 @@ const NotificationScreen = () => {
   const currentUser = useSelector((state) => state.auth.currentUser);
   const [count, setCount] = useState(0);
 
-  const typeList = () => {
-
-  }
 
   const handleListNotification = async () => {
     try {
       const response = await axios.post('https://it4788.catan.io.vn/get_notification', {
         index: index,
-        count: "10",
+        count: "24",
       },
         {
           headers: {
@@ -27,7 +24,7 @@ const NotificationScreen = () => {
         });
       if (response.status === 200) {
         console.log('Get notification success');
-        console.log(response.data?.data);
+        console.log(response.data);
         setNotificationData(response.data?.data || []);
       } else {
         console.log('Get notifications fail, response data:', response.data);
@@ -91,6 +88,7 @@ const NotificationScreen = () => {
             objectId={item.object_id}
             group={item.group}
             user={item.user}
+            read={item.read}
           />
         ))
       )}

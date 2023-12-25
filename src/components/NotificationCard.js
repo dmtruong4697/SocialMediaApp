@@ -3,6 +3,9 @@ import React from 'react'
 import { Icon } from '@rneui/themed'
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+
 
 NotificationCard.propTypes = {
     notificationImage: PropTypes.string,
@@ -18,12 +21,81 @@ NotificationCard.defaultProps = {
 }
 function NotificationCard(props) {
     const navigation = useNavigation();
+    const currentUser = useSelector((state) => state.auth.currentUser);
     const { notificationImage, title, time, type, objectId, group, user } = props;
     const placeHolderImageUrl = 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.freepik.com%2Fvectors%2Fplaceholder&psig=AOvVaw2ihJlODzRhb_kYcyTdHxI3&ust=1703088281258000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLD9ybnwm4MDFQAAAAAdAAAAABAX';
 
-    const handleChangePage = () => {
-        console.log(title);
-    }
+    const handleChangePage = async () => {
+        // try {
+        //     const response = await axios.post(
+        //         "https://it4788.catan.io.vn/check_new_items",
+        //         {
+        //             last_id: "800",
+        //             category_id: 0
+        //         },
+        //         {
+        //             headers: {
+        //                 Authorization: `Bearer ${currentUser.token}`,
+        //             },
+        //         }
+        //     );
+        //     if (response.status === 200) {
+        //         console.log("response item id", objectId);
+        //         console.log("response api", response.data);
+        //         //navigation.navigate('PostDetail', { postDetail: response.data.data });
+        //     } else {
+        //         console.log('response status: ', response.status);
+        //     }
+        // } catch (error) {
+        //     console.error("Lỗi khi tải bài viết này:", error);
+        // }
+
+        if (type >= 3) {
+            try {
+                const response = await axios.post(
+                    "https://it4788.catan.io.vn/get_post",
+                    {
+                        id: objectId,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${currentUser.token}`,
+                        },
+                    }
+                );
+                if (response.status === 200) {
+                    navigation.navigate('PostDetail', { postDetail: response.data.data });
+                } else {
+                    console.log('response status: ', response.status);
+                }
+            } catch (error) {
+                console.error("Lỗi khi tải bài viết này:", error);
+            }
+        } else {
+            //api xem profile ban be
+            // try {
+            //     const response = await axios.post('https://it4788.catan.io.vn/get_user_info', {
+            //         user_id: currentUser.id
+            //     },
+            //         {
+            //             headers: {
+            //                 Authorization: `Bearer ${currentUser.token}`,
+            //             },
+            //         });
+            //    
+            //     if (response.status === 200) {
+            //    
+            //         navigation.navigate('Profile', { postDetail: response.data.data });
+            //     } else {
+
+            //         console.log('response status: ', response.status);
+            //     }
+            // } catch (error) {
+            //     console.error("Lỗi khi tải bài viết này:", error);
+            // }
+        }
+
+    };
 
     const handleTitle = () => {
         switch (type) {
@@ -87,10 +159,12 @@ function NotificationCard(props) {
         }
     }
 
+    const handleNavigate = () => {
+        handleChangePage();
+    }
+
     return (
-        <TouchableOpacity onPress={() => {
-            navigation.navigate("FriendList")
-        }}>
+        <TouchableOpacity onPress={handleNavigate}>
             <View style={styles.container}>
                 <TouchableOpacity style={styles.notificationImage}>
                     {notificationImage !== '' ? (
@@ -104,20 +178,19 @@ function NotificationCard(props) {
                     </Text>
                     <Text style={{ fontSize: 14, fontWeight: '200' }}>{time}</Text>
                 </View>
-
+                {/* 
                 <View style={styles.buttonView}>
                     <Icon
                         name='more-horizontal'
                         type='feather'
                         color='black'
                         onPress={() => console.log('Tùy chọn')} />
-                </View>
+                </View> */}
             </View>
         </TouchableOpacity>
     )
 }
 
-export default NotificationCard
 
 const styles = StyleSheet.create({
     container: {
@@ -156,3 +229,5 @@ const styles = StyleSheet.create({
     },
 
 })
+export default NotificationCard
+
