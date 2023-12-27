@@ -22,14 +22,17 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.hoang2008.SocialMediaApp"
+      "package": "vn.io.catan.antifakebook",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "sdkVersion": "49.0.0",
     "extra": {
-      
+      "eas": {
+        "projectId": "7bdea467-496c-4598-aa4d-f5ddbed9a3d4"
+      }
     }
   },
   "name": "socialmediaapp"
