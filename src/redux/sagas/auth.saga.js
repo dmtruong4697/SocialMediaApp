@@ -46,25 +46,26 @@ function* login(action) {
   }
 }
 function* logout(action) {
-  console.log(action.payload);
-  try {
-    const BACKEND_URL = "https://it4788.catan.io.vn";
-    const response = yield call(
-      axios.post,
-      `${BACKEND_URL}/logout`,
-      {},
-      { headers: { Authorization: `Bearer ${action.payload.token}` } }
-    );
-    if (response.status == 200) {
-      yield put(loginSuccess(null));
-    }
-  } catch (error) {
-    console.error("Error during logout:", error.response.data.message);
-    //console.log(action.payload);
-    yield put(
-      logoutFailure(error.response?.data?.message || "An error occurred")
-    );
-  }
+  // console.log(action.payload);
+  // try {
+  //   const BACKEND_URL = "https://it4788.catan.io.vn";
+  //   const response = yield call(
+  //     axios.post,
+  //     `${BACKEND_URL}/logout`,
+  //     {},
+  //     { headers: { Authorization: `Bearer ${action.payload.token}` } }
+  //   );
+  //   if (response.status == 200) {
+  //     yield put(loginSuccess(null));
+  //   }
+  // } catch (error) {
+  //   console.error("Error during logout:", error.response.data.message);
+  //   //console.log(action.payload);
+  //   yield put(
+  //     logoutFailure(error.response?.data?.message || "An error occurred")
+  //   );
+  // }
+  yield put(loginSuccess(null));
 }
 
 function* authSaga() {

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Button } from "@rneui/themed";
+import { FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutRequest } from "../../../redux/actions/auth.action";
@@ -18,40 +19,29 @@ const SettingScreen = () => {
   return (
     <View>
       <NotificationSetting />
+      <BlockList />
       <LogoutButton
         onPress={() => {
-          dispatch(logoutRequest(currentUser));
+          // dispatch(logoutRequest(currentUser));
+          navigation.navigate({ name: "Login" });
         }}
       />
-      {/* <Button
-        title="Profile"
-        type="clear"
-        titleStyle={{ fontSize: 16, color: "#ffffff" }}
-        style={{
-          marginRight: 10,
-          width: 140,
-          borderRadius: 10,
-          backgroundColor: "#2069a1",
-        }}
-        onPress={() => {
-          navigation.navigate("Profile");
-        }}
-      />
+      {/* Lỗi logout cần sửa tạm thời để như cũ */}
+
       <Text
         style={{
           color: "red",
           alignSelf: "center",
-          marginTop: 100,
+          fontSize: 25,
+          marginTop: 10,
         }}
       >
         {errorMessage}
-      </Text> */}
+      </Text>
     </View>
   );
 };
 const NotificationSetting = () => {
-  let firstState = {};
-
   const obj = {
     like_comment: "Bình luận",
     from_friends: "Từ bạn bè",
@@ -66,7 +56,7 @@ const NotificationSetting = () => {
     led_on: "Sáng đèn",
   };
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [firstState, setFirstState] = useState({});
   const [setting, setSetting] = useState({});
   const currentUser = useSelector((state) => state.auth.currentUser);
   useEffect(() => {
@@ -83,7 +73,7 @@ const NotificationSetting = () => {
         }
       )
       .then((res) => {
-        firstState = res.data.data;
+        setFirstState(res.data.data);
         setSetting(res.data.data);
       })
       .catch((err) => {
@@ -102,63 +92,85 @@ const NotificationSetting = () => {
       return { ...setting, [key]: setting[key] == "1" ? "0" : "1" };
     });
   };
-  const onPress = () => {
+  const onPress = (_setting) => {
     console.log("123");
     axios
-      .post("https://it4788.catan.io.vn/set_push_settings", setting, {
+      .post("https://it4788.catan.io.vn/set_push_settings", _setting, {
         headers: {
           Authorization: "Bearer " + currentUser.token,
         },
       })
       .then(() => {
         console.log("success");
+        setFirstState(_setting);
       });
   };
 
   return (
-    <View style={styles.container1}>
-      <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>
-        <Text style={styles.selectedOption}>{"Cài đặt thông báo"}</Text>
-        <Text style={styles.dropdownIcon}>{isOpen ? "▲" : "▼"}</Text>
-      </TouchableOpacity>
+    <View>
+      <View style={styles.container1}>
+        <TouchableOpacity
+          style={styles.dropdownButton}
+          onPress={toggleDropdown}
+        >
+          <Text style={styles.selectedOption}>{"Cài đặt thông báo"}</Text>
+          <Text style={styles.dropdownIcon}>{isOpen ? "▲" : "▼"}</Text>
+        </TouchableOpacity>
 
-      {isOpen && (
-        <View style={styles.dropdownOptions}>
-          {Object.keys(setting)
-            .slice(0, -4)
-            .map((key, index, array) => (
-              <TouchableOpacity
-                key={key}
-                style={styles.optionButton}
-                onPress={() => handleOptionPress(key)}
-              >
-                <Text style={styles.optionText}>
-                  {obj[key]}:{setting[key] == "1" ? "Bật" : "Tắt"}
-                </Text>
-              </TouchableOpacity>
-            ))}
-
-          <TouchableOpacity
+        {isOpen && (
+          <View>
+            <View style={styles.dropdownOptions}>
+              {Object.keys(setting)
+                .slice(0, -4)
+                .map((key, index, array) => (
+                  <TouchableOpacity
+                    key={key}
+                    style={styles.optionButton}
+                    onPress={() => handleOptionPress(key)}
+                  >
+                    <Text style={styles.optionText}>
+                      {obj[key]}:{setting[key] == "1" ? "Bật" : "Tắt"}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+            </View>
+          </View>
+        )}
+      </View>
+      {isOpen && JSON.stringify(firstState) !== JSON.stringify(setting) && (
+        <TouchableOpacity
+          style={{
+            // width: "100%",
+            backgroundColor: "#3b5998",
+            paddingVertical: 12,
+            paddingHorizontal: 24,
+            borderRadius: 25,
+            shadowColor: "#000000",
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.4,
+            shadowRadius: 3,
+            elevation: 5,
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 10,
+            marginHorizontal: 20,
+          }}
+          onPress={() => onPress(setting)}
+        >
+          <Text
             style={{
-              backgroundColor: "#2196F3",
-              paddingVertical: 12,
-              paddingHorizontal: 24,
-              borderRadius: 4,
+              color: "#FFFFFF",
+              fontSize: 16,
+              fontWeight: "bold",
+              textAlign: "center",
             }}
-            onPress={onPress}
           >
-            <Text
-              style={{
-                color: "#FFFFFF",
-                fontSize: 16,
-                fontWeight: "bold",
-                textAlign: "center",
-              }}
-            >
-              Lưu thay đổi
-            </Text>
-          </TouchableOpacity>
-        </View>
+            Lưu thay đổi
+          </Text>
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -175,7 +187,52 @@ const LogoutButton = ({ onPress }) => {
     </View>
   );
 };
-
+const BlockList = () => {
+  const currentUser = useSelector((state) => state.auth.currentUser);
+  const [userList, setUserList] = useState([]);
+  useEffect(() => {
+    axios
+      .post(
+        "https://it4788.catan.io.vn/get_list_blocks",
+        { index: 0, count: 100 },
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+        }
+      )
+      .then((res) => {
+        setUserList(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  return (
+    <View>
+      <FlatList
+        keyExtractor={(item) => item.id}
+        data={[
+          {
+            id: "12",
+            name: "Leo  Messi",
+            avatar:
+              "https://it4788.catan.io.vn/files/avatar-1703201924547-557531918.jpg",
+          },
+        ]}
+        renderItem={({ item }) => <BlockUser user={item} />}
+      />
+    </View>
+  );
+};
+const BlockUser = ({ user }) => {
+  console.log(user);
+  return (
+    <View>
+      <Text>12</Text>
+    </View>
+  );
+};
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
@@ -215,6 +272,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     // paddingVertical: 12,
     // paddingHorizontal: 24,
+
+    // alignItems: "center",
+    // justifyContent: "center",
+  },
+  dropdownButton: {
+    backgroundColor: "#ffffff",
     borderRadius: 20,
     shadowColor: "#000000",
     shadowOffset: {
@@ -224,10 +287,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 3,
     elevation: 5,
-    // alignItems: "center",
-    // justifyContent: "center",
-  },
-  dropdownButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -246,19 +305,32 @@ const styles = StyleSheet.create({
     // top: "100%",
     // left: 0,
     // right: 0,
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 4,
+    // backgroundColor: "",
+    // borderWidth: 1,
+    // borderColor: "#ccc",
+    // borderRadius: 4,
     marginTop: 4,
   },
   optionButton: {
+    backgroundColor: "#ffffff",
+    // borderRadius: 20,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.4,
+    shadowRadius: 3,
+    elevation: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    marginVertical: 2,
   },
   optionText: {
     fontSize: 16,
   },
 });
+const styles1 = StyleSheet.create({});
