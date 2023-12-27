@@ -35,5 +35,8 @@
       }
     }
   },
-  "name": "socialmediaapp"
+  "name": "socialmediaapp",
+  "plugins": [
+    "@notifee/react-native"
+  ]
 }

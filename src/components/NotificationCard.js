@@ -26,30 +26,6 @@ function NotificationCard(props) {
     const placeHolderImageUrl = 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.freepik.com%2Fvectors%2Fplaceholder&psig=AOvVaw2ihJlODzRhb_kYcyTdHxI3&ust=1703088281258000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLD9ybnwm4MDFQAAAAAdAAAAABAX';
 
     const handleChangePage = async () => {
-        // try {
-        //     const response = await axios.post(
-        //         "https://it4788.catan.io.vn/check_new_items",
-        //         {
-        //             last_id: "800",
-        //             category_id: 0
-        //         },
-        //         {
-        //             headers: {
-        //                 Authorization: `Bearer ${currentUser.token}`,
-        //             },
-        //         }
-        //     );
-        //     if (response.status === 200) {
-        //         console.log("response item id", objectId);
-        //         console.log("response api", response.data);
-        //         //navigation.navigate('PostDetail', { postDetail: response.data.data });
-        //     } else {
-        //         console.log('response status: ', response.status);
-        //     }
-        // } catch (error) {
-        //     console.error("Lỗi khi tải bài viết này:", error);
-        // }
-
         if (type >= 3) {
             try {
                 const response = await axios.post(
@@ -72,27 +48,7 @@ function NotificationCard(props) {
                 console.error("Lỗi khi tải bài viết này:", error);
             }
         } else {
-            //api xem profile ban be
-            // try {
-            //     const response = await axios.post('https://it4788.catan.io.vn/get_user_info', {
-            //         user_id: currentUser.id
-            //     },
-            //         {
-            //             headers: {
-            //                 Authorization: `Bearer ${currentUser.token}`,
-            //             },
-            //         });
-            //    
-            //     if (response.status === 200) {
-            //    
-            //         navigation.navigate('Profile', { postDetail: response.data.data });
-            //     } else {
-
-            //         console.log('response status: ', response.status);
-            //     }
-            // } catch (error) {
-            //     console.error("Lỗi khi tải bài viết này:", error);
-            // }
+            navigation.navigate('User Profile', { user_id: objectId });
         }
 
     };
@@ -178,14 +134,14 @@ function NotificationCard(props) {
                     </Text>
                     <Text style={{ fontSize: 14, fontWeight: '200' }}>{time}</Text>
                 </View>
-                {/* 
+
                 <View style={styles.buttonView}>
                     <Icon
                         name='more-horizontal'
                         type='feather'
                         color='black'
                         onPress={() => console.log('Tùy chọn')} />
-                </View> */}
+                </View>
             </View>
         </TouchableOpacity>
     )
@@ -207,8 +163,8 @@ const styles = StyleSheet.create({
     },
 
     notificationImage: {
-        width: 75,
-        height: 75,
+        width: 70,
+        height: 70,
         borderRadius: 1000,
         backgroundColor: 'gray'
     },
@@ -220,9 +176,10 @@ const styles = StyleSheet.create({
     },
 
     contentView: {
+        marginLeft: 10,
         flexDirection: 'column',
         height: '100%',
-        width: '75%',
+        width: '70%',
         padding: 5,
         marginRight: 5
 
