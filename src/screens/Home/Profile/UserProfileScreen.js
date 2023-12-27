@@ -186,8 +186,9 @@ useEffect(()=>{
           <Text >{countFriend} Bạn Bè</Text>
         </View>
         <View style = {styles.edit_profile}>
-        <Button
-            title={isFriend ? "Bạn bè" : "Thêm bạn bè"} // Conditional rendering
+          {isFriend?
+            <Button
+            title="Bạn bè"  // Conditional rendering
             type="clear"
             titleStyle={{ fontSize: 18, color: '#0780DC', fontWeight: 600 }}
             style={{
@@ -195,15 +196,25 @@ useEffect(()=>{
               backgroundColor: '#BADFFC'
             }}
             onPress={() => {
-              // Handle the button press based on the isFriend state
-              if (isFriend) {
-                // Logic for handling existing friend scenario
-                // ...
-              } else {
-                handleSendFriendReq();
-              }
+              
             }}
           />
+          :
+          <Button
+            title= "Thêm bạn bè"// Conditional rendering
+            type="clear"
+            titleStyle={{ fontSize: 18, color: '#0780DC', fontWeight: 600 }}
+            style={{
+              borderRadius: 8,
+              backgroundColor: '#BADFFC'
+            }}
+            onPress={() => {
+             
+                handleSendFriendReq();
+              
+            }}
+          />}
+        
         </View>
       </View>
       <View style = {styles.navbar_profile}>
