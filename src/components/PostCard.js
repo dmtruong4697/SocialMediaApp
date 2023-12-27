@@ -119,7 +119,15 @@ const PostCard = (props) => {
     <View style={styles.container}>
 
       <View style={styles.header}>
-        <TouchableOpacity style={styles.avatarImage}>
+        <TouchableOpacity style={styles.avatarImage} onPress={()=>{
+          if(currentUser.id!=postDetail.author.id){
+            navigation.navigate('User Profile', {user_id: postDetail.author.id})
+          }
+          else{
+            navigation.navigate('Profile');
+          }
+          
+          }}>
           <ImageBackground
             source={{uri: (postDetail.author.avatar != '')? postDetail.author.avatar:""}}
             imageStyle={{

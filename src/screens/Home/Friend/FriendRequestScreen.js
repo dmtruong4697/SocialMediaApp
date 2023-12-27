@@ -199,7 +199,7 @@ const FriendRequestScreen = () => {
                     userName={item.username}
                     mutualFriend={item.same_friends}
                     pressAccept={() => handleAcceptFr(item.id)}
-                    pressDel={() => {handleDelRequest(item.id)}}
+                    pressDel={() => handleDelRequest(item.id)}
                     key={item.id}
                   />
                   ))}

@@ -15,6 +15,7 @@ FriendRequestCard.propTypes = {
 function FriendRequestCard(props) {
   const { avatarImage, userName, userId, pressAccept, pressDel, mutualFriend } = props;
   const [isHidden, setIsHidden] = useState(false);
+  const avatarBackUp = 'https://imgur.com/BwwePkj.jpg'
 
   return (
     <View>
@@ -22,7 +23,7 @@ function FriendRequestCard(props) {
        null : 
       <View style={styles.container}>
         <TouchableOpacity style={styles.avatarImage}>
-          <Image style={styles.image} source={{ uri: avatarImage }} />
+          <Image style={styles.image} source={{ uri: (avatarImage ? avatarImage : avatarBackUp) }} />
         </TouchableOpacity>
 
         <View style={styles.contentView}>

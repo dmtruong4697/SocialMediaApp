@@ -1,23 +1,30 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import FeedScreen from '../screens/Home/Post/FeedScreen';
-import FriendRequestScreen from '../screens/Home/Friend/FriendRequestScreen';
-import NotificationScreen from '../screens/Home/Notification/NotificationScreen';
-import SettingScreen from '../screens/Home/Setting/SettingScreen';
-import ProfileScreen from '../screens/Home/Profile/ProfileScreen';
-import { Icon } from '@rneui/base';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faHome, faUserFriends, faBell, faGear, faMagnifyingGlass, faPlus} from '@fortawesome/free-solid-svg-icons';
-import { faFacebookMessenger } from '@fortawesome/free-brands-svg-icons';
-import {TouchableOpacity, View, Text, StyleSheet} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import FeedScreen from "../screens/Home/Post/FeedScreen";
+import FriendRequestScreen from "../screens/Home/Friend/FriendRequestScreen";
+import NotificationScreen from "../screens/Home/Notification/NotificationScreen";
+import SettingScreen from "../screens/Home/Setting/SettingScreen";
+import ProfileScreen from "../screens/Home/Profile/ProfileScreen";
+import { Icon } from "@rneui/base";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {
+  faHome,
+  faUserFriends,
+  faBell,
+  faGear,
+  faMagnifyingGlass,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
+import { faFacebookMessenger } from "@fortawesome/free-brands-svg-icons";
+import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
 const MyHeaderLeftComponent = (props) => {
-  const {text} = props;
+  const { text } = props;
   return (
     <View style={{ marginLeft: 16 }}>
-      <Text style={{ fontSize: 29, fontWeight: 'bold' }}>{text}</Text>
+      <Text style={{ fontSize: 29, fontWeight: "bold" }}>{text}</Text>
     </View>
   );
 };
@@ -25,15 +32,21 @@ const MyHeaderLeftComponent = (props) => {
 const MyHeaderRightFeed = () => {
   const navigation = useNavigation();
   return (
-    <View style={{ marginLeft: 16, flexDirection: 'row-reverse' }}>
+    <View style={{ marginLeft: 16, flexDirection: "row-reverse" }}>
       {/* <TouchableOpacity style={styles.buttonHeader} onPress={() => navigation.navigate({name: ''})}>
               <FontAwesomeIcon size={18} icon={faFacebookMessenger} />
       </TouchableOpacity> */}
-      <TouchableOpacity style={styles.buttonHeader} onPress={() => navigation.navigate({name: 'Search'})}>
-              <FontAwesomeIcon size={18} icon={faMagnifyingGlass} />
+      <TouchableOpacity
+        style={styles.buttonHeader}
+        onPress={() => navigation.navigate({ name: "Search" })}
+      >
+        <FontAwesomeIcon size={18} icon={faMagnifyingGlass} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonHeader} onPress={() => navigation.navigate({name: 'CreatePost'})}>
-              <FontAwesomeIcon size={18} icon={faPlus} />
+      <TouchableOpacity
+        style={styles.buttonHeader}
+        onPress={() => navigation.navigate({ name: "CreatePost" })}
+      >
+        <FontAwesomeIcon size={18} icon={faPlus} />
       </TouchableOpacity>
     </View>
   );
@@ -42,102 +55,111 @@ const MyHeaderRightFeed = () => {
 const HeaderRightFriend = () => {
   const navigation = useNavigation();
   return (
-    <View style={{ marginLeft: 16, flexDirection: 'row-reverse' }}>
-      <TouchableOpacity style={styles.buttonHeader} onPress={() => navigation.navigate({name: 'Search'})}>
-              <FontAwesomeIcon size={18} icon={faMagnifyingGlass} />
+    <View style={{ marginLeft: 16, flexDirection: "row-reverse" }}>
+      <TouchableOpacity
+        style={styles.buttonHeader}
+        onPress={() => navigation.navigate({ name: "Search" })}
+      >
+        <FontAwesomeIcon size={18} icon={faMagnifyingGlass} />
       </TouchableOpacity>
     </View>
   );
-}
+};
 
 const HeaderRightNotiAndMenu = () => {
   const navigation = useNavigation();
   return (
-    <View style={{ marginLeft: 16, flexDirection: 'row-reverse' }}>
-      <TouchableOpacity style={styles.buttonHeader} onPress={() => navigation.navigate({name: 'Search'})}>
-              <FontAwesomeIcon size={18} icon={faMagnifyingGlass} />
+    <View style={{ marginLeft: 16, flexDirection: "row-reverse" }}>
+      <TouchableOpacity
+        style={styles.buttonHeader}
+        onPress={() => navigation.navigate({ name: "Search" })}
+      >
+        <FontAwesomeIcon size={18} icon={faMagnifyingGlass} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonHeader} onPress={() => navigation.navigate({name: 'Search'})}>
-              <FontAwesomeIcon size={18} icon={faGear} />
+      <TouchableOpacity
+        style={styles.buttonHeader}
+        onPress={() => {
+          navigation.navigate({ name: "SettingHeader" });
+        }}
+      >
+        <FontAwesomeIcon size={18} icon={faGear} />
       </TouchableOpacity>
     </View>
   );
-}
+};
 
 const HomeNavigator = () => {
   return (
     <Tab.Navigator>
-      <Tab.Screen 
-        name="Feed" 
-        component={FeedScreen} 
-        options={{tabBarIcon: () => {
-            return(
-                <FontAwesomeIcon size={24} icon={faHome} />
-            )
-        },
+      <Tab.Screen
+        name="Feed"
+        component={FeedScreen}
+        options={{
+          tabBarIcon: () => {
+            return <FontAwesomeIcon size={24} icon={faHome} />;
+          },
           headerTitle: () => null,
-          headerLeft: () => <MyHeaderLeftComponent text='facebook'/>,
-          headerRight: () => <MyHeaderRightFeed/>,
-          tabBarShowLabel: false
+          headerLeft: () => <MyHeaderLeftComponent text="facebook" />,
+          headerRight: () => <MyHeaderRightFeed />,
+          tabBarShowLabel: false,
         }}
-    />
-      <Tab.Screen 
-        name="Friend" 
-        component={FriendRequestScreen} 
-        options={{tabBarIcon: () => {
-            return(
-                <FontAwesomeIcon size={24} icon={faUserFriends} />
-            )
-        },
-        headerTitle: () => null,
-        headerLeft: () => <MyHeaderLeftComponent text='Friends'/>,
-        headerRight: () => <HeaderRightFriend/>,
-        tabBarShowLabel: false,
+      />
+      <Tab.Screen
+        name="Friend"
+        component={FriendRequestScreen}
+        options={{
+          tabBarIcon: () => {
+            return <FontAwesomeIcon size={24} icon={faUserFriends} />;
+          },
+          headerTitle: () => null,
+          headerLeft: () => <MyHeaderLeftComponent text="Friends" />,
+          headerRight: () => <HeaderRightFriend />,
+          tabBarShowLabel: false,
         }}
-    />
-      <Tab.Screen 
-        name="Notification" 
-        component={NotificationScreen} 
-        options={{tabBarIcon: () => {
-            return(
-                <FontAwesomeIcon size={24} icon={faBell} />
-            )
-        },
-        headerTitle: () => null,
-        headerLeft: () => <MyHeaderLeftComponent text='Notifications'/>,
-        headerRight: () => <HeaderRightNotiAndMenu/>,
-        tabBarShowLabel: false,
+      />
+      <Tab.Screen
+        name="Notification"
+        component={NotificationScreen}
+        options={{
+          tabBarIcon: () => {
+            return <FontAwesomeIcon size={24} icon={faBell} />;
+          },
+          headerTitle: () => null,
+          headerLeft: () => <MyHeaderLeftComponent text="Notifications" />,
+          headerRight: () => <HeaderRightNotiAndMenu />,
+          tabBarShowLabel: false,
         }}
-    />
-      <Tab.Screen 
-        
-        
-        name="Setting" 
-        component={ProfileScreen} 
-        options={{tabBarIcon: () => {
-            return(
-                <FontAwesomeIcon size={24} icon={faGear} />
-            )
-        },
-        headerTitle: () => null,
-        headerLeft: () => <MyHeaderLeftComponent text='Menu'/>,
-        headerRight: () => <HeaderRightNotiAndMenu/>,
-        tabBarShowLabel: false,
+      />
+      <Tab.Screen
+        name="Setting"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: () => {
+            return <FontAwesomeIcon size={24} icon={faGear} />;
+          },
+          headerTitle: () => null,
+          headerLeft: () => <MyHeaderLeftComponent text="Menu" />,
+          headerRight: () => <HeaderRightNotiAndMenu />,
+          tabBarShowLabel: false,
         }}
-    />
-      
+      />
     </Tab.Navigator>
   );
-}
+};
 
 export default HomeNavigator;
 
-const styles = StyleSheet.create ({
+const styles = StyleSheet.create({
   buttonHeader: {
     borderWidth: 8,
     borderRadius: 50,
+<<<<<<< HEAD
     borderColor: '#e4e6eb',
     backgroundColor: '#e4e6eb',
+=======
+    borderColor: "#e4e6eb",
+    backgroundColor: "#e4e6eb",
+>>>>>>> 1c713049fae60d0ca3a13ad182f6fa05d95aaf07
     marginLeft: 8,
   },
-})
+});
