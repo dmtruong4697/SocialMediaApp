@@ -80,6 +80,9 @@ const FeedScreen = () => {
 
   return (
     <View style={styles.container}>
+      <View style = {styles.header}>
+        
+      </View>
       <FlatList
         data={postData}
         renderItem={({ item }) => <PostCard postDetail={item} />}
@@ -100,4 +103,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  header:{
+
+  }
 });

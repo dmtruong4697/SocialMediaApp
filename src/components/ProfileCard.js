@@ -7,12 +7,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faDotCircle, faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import Modal from 'react-native-modal';
 
+
 const ProfileCard = (props) => {
 
   const { avatarImage, userName, userId ,isNotFriend, mutualFriends, pressUnFriend, mutualFriend, pressAddFriend, pressCancel, blockUser} = props;
   const [optionVisible, setOptionVisible] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [actionAdd, setActionAdd] = useState(false)
+  const avatarBackUp = 'https://imgur.com/BwwePkj.jpg';
 
   const delSuggestFriends = () => {
     setIsHidden(true);
@@ -24,7 +26,7 @@ const ProfileCard = (props) => {
       {isHidden ? null :
       <View style={styles.container}>
         <TouchableOpacity style={styles.avatarImage}>
-              <Image style={styles.image} source={{uri: avatarImage}}/>
+              <Image style={styles.image} source={{uri: (avatarImage ? avatarImage : avatarBackUp)}}/>
         </TouchableOpacity>
 
         <View style={styles.content}>
@@ -119,8 +121,8 @@ const ProfileCard = (props) => {
             borderRadius: 10,
           }}>
             
-            <TouchableOpacity style={[styles.optionAction, {flexDirection: 'row', justifyContent: 'flex-start', gap: 10}]} onPress={() => {}}>
-              <Image style={{height: '100%', aspectRatio: 1, borderRadius: 100,}} source={{uri: avatarImage}}/>
+            <TouchableOpacity style={[styles.optionAction, styles.optionActionHeaderModal]} onPress={() => {}}>
+              <Image style={{height: '100%', aspectRatio: 1, borderRadius: 100,}} source={{uri: (avatarImage ? avatarImage : avatarBackUp)}}/>
               <Text style={{fontSize: 18}}>{userName}</Text>
             </TouchableOpacity>
             
@@ -157,12 +159,10 @@ ProfileCard.propTypes = {
   blockUser: PropTypes.func,
 };
 
-
-
 export default ProfileCard;
 const styles = StyleSheet.create({
   container: {    
-    height: 85,
+    height: 75,
     width: '95%',
     alignSelf: 'center',   
     display: 'flex',
@@ -228,17 +228,34 @@ const styles = StyleSheet.create({
 
   optionAction: {
     width: '100%',
-    height: 60,
+    height: 40,
     borderRadius: 10,
-    //backgroundColor: 'pink',
-    marginTop: 10,
-    marginBottom: 10,
+    // backgroundColor: 'pink',
+    marginTop: 5,
+    marginBottom: 5,
     justifyContent: 'center',
     alignItems: 'center',
   },
 
+  optionActionHeaderModal: {
+    flexDirection: 'row', 
+    justifyContent: 'flex-start', 
+    gap: 10, 
+    marginLeft: 15, 
+    marginTop: 20,
+    borderBottomWidth: 1,
+    paddingBottom: 10,
+    height: 70,
+  },
+
   button_cancel: {
     marginTop: 10,
+  },
+
+  avtBackUp: {
+    aspectRatio: 1,
+    width: '100%',
+    borderRadius: 1000,
   }
 
 })
