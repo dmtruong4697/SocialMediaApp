@@ -43,7 +43,7 @@ const PostDetailScreen = ({ route }) => {
   };
 
   useEffect(() => {
-    if(inputType == 'Reply') handleAddMarkPress();
+    if (inputType == 'Reply') handleAddMarkPress();
   }, [inputType])
 
   const [refreshing, setRefreshing] = React.useState(false);
@@ -186,7 +186,7 @@ const PostDetailScreen = ({ route }) => {
         </TouchableOpacity> */}
         <View>
           <PostCardDetail
-            postDetail={postDetail} 
+            postDetail={postDetail}
             handleAddMarkButton={() => {
               inputMarkRef.current.focus();
             }} />
@@ -194,10 +194,10 @@ const PostDetailScreen = ({ route }) => {
 
         <View style={styles.comment}>
           {mark.map((item) => (
-            <MarkCard 
-              markDetail={item} 
-              postDetail={postDetail} 
-              key={item.id} 
+            <MarkCard
+              markDetail={item}
+              postDetail={postDetail}
+              key={item.id}
               handleReplyButton={() => {
                 inputMarkRef.current.focus();
               }}
@@ -211,7 +211,7 @@ const PostDetailScreen = ({ route }) => {
           multiline
           ref={inputMarkRef}
           style={styles.inputField}
-          placeholder={(inputType == 'Mark')? `Tạo Mark dưới tên ${currentUser.userName} ...`:`Phản hồi dưới tên ${currentUser.userName} ...`}
+          placeholder={(inputType == 'Mark') ? `Tạo Mark dưới tên ${currentUser.userName} ...` : `Phản hồi dưới tên ${currentUser.userName} ...`}
           value={newMark}
           onChangeText={(text) => setNewMark(text)}
           onBlur={() => {
@@ -221,7 +221,7 @@ const PostDetailScreen = ({ route }) => {
         />
 
         <TouchableOpacity
-          onPress={(inputType == 'Mark')? handleSetMark:handleReplyMark}
+          onPress={(inputType == 'Mark') ? handleSetMark : handleReplyMark}
           style={{
             //backgroundColor: 'pink',
             width: 40,
@@ -232,7 +232,7 @@ const PostDetailScreen = ({ route }) => {
             alignItems: 'center',
           }}
         >
-          <Image style={{height: 26, width: 26, }} source={require('../../../../assets/icons/send.png')}/>  
+          <Image style={{ height: 26, width: 26, }} source={require('../../../../assets/icons/send.png')} />
         </TouchableOpacity>
       </View>
 

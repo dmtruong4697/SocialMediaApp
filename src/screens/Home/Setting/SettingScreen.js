@@ -14,13 +14,14 @@ const SettingScreen = () => {
     if (!currentUser) {
       navigation.navigate({ name: "Login" });
     }
-  }, [currentUser, navigation]);
+  }, [currentUser]);
   return (
     <View>
       <NotificationSetting />
       <LogoutButton
         onPress={() => {
           dispatch(logoutRequest(currentUser));
+          //navigation.navigate({ name: "Login" });
         }}
       />
       {/* <Button
