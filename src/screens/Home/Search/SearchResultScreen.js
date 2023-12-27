@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, FlatList, RefreshControl } from 'react-native'
+import React, { useEffect, useState, useCallback } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import ProfileCard from '../../../components/ProfileCard';
@@ -7,14 +7,16 @@ import { Button } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import PostCard from '../../../components/PostCard';
 
 const SearchResultScreen = ({ route }) => {
   const { searchQuery } = route.params || {};
 
 const navigation = useNavigation();
-const [pressBtn, setPressBtn] = useState('people');
+const [pressBtn, setPressBtn] = useState('all');
 const [inputSearch, setinputSearch] = useState(searchQuery || '');
 const currentUser = useSelector((state) => state.auth.currentUser);
+const [loadingData, setLoadingData] = useState(true);
 
 const handlePress = (buttonName) => {
   setPressBtn(buttonName);
@@ -24,24 +26,20 @@ const isButtonSelected = (buttonName) => {
   return pressBtn === buttonName;
 };
 
-const searchData = [
-  {
-    avatarImage: "https://static.wikia.nocookie.net/familyguy/images/a/aa/FamilyGuy_Single_PeterDrink_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20230815202349",
-    userName: "John Doe",
-    userId: '1',
-    isNotFriend: false,
-  },
-
-  {
-    avatarImage: "https://static.wikia.nocookie.net/familyguy/images/1/1b/FamilyGuy_Single_MegMakeup_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20200526171840",
-    userName: "John Doe",
-    userId: '2',
-    isNotFriend: true,
-  }
-]
-
 const [index, setIndex] = useState('1');
 const [listFrSearchData, setListFrSearchData] = useState([]);
+const [listPostSearch, setListPostSearch] = useState([]);
+const [refreshing, setRefreshing] = useState(false);
+
+const onRefresh = useCallback(() => {
+  setRefreshing(true);
+  setRefreshing(false);
+}, []);
+
+const SeeAll = () => {
+  setIndex(index - '0' +1);
+}
+
 const handleSearchUser = async () => {
   try {
     const response = await axios.post('https://it4788.catan.io.vn/search_user', {
@@ -78,15 +76,58 @@ const handleSearchUser = async () => {
       // Các lỗi khác
       console.error('Lỗi không xác định:', error.message);
     }
+  } finally {
+    setLoadingData(false);
   }
+}
+
+const handleSearch = async (id) => {
+  try {
+    const response = await axios.post('https://it4788.catan.io.vn/search', {
+      keyword: searchQuery,
+      user_id: id || "",
+      index: (index-'0'-1)*20,
+      count: 20
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${currentUser.token}`,
+      },
+    })
+
+    if (response.status === 200) {
+      console.log('Search success');
+      setListPostSearch(response.data?.data || []);
+    } else {
+      console.log('Search fail, response data:', response.data);
+      console.log('response status: ', response.status);
+      Alert.alert('Search fail','please try again');
+    }
+
+  } catch (error) {
+    console.error('Search false:', error)
+    Alert.alert('Search false', 'Please try again.');
+    if (error.response) {
+      console.error('response data: ', error.response.data);
+      console.error('response status: ', error.response.status);
+      console.error('Response headers:', error.response.headers);
+    } else if (error.request) {
+      // Yêu cầu đã được gửi nhưng không nhận được response
+      console.error('Request data:', error.request);
+    } else {
+      // Các lỗi khác
+      console.error('Lỗi không xác định:', error.message);
+    }
+  } 
 }
 
   useEffect(() => {
     handleSearchUser();
+    handleSearch();
   }, []);
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 15}}>
       <TouchableOpacity onPress={() =>
               navigation.navigate({name: 'Search'})
@@ -203,18 +244,85 @@ const handleSearchUser = async () => {
           </View>
       </ScrollView>
     </View>
-    <View style={styles.all}>
-      <Text style={{fontSize: 20, fontWeight: 600, padding: 18,}}>People</Text>
-      {listFrSearchData.map((item, key) => <ProfileCard
-          avatarImage={item.avatar}
-          userName={item.username}
-          userId={item.id}
-          // isNotFriend={item.isNotFriend}
-          key={key}
-        />)
-      }
+    {loadingData ? <Text>loading...</Text> : 
+    <View>
+        {pressBtn === 'all' ? 
+          <View style={styles.all}>
+              <ScrollView style={{marginBottom: '40%',}}>
+                <View style={{borderBottomWidth: 5, borderColor: 'gray',}}>
+                  <Text style={{fontSize: 20, fontWeight: 600, padding: 18,}}>People</Text>
+                  {listFrSearchData.length > 0 ? (listFrSearchData.map((item, key) => <ProfileCard
+                    avatarImage={item.avatar}
+                    userName={item.username}
+                    userId={item.id}
+                    // isNotFriend={item.isNotFriend}
+                    key={key}
+                    />)
+                  ) : <Text style={{paddingLeft: 10,}}>Không tìm thấy người dùng nào...</Text>}
+                  {listFrSearchData.length > 20 ? 
+                    <Button 
+                      title={'See all'}
+                      buttonStyle={{borderRadius: 10, marginHorizontal: 10, marginBottom: 10}}
+                      onPress={() => {SeeAll()}}
+                    />
+                   : null}
+                </View>
+                <View style={{borderBottomWidth: 5, borderColor: 'gray',}}>
+                  <Text style={{fontSize: 20, fontWeight: 600, padding: 18,}}>Post</Text>
+                  {listPostSearch.length > 0 ? (listPostSearch.map((item, key) => <PostCard postDetail={item} key={key} />)) : <Text style={{paddingLeft: 10,}}>Không tìm thấy bài viết nào...</Text>}
+                </View>
+              </ScrollView>
+          </View> : <View></View>}
+        {pressBtn === 'people' ? 
+          <View style={styles.people}>
+            <Text style={{fontSize: 20, fontWeight: 600, padding: 18,}}>People</Text>
+            {listFrSearchData.length > 0 ? 
+            <View>
+              <FlatList
+                data={listFrSearchData}
+                renderItem={({item}) => <ProfileCard
+                avatarImage={item.avatar}
+                userName={item.username}
+                userId={item.id}
+                // isNotFriend={item.isNotFriend}
+                />}
+                keyExtractor={(item) => item.id.toString()}
+                  style={{marginBottom: '100%',}}
+                  // onEndReachedThreshold={0.5}
+                  // onEndReached={handleLoadMore}
+                  refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+              /> 
+            </View>
+            : <Text style={{paddingLeft: 10,}}>Không tìm thấy người dùng nào...</Text>}
+          </View> : 
+          <View></View>
+        }
+
+        {pressBtn === 'Post' ? 
+          <View style={styles.post}>
+            <Text style={{fontSize: 20, fontWeight: 600, padding: 18,}}>Post</Text>
+            <View>
+              {listPostSearch.length > 0 ? <FlatList
+                data={listPostSearch}
+                renderItem={({ item }) => <PostCard postDetail={item} />}
+                keyExtractor={(item) => item.id.toString()}
+                style={{marginBottom: '100%',}}
+                // onEndReachedThreshold={0.5}
+                // onEndReached={handleLoadMore}
+                refreshControl={
+                  <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+              /> : <Text style={{paddingLeft: 10,}}>Không tìm thấy bài viết nào...</Text>}
+          </View>
+          </View> : 
+          <View></View>
+        }
     </View>
-    </ScrollView>
+    }
+    </View>
+
   )
 }
 
@@ -222,17 +330,13 @@ export default SearchResultScreen
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: '7%',
+    marginTop: '10%',
   },
 
   option: {
     flexDirection: 'row',
     borderBottomWidth: 2,
     borderBottomColor: '#e4e6eb',
-  },
-
-  searchHeader: {
-    marginTop: '7%',
   },
 
   iconSearch: {
@@ -249,12 +353,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   item: {
-    // width: 150,
-    // height: 100,
-    // margin: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: '#e0e0e0',
   },
   titleBtn: {
     color: '#000000', 
