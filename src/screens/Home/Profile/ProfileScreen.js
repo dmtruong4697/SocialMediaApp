@@ -18,20 +18,25 @@ import ListFriendScreen from "./ListFriendScreen";
 import PostCard from "../../../components/PostCard";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import CreatePostScreen from "../Post/CreatePostScreen";
-const ProfileScreen = () => {
+import CreatePostScreen from '../Post/CreatePostScreen';
+const ProfileScreen = ({route}) => {
+  
   const navigation = useNavigation();
   const [postData, setPostData] = useState([]);
   const currentUser = useSelector((state) => state.auth.currentUser);
+  const user_id = currentUser.id
   const [profileData, setProfileData] = useState({});
   const [countFriend, setCountFriend] = useState(0);
-  const [index, setIndex] = useState("0");
+  const [index, setIndex] = useState("0")
+  const [friendListData, setFriendListData] = useState([]);
+  const [isMyProfile, setMyProfile] = useState(true);
+  const [isFriend, setIsFriend] = useState(false);
   const handleGetPosts = async (pageNumber) => {
     try {
       const response = await axios.post(
         "https://it4788.catan.io.vn/get_list_posts",
         {
-          user_id: currentUser.id,
+          user_id: user_id,
           latitude: 1.0,
           longitude: 1.0,
           last_id: 0,
@@ -52,16 +57,16 @@ const ProfileScreen = () => {
 
   const handleProfile = async () => {
     try {
-      const response = await axios.post(
-        "https://it4788.catan.io.vn/get_user_info",
-        {
-          user_id: currentUser.id,
+      const response = await axios.post('https://it4788.catan.io.vn/get_user_info', {
+        user_id: user_id
+      },
+      
+      {
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${currentUser.token}`,
-          },
-        }
+      }
+        
       );
       setProfileData(response.data.data);
       // console.log(profileData)
@@ -99,8 +104,9 @@ const ProfileScreen = () => {
         }
       );
       setCountFriend(response.data?.data?.total || 0);
-      console.log("number of friend");
-      if (response.status === 200 || response.status === 201) {
+      setFriendListData(response.data?.data?.friends || []);
+      
+      if (response.status === 200||response.status === 201) {
         setCountFriend(response.data?.data?.total || 0);
       } else {
         Alert.alert("Get fail");
@@ -122,8 +128,20 @@ const ProfileScreen = () => {
   }, [profileData.avatar]);
   useEffect(() => {
     handleCountFriend();
-  });
-
+    if(user_id!=currentUser.id){
+      setMyProfile(false);
+      for(let i= 0;i<friendListData.length;i++){
+        console.log(friendListData[i].id)
+        if(friendListData[i].id==user_id){
+          setIsFriend(true);
+          
+          break;
+        }
+      }
+    }
+    
+  },[])
+  
   return (
     <ScrollView nestedScrollEnabled={true}>
       <View style={styles.container}>

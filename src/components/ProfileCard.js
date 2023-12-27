@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faDotCircle, faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import Modal from 'react-native-modal';
-import male from '../../assets/male.png'
+
 
 const ProfileCard = (props) => {
 

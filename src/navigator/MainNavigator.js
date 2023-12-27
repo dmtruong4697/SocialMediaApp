@@ -18,18 +18,21 @@ import { faL } from "@fortawesome/free-solid-svg-icons";
 import AllSearchRecent from "../screens/Home/Search/AllSearchRecent";
 import VerifyCode from "../screens/Login/VerifyCode";
 
-import ChangeInfoScreen from "../screens/Login/ChangeInfoScreen";
-import CreatePostScreen from "../screens/Home/Post/CreatePostScreen";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import {
-  faArrowLeft,
-  faCancel,
-  faMultiply,
-  faMagnifyingGlass,
-} from "@fortawesome/free-solid-svg-icons";
-import { Pressable } from "react-native";
-import { TouchableOpacity } from "react-native";
-import PostDetailScreen from "../screens/Home/Post/PostDetailScreen";
+import ChangeInfoScreen from '../screens/Login/ChangeInfoScreen';
+import CreatePostScreen from '../screens/Home/Post/CreatePostScreen';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faArrowLeft, faCancel, faMultiply, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { Pressable } from 'react-native';
+import { TouchableOpacity } from 'react-native';
+import PostDetailScreen from '../screens/Home/Post/PostDetailScreen';
+
+import UserProfileScreen from '../screens/Home/Profile/UserProfileScreen';
+
+
+
+
+
+
 import EditAvatar from "../screens/Home/Profile/EditAvatar";
 import EditCover from "../screens/Home/Profile/EditCover";
 import SettingScreen from "../screens/Home/Setting/SettingScreen";
@@ -55,12 +58,37 @@ const MainNavigator = () => {
         options={{ headerShown: false }}
       />
 
-      <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-      <Stack.Screen name="EditAvatar" component={EditAvatar} />
-      <Stack.Screen name="EditCover" component={EditCover} />
-      <Stack.Screen name="ListFriend" component={ListFriendScreen} />
-      <Stack.Screen name="Profile" component={ProfileScreen} />
-      <Stack.Screen name="FriendList" component={FriendListScreen} />
+                <Stack.Screen
+                    name = 'EditProfile'
+                    component={EditProfileScreen}
+                    
+                />
+                <Stack.Screen
+                    name = 'EditAvatar'
+                    component={EditAvatar}
+                    
+                />
+                <Stack.Screen
+                    name = 'EditCover'
+                    component={EditCover}
+                    
+                />
+                <Stack.Screen
+                    name = 'ListFriend'
+                    component={ListFriendScreen}
+                />
+                <Stack.Screen
+                    name = 'Profile'
+                    component={ProfileScreen}
+                />
+                <Stack.Screen
+                    name = 'User Profile'
+                    component={UserProfileScreen}
+                />
+                <Stack.Screen
+                    name='FriendList'
+                    component={FriendListScreen}
+                />
 
       <Stack.Screen
         name="FriendSuggest"
