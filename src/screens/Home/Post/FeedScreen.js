@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import PostCard from "../../../components/PostCard";
 const FeedScreen = () => {
+
+  const BACKEND_URL = 'https://it4788.catan.io.vn'
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.currentUser);
@@ -26,7 +28,7 @@ const FeedScreen = () => {
       setLoading(true);
 
       const response = await axios.post(
-        "https://it4788.catan.io.vn/get_list_posts",
+        `${BACKEND_URL}/get_list_posts`,
         {
           //user_id: 381,
           latitude: 1.0,

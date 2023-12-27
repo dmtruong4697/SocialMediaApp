@@ -1,32 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { ScrollView, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, Text, View, Alert } from 'react-native';
 import { Button } from '@rneui/themed';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
-import ProfileCard from '../../../components/ProfileCard';
+import SearchRecent from '../../../components/SearchRecent';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 
-const AllSearchRecent = () => {
+const AllSearchRecent = ({ route }) => {
+    const { searchHistoryData } = route.params || {};
     const navigation = useNavigation();
-
-    const searchData = [
-        {
-          avatarImage: "https://static.wikia.nocookie.net/familyguy/images/a/aa/FamilyGuy_Single_PeterDrink_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20230815202349",
-          userName: "John Doe",
-          userId: '1',
-          isNotFriend: false,
-        },
-      
-        {
-          avatarImage: "https://static.wikia.nocookie.net/familyguy/images/1/1b/FamilyGuy_Single_MegMakeup_R7.jpg/revision/latest/scale-to-width-down/1000?cb=20200526171840",
-          userName: "John Doe",
-          userId: '2',
-          isNotFriend: true,
-        }
-      ]
-
+    const [all, setAll] = useState('0');
+    const currentUser = useSelector((state) => state.auth.currentUser);
     const [pressBtn, setPressBtn] = useState('all');
-    const [pressDel, setPressDel] = useState(true);//true hien thi, false k hien thi
+    const [pressDel, setPressDel] = useState(false);//true hien thi, false k hien thi
 
     const handlePress = (buttonPress) => {
         setPressBtn(buttonPress);
@@ -35,6 +23,42 @@ const AllSearchRecent = () => {
     const isPressBtn = (buttonName) => {
         return pressBtn === buttonName;
     }
+
+    const handleDelSaveSearch = async (id, all) => {
+        try {
+          const response = await axios.post('https://it4788.catan.io.vn/del_saved_search', {
+            search_id: id,
+            all: all,
+          }, 
+          {
+            headers: {
+              Authorization: `Bearer ${currentUser.token}`,
+            },
+          })
+    
+          if (response.status === 200) {
+            console.log('delete search success');
+          } else {
+            console.log ('delete fail: response data: ', response.data);
+            console.log('response status: ', response.status);
+            Alert.alert("delete fail:", 'please try again!');
+          }
+        } catch (error) {
+          console.error('delete Search recent false:', error)
+          Alert.alert('delete Search recent false', 'Please try again.');
+          if (error.response) {
+            console.error('response data: ', error.response.data);
+            console.error('response status: ', error.response.status);
+            console.error('Response headers:', error.response.headers);
+          } else if (error.request) {
+            // Yêu cầu đã được gửi nhưng không nhận được response
+            console.error('Request data:', error.request);
+          } else {
+            // Các lỗi khác
+            console.error('Lỗi không xác định:', error.message);
+          }
+        }
+      }
 
     return (
         <ScrollView style={styles.component}>
@@ -53,7 +77,7 @@ const AllSearchRecent = () => {
                     titleStyle={{}}
                     buttonStyle={{padding: 0, margin: 0, }}
                     type= 'clear'
-                    onPress={() => {setPressDel(false)}}
+                    onPress={() => {setPressDel(true); handleDelSaveSearch('1', '1')}}
                 />
                 </View>
             </View>
@@ -84,23 +108,24 @@ const AllSearchRecent = () => {
                 />
             </View>
             <View>
-                {pressDel ? (<View>{searchData.map((item, key) => <ProfileCard
-                    avatarImage={item.avatarImage}
-                    userName={item.userName}
-                    userId={item.userId}
-                    isNotFriend={item.isNotFriend}
-                    key={key}
-                    />)
-                }</View>) : (<View></View>)}
+                {pressDel ? (<View></View>) : 
+                    (<View>{searchHistoryData.map((item, key) => (item.id % 2 ? <SearchRecent
+                                textSearch = {item.keyword}
+                                deleteSaveSearch = {() => {handleDelSaveSearch(item.id, '0')}}
+                                key={key}
+                                /> : null))
+                            } 
+                    </View>)
+                }
                 
-            </View>
+            </View> 
         </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
     component: {
-        marginTop: '7%',
+        marginTop: '10%',
     },
     headerComponent: {
         flexDirection: 'row',
