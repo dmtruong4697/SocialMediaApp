@@ -135,7 +135,7 @@ export default HomeNavigator;
 const styles = StyleSheet.create ({
   buttonHeader: {
     borderWidth: 8,
-    borderRadius: '50%',
+    borderRadius: 50,
     borderColor: '#e4e6eb',
     backgroundColor: '#e4e6eb',
     marginLeft: 8,
