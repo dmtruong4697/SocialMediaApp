@@ -27,7 +27,7 @@ import { TouchableOpacity } from 'react-native';
 import PostDetailScreen from '../screens/Home/Post/PostDetailScreen';
 import EditAvatar from '../screens/Home/Profile/EditAvatar';
 import EditCover from '../screens/Home/Profile/EditCover';
-
+import UserProfileScreen from '../screens/Home/Profile/UserProfileScreen';
 const Stack = createNativeStackNavigator();
 const MainNavigator = () => {
     const navigation = useNavigation();
@@ -77,6 +77,10 @@ const MainNavigator = () => {
                 <Stack.Screen
                     name = 'Profile'
                     component={ProfileScreen}
+                />
+                <Stack.Screen
+                    name = 'User Profile'
+                    component={UserProfileScreen}
                 />
                 <Stack.Screen
                     name='FriendList'

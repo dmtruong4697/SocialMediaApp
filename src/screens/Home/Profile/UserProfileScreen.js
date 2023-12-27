@@ -11,136 +11,158 @@ import PostCard from "../../../components/PostCard";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import CreatePostScreen from '../Post/CreatePostScreen';
-const ProfileScreen = ({route}) => {
+const UserProfileScreen = ({route}) => {
   
-  const navigation = useNavigation();
-  const [postData, setPostData] = useState([]);
-  const currentUser = useSelector((state) => state.auth.currentUser);
-  const user_id = currentUser.id
-  const [profileData, setProfileData] = useState({});
-  const [countFriend, setCountFriend] = useState(0);
-  const [index, setIndex] = useState("0")
-  const [friendListData, setFriendListData] = useState([]);
-  const [isMyProfile, setMyProfile] = useState(true);
-  const [isFriend, setIsFriend] = useState(false);
-  const handleGetPosts = async (pageNumber) => {
-  
-    try {
-     
+const navigation = useNavigation();
+const [postData, setPostData] = useState([]);
+const currentUser = useSelector((state) => state.auth.currentUser);
+const {user_id} = route.params;
+const [profileData, setProfileData] = useState({});
+const [countFriend, setCountFriend] = useState(0);
+const [index, setIndex] = useState("0")
+const [friendListData, setFriendListData] = useState([]);
+const [myFriendListData, setMyFriendListData] = useState([])
+const [isFriend, setIsFriend] = useState(false);
+const handleGetPosts = async (pageNumber) => {
 
-      const response = await axios.post(
-        "https://it4788.catan.io.vn/get_list_posts",
-        {
-          user_id: user_id,
-          latitude: 1.0,
-          longitude: 1.0,
-          last_id: 0,
-          index: (pageNumber - 1) * 20,
-          count: 20,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${currentUser.token}`,
-          },
-        }
-      );
-      setPostData(response.data.data.post);
-      
-     
-    } catch (error) {
-      console.error("Lỗi:", error);
-     
-    }
-  };
-  
-  
-  
-  const handleProfile = async () => {
-   
-    try {
-      const response = await axios.post('https://it4788.catan.io.vn/get_user_info', {
-        user_id: user_id
+  try {
+    
+
+    const response = await axios.post(
+      "https://it4788.catan.io.vn/get_list_posts",
+      {
+        user_id: user_id,
+        latitude: 1.0,
+        longitude: 1.0,
+        last_id: 0,
+        index: (pageNumber - 1) * 20,
+        count: 20,
       },
       {
         headers: {
           Authorization: `Bearer ${currentUser.token}`,
         },
-      });
+      }
+    );
+    setPostData(response.data.data.post);
+    
+    
+  } catch (error) {
+    console.error("Lỗi:", error);
+    
+  }
+};
+
+
+
+const handleProfile = async () => {
+  
+  try {
+    const response = await axios.post('https://it4788.catan.io.vn/get_user_info', {
+      user_id: user_id
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${currentUser.token}`,
+      },
+    });
+    setProfileData(response.data.data);
+    console.log("is friend: ", response.data.data.is_friend)
+    if(response.data.data.is_friend=='0'){
+      setIsFriend(false)
+    }
+    else{
+      setIsFriend(true)
+    }
+    console.log(response.data.data)
+    if (response.status === 200) {
+      console.log('Get profile data succcess');
       setProfileData(response.data.data);
-      // console.log(profileData)
-      console.log(response.data.data)
-      if (response.status === 200) {
-        console.log('Get profile data succcess');
-        setProfileData(response.data.data);
-        
-      } else {
-        
-        console.log('response status: ', response.status);
-      }
-    } catch (error) {
-      console.error('Get data fail')
       
-      if (error.response) {
-        console.error('response data: ', error.response.data);
-      } else if (error.request) {
-        console.error('Request data:', error.request);
-      } else {
-        console.error('Lỗi không xác định:', error.message);
-      }
+    } else {
+      
+      console.log('response status: ', response.status);
+    }
+  } catch (error) {
+    console.error('Get data fail')
+    
+    if (error.response) {
+      console.error('response data: ', error.response.data);
+    } else if (error.request) {
+      console.error('Request data:', error.request);
+    } else {
+      console.error('Lỗi không xác định:', error.message);
     }
   }
-  const handleCountFriend = async () => {
-    
-    try {
-      const response = await axios.post('https://it4788.catan.io.vn/get_user_friends', {
-        index: index,
-        count: "5", 
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${currentUser.token}`,
-        },
-      });
-      setCountFriend(response.data?.data?.total || 0);
-      setFriendListData(response.data?.data?.friends || []);
-      
-      if (response.status === 200||response.status === 201) {
-        setCountFriend(response.data?.data?.total || 0);
-      } else {      
-        Alert.alert('Get fail');
-      }
-    } catch (error) {     
-      if (error.response) {
-        console.error('response data: ', error.response.data);
-        ;
-      } 
-    }
-  }
-   useEffect(() => {
-    // alert("handle get post")
-    handleGetPosts(1);
-  }, []);
-  useEffect(() => {
-    // alert("hello world")
-    handleProfile();
-    
-  }, [profileData.avatar]);
-  useEffect(()=>{
-    handleCountFriend();
-    if(user_id!=currentUser.id){
-      setMyProfile(false);
-      for(let i= 0;i<friendListData.length;i++){
-        console.log(friendListData[i].id)
-        if(friendListData[i].id==user_id){
-          setIsFriend(true);
-          
-          break;
-        }
-      }
-    }
-    
-  },[])
+}
+const handleCountFriend = async () => {
   
+  try {
+    const response = await axios.post('https://it4788.catan.io.vn/get_user_friends', {
+      index: index,
+      count: "5", 
+      user_id: user_id
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${currentUser.token}`,
+      },
+    });
+    setCountFriend(response.data?.data?.total || 0);
+    setFriendListData(response.data?.data?.friends || []);
+    
+    if (response.status === 200||response.status === 201) {
+      setCountFriend(response.data?.data?.total || 0);
+    } else {      
+      Alert.alert('Get fail');
+    }
+  } catch (error) {     
+    if (error.response) {
+      console.error('response data: ', error.response.data);
+      ;
+    } 
+  }
+}
+const handleSendFriendReq = async()=>{
+  try {
+    const response = await axios.post('https://it4788.catan.io.vn/set_request_friend', {
+      user_id: user_id
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${currentUser.token}`,
+      },
+    });
+    
+    
+    if (response.status === 200||response.status === 201) {
+      console.log("set req friend success")
+    } else {      
+      Alert.alert('Get fail');
+    }
+  } catch (error) {     
+    if (error.response) {
+      console.error('response data: ', error.response.data);
+      ;
+    } 
+  }
+}
+useEffect(() => {
+// alert("handle get post")
+  handleGetPosts(1);
+}, []);
+useEffect(() => {
+  // alert("hello world")
+  handleProfile();
+  if(profileData.is_friend!=0){
+    setIsFriend(true);
+  }
+}, [profileData.avatar]);
+useEffect(()=>{
+  
+  handleCountFriend();
+},[])
+
   return (
     <ScrollView>
     <View style={styles.container}>
@@ -164,26 +186,22 @@ const ProfileScreen = ({route}) => {
           <Text >{countFriend} Bạn Bè</Text>
         </View>
         <View style = {styles.edit_profile}>
-          <Button
-            title="Chỉnh sửa trang cá nhân"
+        <Button
+            title={isFriend ? "Bạn bè" : "Thêm bạn bè"} // Conditional rendering
             type="clear"
-            titleStyle={{ fontSize: 18, color: '#0780DC',fontWeight: 600 }}
+            titleStyle={{ fontSize: 18, color: '#0780DC', fontWeight: 600 }}
             style={{
-              
               borderRadius: 8,
               backgroundColor: '#BADFFC'
             }}
             onPress={() => {
-              
-              navigation.navigate('EditProfile', {
-                avatar: profileData.avatar,
-                cover_image: profileData.cover_image,
-                username: profileData.username,
-                address: profileData.address,
-                city: profileData.city,
-                country: profileData.country,
-                description: profileData.description
-              });
+              // Handle the button press based on the isFriend state
+              if (isFriend) {
+                // Logic for handling existing friend scenario
+                // ...
+              } else {
+                handleSendFriendReq();
+              }
             }}
           />
         </View>
@@ -254,19 +272,7 @@ const ProfileScreen = ({route}) => {
           />
         </View>
       </View>
-      <View style = {styles.container_add_post}>
-        <View style = {styles.add_post_avatar}>
-          <Image style = {{borderRadius: 1000, width: 50,height: 50}}  source={{uri: profileData.avatar}}/>
-        </View>
-        <View style = {{marginLeft: 10}}>
-          <Button style = {{fontSize: 16, backgroundColor:'none'}}
-          title="Bạn đang nghĩ gì"
-          onPress={()=>{
-            navigation.navigate('CreatePost')
-          }}
-          />
-        </View>
-      </View>
+      
       <View style = {{flex: 1}}>
         <FlatList
           data={postData}
@@ -284,7 +290,7 @@ const ProfileScreen = ({route}) => {
   );
 };
 
-export default ProfileScreen;
+export default UserProfileScreen;
 
 const styles = StyleSheet.create({
   container: {

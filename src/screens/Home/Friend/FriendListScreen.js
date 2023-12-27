@@ -175,6 +175,7 @@ const FriendListScreen = () => {
         <View>
           {friendListData.map((item) => <ProfileCard
               userId={item.id}
+              isFriend = {item.isFriend}
               avatarImage={item.avatar}
               userName={item.username}
               pressUnFriend={() => {handleUnFriend(item.id); setCount(count-'0'-1)}}

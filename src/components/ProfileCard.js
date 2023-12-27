@@ -119,7 +119,7 @@ const ProfileCard = (props) => {
             borderRadius: 10,
           }}>
             
-            <TouchableOpacity style={[styles.optionAction, {flexDirection: 'row', justifyContent: 'flex-start', gap: 10}]} onPress={() => {}}>
+            <TouchableOpacity style={[styles.optionAction, {flexDirection: 'row', justifyContent: 'flex-start', gap: 10}]} onPress={() => {console.log("hello")}}>
               <Image style={{height: '100%', aspectRatio: 1, borderRadius: 100,}} source={{uri: avatarImage}}/>
               <Text style={{fontSize: 18}}>{userName}</Text>
             </TouchableOpacity>
