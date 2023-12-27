@@ -60,10 +60,10 @@ const NotificationSetting = () => {
     birthday: "Sinh nhật",
     video: "Video",
     report: "Báo cáo",
-    sound_on: "Âm thanh bật",
-    notification_on: "Thông báo bật",
-    vibrant_on: "Chế độ màu sắc sôi động bật",
-    led_on: "Đèn LED bật",
+    sound_on: "Giọng nói",
+    notification_on: "Thông báo",
+    vibrant_on: "Rung",
+    led_on: "Sáng đèn",
   };
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -121,19 +121,22 @@ const NotificationSetting = () => {
         <Text style={styles.selectedOption}>{"Cài đặt thông báo"}</Text>
         <Text style={styles.dropdownIcon}>{isOpen ? "▲" : "▼"}</Text>
       </TouchableOpacity>
+
       {isOpen && (
         <View style={styles.dropdownOptions}>
-          {Object.keys(setting).map((key) => (
-            <TouchableOpacity
-              key={key}
-              style={styles.optionButton}
-              onPress={() => handleOptionPress(key)}
-            >
-              <Text style={styles.optionText}>
-                {obj[key]}:{setting[key] == "1" ? "Bật" : "Tắt"}
-              </Text>
-            </TouchableOpacity>
-          ))}
+          {Object.keys(setting)
+            .slice(0, -4)
+            .map((key, index, array) => (
+              <TouchableOpacity
+                key={key}
+                style={styles.optionButton}
+                onPress={() => handleOptionPress(key)}
+              >
+                <Text style={styles.optionText}>
+                  {obj[key]}:{setting[key] == "1" ? "Bật" : "Tắt"}
+                </Text>
+              </TouchableOpacity>
+            ))}
 
           <TouchableOpacity
             style={{
@@ -178,6 +181,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
+    marginVertical: 50,
   },
   button: {
     width: "100%",
@@ -208,8 +212,20 @@ const styles = StyleSheet.create({
     textShadowRadius: 1,
   },
   container1: {
-    position: "relative",
-    zIndex: 1,
+    backgroundColor: "#ffffff",
+    // paddingVertical: 12,
+    // paddingHorizontal: 24,
+    borderRadius: 20,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.4,
+    shadowRadius: 3,
+    elevation: 5,
+    // alignItems: "center",
+    // justifyContent: "center",
   },
   dropdownButton: {
     flexDirection: "row",
