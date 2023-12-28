@@ -4,8 +4,10 @@ import { Button } from '@rneui/themed';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faDotCircle, faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { faDotCircle, faEllipsis, faBan, faXmark, faRectangleXmark} from '@fortawesome/free-solid-svg-icons';
+import { faFacebookMessenger } from '@fortawesome/free-brands-svg-icons'
 import Modal from 'react-native-modal';
+import { useNavigation } from '@react-navigation/native';
 
 
 const ProfileCard = (props) => {
@@ -15,23 +17,30 @@ const ProfileCard = (props) => {
   const [isHidden, setIsHidden] = useState(false);
   const [actionAdd, setActionAdd] = useState(false)
   const avatarBackUp = 'https://imgur.com/BwwePkj.jpg';
+  const navigation = useNavigation();
 
   const delSuggestFriends = () => {
     setIsHidden(true);
     console.log('Đã gỡ');
   }
 
+  const translateToProfile = (user_id) => {
+    navigation.navigate('User Profile', {user_id: user_id});
+  }
+
   return (
     <View>
       {isHidden ? null :
         <View style={styles.container}>
-          <TouchableOpacity style={styles.avatarImage}>
+          <TouchableOpacity style={styles.avatarImage} onPress={() => {translateToProfile(userId);}}>
             <Image style={styles.image} source={{ uri: (avatarImage ? avatarImage : avatarBackUp) }} />
           </TouchableOpacity>
 
           <View style={styles.content}>
-            <Text style={{ fontSize: 16, fontWeight: 500 }}>{userName}</Text>
-            <Text style={{ fontSize: 14, color: '#A8A8A8' }}>{mutualFriend} mutual friends</Text>
+            <TouchableOpacity onPress={() => {translateToProfile(userId);}}>
+              <Text style={{ fontSize: 16, fontWeight: 500 }}>{userName}</Text>
+              <Text style={{ fontSize: 14, color: '#A8A8A8' }}>{mutualFriend} mutual friends</Text>
+            </TouchableOpacity>
             {isNotFriend ? (
               actionAdd ?
                 <View style={styles.button_cancel}>
@@ -73,7 +82,7 @@ const ProfileCard = (props) => {
 
                   <View style={styles.button_2}>
                     <Button
-                      title="Xóa, gỡ"
+                      title="Gỡ"
                       color="gray"
                       type="clear"
                       titleStyle={{ fontSize: 16, color: '#ffffff', fontWeight: 600 }}
@@ -118,7 +127,8 @@ const ProfileCard = (props) => {
                 height: 'auto',
                 width: '100%',
                 backgroundColor: 'white',
-                borderRadius: 10,
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
               }}>
 
                 <TouchableOpacity style={[styles.optionAction, styles.optionActionHeaderModal]} onPress={() => { }}>
@@ -127,16 +137,44 @@ const ProfileCard = (props) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.optionAction} onPress={() => { pressUnFriend(); console.log('huy'); setIsHidden(true); }}>
-                  <Text style={{
-                    fontSize: 20,
-                  }}>Hủy kết bạn</Text>
+                  <View style={styles.iconModal}><FontAwesomeIcon  icon={faFacebookMessenger} /></View>
+                  <View>
+                    <Text style={{
+                      fontSize: 17,
+                    }}>Nhắn tin cho {userName}</Text>
+                  </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.optionAction} onPress={() => { blockUser(); setIsHidden(true); }}>
-                  <Text style={{
-                    fontSize: 20,
-                  }}>Chặn người dùng</Text>
+                <TouchableOpacity style={styles.optionAction} onPress={() => { pressUnFriend(); console.log('huy'); setIsHidden(true); }}>
+                  <View style={styles.iconModal}><FontAwesomeIcon  icon={faRectangleXmark} /></View>
+                  <View>
+                    <Text style={{
+                      fontSize: 17,
+                    }}>Bỏ theo dõi {userName}</Text>
+                    <Text style={{fontSize: 13, color: 'gray',}}>Không nhìn thấy bài viết nhưng vẫn là bạn bè.</Text>
+                  </View>
                 </TouchableOpacity>
+
+                <TouchableOpacity style={styles.optionAction} onPress={() => { pressUnFriend(); console.log('huy'); setIsHidden(true); }}>
+                  <View style={styles.iconModal}><FontAwesomeIcon  icon={faXmark} /></View>
+                  <View>
+                    <Text style={{
+                      fontSize: 17,
+                    }}>Hủy kết bạn với {userName}</Text>
+                    <Text style={{fontSize: 13, color: 'gray',}}>Hủy kết bạn với {userName}</Text>
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={[styles.optionAction, {paddingBottom: 10,}]} onPress={() => { blockUser(); setIsHidden(true); }}>
+                  <View style={styles.iconModal}><FontAwesomeIcon  icon={faBan} /></View>
+                  <View>
+                      <Text style={{
+                        fontSize: 17,
+                      }}>Chặn {userName}</Text>
+                      <Text style={{fontSize: 13, color: 'gray',}}>{userName} sẽ không nhìn thấy bạn hoặc liên hệ với bạn trên facebook</Text>
+                  </View>
+                </TouchableOpacity>
+
               </View>
             </Modal>
           </View>}
@@ -157,12 +195,13 @@ ProfileCard.propTypes = {
   pressAddFriend: PropTypes.func,
   pressCancel: PropTypes.func,
   blockUser: PropTypes.func,
+  translateToProfile: PropTypes.func,
 };
 
 export default ProfileCard;
 const styles = StyleSheet.create({
   container: {
-    height: 75,
+    height: 85,
     width: '95%',
     alignSelf: 'center',
     display: 'flex',
@@ -172,6 +211,7 @@ const styles = StyleSheet.create({
   },
 
   avatarImage: {
+    alignSelf: 'center',
     flex: 1,
     borderRadius: 1000,
   },
@@ -183,10 +223,11 @@ const styles = StyleSheet.create({
   },
 
   content: {
-    flex: 5,
+    flex: 4,
     height: '100%',
     paddingTop: 5,
     paddingLeft: 10,
+    justifyContent: 'center',
     //backgroundColor: 'pink'
   },
 
@@ -228,20 +269,22 @@ const styles = StyleSheet.create({
 
   optionAction: {
     width: '100%',
-    height: 40,
-    borderRadius: 10,
+    height: 50,
+    flexDirection: 'row',
     // backgroundColor: 'pink',
     marginTop: 5,
     marginBottom: 5,
-    justifyContent: 'center',
+    // justifyContent: 'center',
+    paddingLeft: 15,
+    paddingRight: '15%',
     alignItems: 'center',
+    gap: 10,
   },
 
   optionActionHeaderModal: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
     gap: 10,
-    marginLeft: 15,
+    paddingLeft: 15,
     marginTop: 20,
     borderBottomWidth: 1,
     paddingBottom: 10,
@@ -256,6 +299,14 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     width: '100%',
     borderRadius: 1000,
-  }
+  },
+
+  iconModal: {
+    borderWidth: 12,
+    borderRadius: 50,
+    borderColor: "#e4e6eb",
+    backgroundColor: "#e4e6eb",
+    
+  },
 
 })

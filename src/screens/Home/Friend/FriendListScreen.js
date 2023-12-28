@@ -1,5 +1,5 @@
-import { Alert, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList, RefreshControl } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View, FlatList, RefreshControl } from 'react-native'
+import React, { useState, useLayoutEffect, useCallback } from 'react'
 import { Input } from '@rneui/themed'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -10,17 +10,27 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 
 
-const FriendListScreen = () => {
+const FriendListScreen = ({route}) => {
 
+  const {user_id} = route.params || '';
   const [index, setIndex] = useState("0");
   const [friendListData, setFriendListData] = useState([]);
   const currentUser = useSelector((state) => state.auth.currentUser);
   const [count, setCount] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setRefreshing(false);
+  }, []);
+
   const handleListFriend = async () => {
     try {
       const response = await axios.post('https://it4788.catan.io.vn/get_user_friends', {
         index: index,
         count: "10",
+        user_id: user_id,
       },
         {
           headers: {
@@ -52,6 +62,8 @@ const FriendListScreen = () => {
         // Các lỗi khác
         console.error('Lỗi không xác định:', error.message);
       }
+    } finally {
+      setLoadingData(false);
     }
   }
 
@@ -125,23 +137,23 @@ const FriendListScreen = () => {
     }
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     handleListFriend();
-  }, []);
-
-  const navigation = useNavigation();
+  }, [route.params]);
 
   const handleSearch = () => {
     console.log('search')
   }
 
   return (
-    <ScrollView>
-      <View style={styles.searchBar}>
+    <View style={styles.container}>
+      <View style={{marginTop: 5,}}>
         <Input
           leftIcon={<FontAwesomeIcon icon={faSearch} />}
           placeholder='Tìm kiếm bạn bè'
           onSubmitEditing={handleSearch}
+          inputContainerStyle={styles.searchInp}
+          inputStyle={{fontSize: 16, height: 40,}}
         />
       </View>
 
@@ -173,8 +185,11 @@ const FriendListScreen = () => {
       </View>
 
       <View style={styles.friendList}>
+        {loadingData ? <Text>Loading...</Text> : 
         <View>
-          {friendListData.map((item) => <ProfileCard
+          <FlatList 
+            data={friendListData}
+            renderItem={({item}) => <ProfileCard
             userId={item.id}
             isFriend={item.isFriend}
             avatarImage={item.avatar}
@@ -182,20 +197,27 @@ const FriendListScreen = () => {
             pressUnFriend={() => { handleUnFriend(item.id); setCount(count - '0' - 1) }}
             blockUser={() => { handleBlock(item.id); setCount(count - '0' - 1) }}
             mutualFriend={item.same_friends}
-            key={item.id}
-          />)
-          }
+            />}
+            keyExtractor={(item) => item.id.toString()}
+            style={{marginBottom: '23%',}}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          />
         </View>
+        }
       </View>
-    </ScrollView>
+    </View>
   )
 }
 
 export default FriendListScreen
 
 const styles = StyleSheet.create({
-  searchBar: {
-    height: 60
+
+  container: {
+    backgroundColor: '#fff',
+    height: '100%',
   },
 
   friendCount: {
@@ -209,4 +231,14 @@ const styles = StyleSheet.create({
   friendList: {
     marginTop: 10,
   },
+
+  searchInp: {
+    height: 35,
+    fontSize: 16,
+    borderBottomWidth: 0,
+    backgroundColor: '#e9eaef',
+    borderRadius: 100,
+    paddingHorizontal: 15,
+    marginHorizontal: 15,
+  }
 })
