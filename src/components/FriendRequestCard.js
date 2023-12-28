@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import React, {useState} from "react";
 import { Button } from "@rneui/themed";
 import PropTypes from "prop-types";
+import { useNavigation } from "@react-navigation/native";
 
 FriendRequestCard.propTypes = {
   avatarImage: PropTypes.string,
@@ -16,21 +17,27 @@ function FriendRequestCard(props) {
   const { avatarImage, userName, userId, pressAccept, pressDel, mutualFriend } = props;
   const [isHidden, setIsHidden] = useState(false);
   const avatarBackUp = 'https://imgur.com/BwwePkj.jpg'
+  const navigation = useNavigation();
+
+  const translateToProfile = (user_id) => {
+    navigation.navigate('User Profile', {user_id: user_id});
+  }
 
   return (
     <View>
      {isHidden ? 
        null : 
       <View style={styles.container}>
-        <TouchableOpacity style={styles.avatarImage}>
+        <TouchableOpacity style={styles.avatarImage} onPress={() => {translateToProfile(userId)}}>
           <Image style={styles.image} source={{ uri: (avatarImage ? avatarImage : avatarBackUp) }} />
         </TouchableOpacity>
 
         <View style={styles.contentView}>
+          <TouchableOpacity onPress={() => {translateToProfile(userId)}}>
           <Text style={{ fontSize: 18, fontWeight: "500" }}>{userName}</Text>
 
           <Text style={{ fontSize: 14, color: '#A8A8A8' }}>{mutualFriend} bạn chung</Text> 
-
+          </TouchableOpacity>
           <View style={styles.buttonView}>
             <Button
               title="Xác nhận"

@@ -151,7 +151,7 @@ const FriendRequestScreen = () => {
     >
       <View style={styles.buttonView}> 
       <Button
-            title="Your friends"
+            title="Bạn bè"
             type='clear'
             titleStyle={{ fontSize: 16, color: "#000000" }}
             style={{
@@ -163,12 +163,12 @@ const FriendRequestScreen = () => {
               backgroundColor: "#cdd4cf",
             }}
             onPress={() => {
-              navigation.navigate("FriendList")
+              navigation.navigate("FriendList", {})
             }}
           />
 
           <Button
-            title="Suggestions"
+            title="Gợi ý"
             type='clear'
             titleStyle={{ fontSize: 16, color: "#000000" }}
             style={{
