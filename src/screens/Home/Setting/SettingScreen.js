@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Button } from "@rneui/themed";
-import { FlatList } from "react-native";
+import { FlatList, Image, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutRequest } from "../../../redux/actions/auth.action";
@@ -17,7 +17,7 @@ const SettingScreen = () => {
     }
   }, [currentUser]);
   return (
-    <View>
+    <ScrollView style={{ backgroundColor: "#fff" }}>
       <NotificationSetting />
       <BlockList />
       <LogoutButton
@@ -38,7 +38,7 @@ const SettingScreen = () => {
       >
         {errorMessage}
       </Text>
-    </View>
+    </ScrollView>
   );
 };
 const NotificationSetting = () => {
@@ -189,6 +189,7 @@ const LogoutButton = ({ onPress }) => {
 };
 const BlockList = () => {
   const currentUser = useSelector((state) => state.auth.currentUser);
+  const [open, setOpen] = useState(false);
   const [userList, setUserList] = useState([]);
   useEffect(() => {
     axios
@@ -210,26 +211,86 @@ const BlockList = () => {
   }, []);
   return (
     <View>
-      <FlatList
-        keyExtractor={(item) => item.id}
-        data={[
-          {
-            id: "12",
-            name: "Leo  Messi",
-            avatar:
-              "https://it4788.catan.io.vn/files/avatar-1703201924547-557531918.jpg",
-          },
-        ]}
-        renderItem={({ item }) => <BlockUser user={item} />}
-      />
+      <TouchableOpacity
+        style={styles.dropdownButton}
+        onPress={() => {
+          setOpen((state) => !state);
+        }}
+      >
+        <Text style={styles.selectedOption}>{"Danh sách chặn"}</Text>
+        <Text style={styles.dropdownIcon}>{open ? "▲" : "▼"}</Text>
+      </TouchableOpacity>
+      {open && (
+        <FlatList
+          keyExtractor={(item) => item.id}
+          data={userList}
+          renderItem={({ item, index }) => (
+            <BlockUser user={item} index={index} setUserList={setUserList} />
+          )}
+        />
+      )}
     </View>
   );
 };
-const BlockUser = ({ user }) => {
+const BlockUser = ({ user, index, setUserList }) => {
+  const navigation = useNavigation();
+  const currentUser = useSelector((state) => state.auth.currentUser);
   console.log(user);
   return (
-    <View>
-      <Text>12</Text>
+    <View style={styles1.userBlockContaine}>
+      <TouchableOpacity
+        style={{ flex: 1, flexDirection: "row" }}
+        onPress={() => {
+          if (currentUser.id != user.id) {
+            navigation.navigate("User Profile", {
+              user_id: user.id,
+            });
+          } else {
+            navigation.navigate("Profile");
+          }
+        }}
+      >
+        <Image
+          source={user.avatar ? { uri: user.avatar } : null}
+          style={{ width: 40, height: 40, borderRadius: 9999 }}
+        />
+        <Text style={{ fontSize: 20, textAlign: "center", marginLeft: 5 }}>
+          {" "}
+          {user.name}
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles1.unBanButton}
+        onPress={() => {
+          axios
+            .post(
+              "https://it4788.catan.io.vn/unblock",
+              { user_id: user.id },
+              { headers: { Authorization: `Bearer ${currentUser.token}` } }
+            )
+            .then((res) => {
+              // console.log(res);
+              axios
+                .post(
+                  "https://it4788.catan.io.vn/get_list_blocks",
+                  { index: "0", count: "100" },
+                  { headers: { Authorization: `Bearer ${currentUser.token}` } }
+                )
+                .then((res) => {
+                  setUserList(res.data.data);
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            })
+            .catch((err) => {
+              console.log("123");
+              console.log(err);
+            });
+        }}
+      >
+        <Text style={styles1.text}>Bỏ chặn</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -277,6 +338,7 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
   },
   dropdownButton: {
+    marginVertical: 10,
     backgroundColor: "#ffffff",
     borderRadius: 20,
     shadowColor: "#000000",
@@ -333,4 +395,50 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-const styles1 = StyleSheet.create({});
+const styles1 = StyleSheet.create({
+  userBlockContaine: {
+    backgroundColor: "#ffffff",
+    // borderRadius: 20,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.4,
+    shadowRadius: 3,
+    elevation: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginVertical: 2,
+  },
+  unBanButton: {
+    backgroundColor: "#3b5998",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 25,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.4,
+    shadowRadius: 3,
+    elevation: 5,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  text: {
+    color: "#ffffff",
+    fontSize: 12,
+    fontWeight: "bold",
+    textShadowColor: "#000000",
+    textShadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    textShadowRadius: 1,
+  },
+});
