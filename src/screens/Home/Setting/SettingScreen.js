@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Button } from "@rneui/themed";
-import { FlatList, Image, ScrollView } from "react-native";
+import { Button, Icon } from "@rneui/themed";
+import { FlatList, Image, ScrollView, TextInput } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutRequest } from "../../../redux/actions/auth.action";
+import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
 const SettingScreen = () => {
   const navigation = useNavigation();
@@ -20,6 +21,7 @@ const SettingScreen = () => {
     <ScrollView style={{ backgroundColor: "#fff" }}>
       <NotificationSetting />
       <BlockList />
+      <ChangePassword />
       <LogoutButton
         onPress={() => {
           // dispatch(logoutRequest(currentUser));
@@ -141,7 +143,9 @@ const NotificationSetting = () => {
         <TouchableOpacity
           style={{
             // width: "100%",
-            backgroundColor: "#3b5998",
+            marginLeft: 200,
+            marginRight: 20,
+            backgroundColor: "#3b5980",
             paddingVertical: 12,
             paddingHorizontal: 24,
             borderRadius: 25,
@@ -156,7 +160,7 @@ const NotificationSetting = () => {
             alignItems: "center",
             justifyContent: "center",
             marginTop: 10,
-            marginHorizontal: 20,
+            // marginHorizontal: 20,
           }}
           onPress={() => onPress(setting)}
         >
@@ -291,6 +295,193 @@ const BlockUser = ({ user, index, setUserList }) => {
       >
         <Text style={styles1.text}>Bỏ chặn</Text>
       </TouchableOpacity>
+    </View>
+  );
+};
+const ChangePassword = () => {
+  const [open, setOpen] = useState(false);
+  const [showPassword1, setShowPassword1] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
+  const [showPassword3, setShowPassword3] = useState(false);
+  const [password1, setPassword1] = useState("");
+  const [password2, setPassword2] = useState("");
+  const [password3, setPassword3] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const currentUser = useSelector((state) => state.auth.currentUser);
+  return (
+    <View>
+      <TouchableOpacity
+        style={styles.dropdownButton}
+        onPress={() => {
+          setOpen((state) => !state);
+        }}
+      >
+        <Text style={styles.selectedOption}>{"Đổi mật khẩu"}</Text>
+        <Text style={styles.dropdownIcon}>{open ? "▲" : "▼"}</Text>
+      </TouchableOpacity>
+      {open && (
+        <View>
+          <View style={{ marginTop: 10 }}>
+            <View style={styles2.container}>
+              <TextInput
+                style={styles2.input}
+                placeholder="Nhập mật khẩu cũ"
+                secureTextEntry={!showPassword1}
+                value={password1}
+                onChangeText={(text) => {
+                  setPassword1(text);
+                }}
+              />
+              <TouchableOpacity
+                style={styles2.toggle}
+                onPress={() => {
+                  setShowPassword1((state) => !state);
+                }}
+              >
+                <Icon
+                  name={showPassword1 ? "eye" : "eye-slash"}
+                  type="font-awesome-5"
+                  style={styles2.icon}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={{ marginTop: 10 }}>
+            <View style={styles2.container}>
+              <TextInput
+                style={styles2.input}
+                placeholder="Nhập mật khẩu mới"
+                secureTextEntry={!showPassword2}
+                value={password2}
+                onChangeText={(text) => {
+                  setPassword2(text);
+                }}
+              />
+              <TouchableOpacity
+                style={styles2.toggle}
+                onPress={() => {
+                  setShowPassword2((state) => !state);
+                }}
+              >
+                <Icon
+                  name={showPassword2 ? "eye" : "eye-slash"}
+                  type="font-awesome-5"
+                  style={styles2.icon}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={{ marginTop: 10 }}>
+            <View style={styles2.container}>
+              <TextInput
+                style={styles2.input}
+                placeholder="Nhập lại mật khẩu"
+                secureTextEntry={!showPassword3}
+                value={password3}
+                onChangeText={(text) => {
+                  setPassword3(text);
+                }}
+              />
+              <TouchableOpacity
+                style={styles2.toggle}
+                onPress={() => {
+                  setShowPassword3((state) => !state);
+                }}
+              >
+                <Icon
+                  name={showPassword3 ? "eye" : "eye-slash"}
+                  type="font-awesome-5"
+                  style={styles2.icon}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          {password1 && password2 && password3 && (
+            <View>
+              <TouchableOpacity
+                style={{
+                  marginLeft: 200,
+                  marginRight: 20,
+                  backgroundColor: "#3b5980",
+                  paddingVertical: 12,
+                  paddingHorizontal: 24,
+                  borderRadius: 25,
+                  shadowColor: "#000000",
+                  shadowOffset: {
+                    width: 0,
+                    height: 2,
+                  },
+                  shadowOpacity: 0.4,
+                  shadowRadius: 3,
+                  elevation: 5,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginTop: 10,
+                }}
+                onPress={() => {
+                  if (password2 != password3) {
+                    setErrorMessage("Mật khẩu nhập lại chưa khớp");
+                    return;
+                  }
+                  if (password2.length < 6) {
+                    setErrorMessage("Mật khẩu mới phải ít nhất 6 kí tự");
+                    return;
+                  }
+                  {
+                    axios
+                      .post(
+                        "https://it4788.catan.io.vn/change_password",
+                        { password: password1, new_password: password2 },
+                        {
+                          headers: {
+                            Authorization: `Bearer ${currentUser.token}`,
+                          },
+                        }
+                      )
+                      .then((res) => {
+                        setPassword1("");
+                        setPassword2("");
+                        setPassword3("");
+                      })
+                      .catch((err) => {
+                        console.log(err?.response?.data?.message);
+                        if (
+                          err?.response?.data?.message ==
+                          "Password is not correct"
+                        ) {
+                          setErrorMessage("Mật khẩu chưa chính xác");
+                        } else {
+                          setErrorMessage("Lỗi. Xin vui lòng thử lại");
+                        }
+                      });
+                  }
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#FFFFFF",
+                    fontSize: 16,
+                    fontWeight: "bold",
+                    textAlign: "center",
+                  }}
+                >
+                  Lưu thay đổi
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          <Text
+            style={{
+              color: "red",
+              alignSelf: "center",
+              fontSize: 15,
+              marginTop: 10,
+            }}
+          >
+            {errorMessage}
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -442,3 +633,26 @@ const styles1 = StyleSheet.create({
     textShadowRadius: 1,
   },
 });
+const styles2 = {
+  container: {
+    position: "relative",
+  },
+  input: {
+    padding: 10,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 5,
+  },
+  toggle: {
+    position: "absolute",
+    top: "50%",
+    right: 20,
+    transform: [{ translateY: -10 }],
+    zIndex: 1,
+  },
+  icon: {
+    width: 30,
+    height: 22,
+  },
+};
