@@ -120,9 +120,9 @@ const SearchScreen = () => {
     </View>
     <View style={styles.searchRecent}>
       <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: '4%'}}>
-        <Text style={{fontSize: 18, fontWeight: 600}}>Recent searchs</Text>
+        <Text style={{fontSize: 18, fontWeight: 600}}>Gần đây</Text>
         <Button
-          title='See All'
+          title='Xem tất cả'
           titleStyle={{fontSize: 17, fontWeight: 400}}
           type='clear'
           buttonStyle={{padding: 0, margin: 0}}

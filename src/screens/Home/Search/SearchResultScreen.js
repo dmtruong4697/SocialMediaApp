@@ -12,6 +12,7 @@ import PostCard from '../../../components/PostCard';
 const SearchResultScreen = ({ route }) => {
   const { searchQuery } = route.params || {};
 
+  const count = 20;
 const navigation = useNavigation();
 const [pressBtn, setPressBtn] = useState('all');
 const [inputSearch, setinputSearch] = useState(searchQuery || '');
@@ -26,7 +27,7 @@ const isButtonSelected = (buttonName) => {
   return pressBtn === buttonName;
 };
 
-const [index, setIndex] = useState('1');
+const [index, setIndex] = useState(0);
 const [listFrSearchData, setListFrSearchData] = useState([]);
 const [listPostSearch, setListPostSearch] = useState([]);
 const [refreshing, setRefreshing] = useState(false);
@@ -36,15 +37,55 @@ const onRefresh = useCallback(() => {
   setRefreshing(false);
 }, []);
 
+const [visi, setVisi] = useState(true);
+const hiddenVisi = () => {
+  setVisi(false);
+}
+
 const SeeAll = () => {
-  setIndex(index - '0' +1);
+  handleSearchUser();
+}
+
+const handleBlock = async (id) => {
+  try {
+    const response = await axios.post('https://it4788.catan.io.vn/set_block', {
+      user_id: id,
+    },
+      {
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`,
+        },
+      })
+
+    if (response.status === 200) {
+      console.log('Block user success');
+    } else {
+      console.log('Block user fail, response data:', response.data);
+      console.log('response status: ', response.status);
+      Alert.alert('Block user fail', 'please try again');
+    }
+  } catch (error) {
+    console.error('Block user false:', error)
+    Alert.alert('Block user false', 'Please try again.');
+    if (error.response) {
+      console.error('response data: ', error.response.data);
+      console.error('response status: ', error.response.status);
+      console.error('Response headers:', error.response.headers);
+    } else if (error.request) {
+      // Yêu cầu đã được gửi nhưng không nhận được response
+      console.error('Request data:', error.request);
+    } else {
+      // Các lỗi khác
+      console.error('Lỗi không xác định:', error.message);
+    }
+  }
 }
 
 const handleSearchUser = async () => {
   try {
     const response = await axios.post('https://it4788.catan.io.vn/search_user', {
       keyword: searchQuery,
-      index: (index-'0'-1)*20,
+      index: index*20,
       count: 20
     },
     {
@@ -54,13 +95,21 @@ const handleSearchUser = async () => {
     })
 
     if (response.status === 200) {
-      console.log('Search friends success');
-      setListFrSearchData(response.data?.data || []);
+      console.log('Search friends success: ', index);
+      
+      if (index === 0) {
+        setListFrSearchData(response.data?.data || []);
+      } else {
+        setListFrSearchData((listFrSearchData) => [...listFrSearchData, ...response.data?.data]);
+      }
+      setIndex(index +1);
     } else {
       console.log('Search friends fail, response data:', response.data);
       console.log('response status: ', response.status);
       Alert.alert('Search fail','please try again');
     }
+
+    
 
   } catch (error) {
     console.error('Search friends false:', error)
@@ -86,7 +135,7 @@ const handleSearch = async (id) => {
     const response = await axios.post('https://it4788.catan.io.vn/search', {
       keyword: searchQuery,
       user_id: id || "",
-      index: (index-'0'-1)*20,
+      index: index*20,
       count: 20
     },
     {
@@ -250,16 +299,19 @@ const handleSearch = async (id) => {
           <View style={styles.all}>
               <ScrollView style={{marginBottom: '40%',}}>
                 <View style={{borderBottomWidth: 5, borderColor: 'gray',}}>
-                  <Text style={{fontSize: 20, fontWeight: 600, padding: 18,}}>People</Text>
+                  <Text style={{fontSize: 20, fontWeight: 600, padding: 18,}}>Mọi người</Text>
                   {listFrSearchData.length > 0 ? (listFrSearchData.map((item, key) => <ProfileCard
                     avatarImage={item.avatar}
                     userName={item.username}
                     userId={item.id}
                     // isNotFriend={item.isNotFriend}
+                    blockUser={() => {
+                      handleBlock(item.id);
+                    }}
                     key={key}
                     />)
                   ) : <Text style={{paddingLeft: 10,}}>Không tìm thấy người dùng nào...</Text>}
-                  {listFrSearchData.length > 20 ? 
+                  {listFrSearchData.length === ((index-1)*20+count) ? 
                     <Button 
                       title={'See all'}
                       buttonStyle={{borderRadius: 10, marginHorizontal: 10, marginBottom: 10}}
@@ -268,47 +320,49 @@ const handleSearch = async (id) => {
                    : null}
                 </View>
                 <View style={{borderBottomWidth: 5, borderColor: 'gray',}}>
-                  <Text style={{fontSize: 20, fontWeight: 600, padding: 18,}}>Post</Text>
+                  <Text style={{fontSize: 20, fontWeight: 600, padding: 18,}}>Bài viết</Text>
                   {listPostSearch.length > 0 ? (listPostSearch.map((item, key) => <PostCard postDetail={item} key={key} />)) : <Text style={{paddingLeft: 10,}}>Không tìm thấy bài viết nào...</Text>}
                 </View>
               </ScrollView>
           </View> : <View></View>}
         {pressBtn === 'people' ? 
           <View style={styles.people}>
-            <Text style={{fontSize: 20, fontWeight: 600, padding: 18,}}>People</Text>
-            {listFrSearchData.length > 0 ? 
-            <View>
-              <FlatList
-                data={listFrSearchData}
-                renderItem={({item}) => <ProfileCard
-                avatarImage={item.avatar}
-                userName={item.username}
-                userId={item.id}
-                // isNotFriend={item.isNotFriend}
-                />}
-                keyExtractor={(item) => item.id.toString()}
-                  style={{marginBottom: '100%',}}
-                  // onEndReachedThreshold={0.5}
-                  // onEndReached={handleLoadMore}
-                  refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }
-              /> 
-            </View>
-            : <Text style={{paddingLeft: 10,}}>Không tìm thấy người dùng nào...</Text>}
+            <ScrollView style={{marginBottom: '40%',}}>
+              {listFrSearchData.length > 0 ? 
+              <View>
+                    <View>
+                      {listFrSearchData.map((item, key) => <ProfileCard
+                        avatarImage={item.avatar}
+                        userName={item.username}
+                        userId={item.id}
+                        // isNotFriend={item.isNotFriend}
+                        key={key}
+                        />)
+                      }
+                    </View>
+                
+              </View>
+              : <Text style={{paddingLeft: 10,}}>Không tìm thấy người dùng nào...</Text>}
+              {listFrSearchData.length === ((index-1)*20+count) ? 
+                      <Button 
+                        title={'See all'}
+                        buttonStyle={{borderRadius: 10, marginHorizontal: 10, marginBottom: 10}}
+                        onPress={() => SeeAll()}
+                      />
+              : null}
+            </ScrollView>
           </View> : 
           <View></View>
         }
 
         {pressBtn === 'Post' ? 
           <View style={styles.post}>
-            <Text style={{fontSize: 20, fontWeight: 600, padding: 18,}}>Post</Text>
             <View>
               {listPostSearch.length > 0 ? <FlatList
                 data={listPostSearch}
                 renderItem={({ item }) => <PostCard postDetail={item} />}
                 keyExtractor={(item) => item.id.toString()}
-                style={{marginBottom: '100%',}}
+                style={{marginBottom: '40%',}}
                 // onEndReachedThreshold={0.5}
                 // onEndReached={handleLoadMore}
                 refreshControl={

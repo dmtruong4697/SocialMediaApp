@@ -21,10 +21,10 @@ import { useNavigation } from "@react-navigation/native";
 const Tab = createBottomTabNavigator();
 
 const MyHeaderLeftComponent = (props) => {
-  const { text } = props;
+  const { text, color = 'black' } = props;
   return (
     <View style={{ marginLeft: 16 }}>
-      <Text style={{ fontSize: 29, fontWeight: "bold" }}>{text}</Text>
+      <Text style={{ fontSize: 29, fontWeight: "bold", color: color, }}>{text}</Text>
     </View>
   );
 };
@@ -99,9 +99,10 @@ const HomeNavigator = () => {
             return <FontAwesomeIcon size={24} icon={faHome} />;
           },
           headerTitle: () => null,
-          headerLeft: () => <MyHeaderLeftComponent text="facebook" />,
+          headerLeft: () => <MyHeaderLeftComponent text="facebook" color='#467ce6'/>,
           headerRight: () => <MyHeaderRightFeed />,
           tabBarShowLabel: false,
+          headerTintColor: '#467ce6',
         }}
       />
       <Tab.Screen
@@ -112,7 +113,7 @@ const HomeNavigator = () => {
             return <FontAwesomeIcon size={24} icon={faUserFriends} />;
           },
           headerTitle: () => null,
-          headerLeft: () => <MyHeaderLeftComponent text="Friends" />,
+          headerLeft: () => <MyHeaderLeftComponent text="Bạn bè" />,
           headerRight: () => <HeaderRightFriend />,
           tabBarShowLabel: false,
         }}
@@ -125,7 +126,7 @@ const HomeNavigator = () => {
             return <FontAwesomeIcon size={24} icon={faBell} />;
           },
           headerTitle: () => null,
-          headerLeft: () => <MyHeaderLeftComponent text="Notifications" />,
+          headerLeft: () => <MyHeaderLeftComponent text="Thông báo" />,
           headerRight: () => <HeaderRightNotiAndMenu />,
           tabBarShowLabel: false,
         }}
