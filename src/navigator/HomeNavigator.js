@@ -153,13 +153,8 @@ const styles = StyleSheet.create({
   buttonHeader: {
     borderWidth: 8,
     borderRadius: 50,
-<<<<<<< HEAD
     borderColor: '#e4e6eb',
     backgroundColor: '#e4e6eb',
-=======
-    borderColor: "#e4e6eb",
-    backgroundColor: "#e4e6eb",
->>>>>>> 1c713049fae60d0ca3a13ad182f6fa05d95aaf07
     marginLeft: 8,
   },
 });
