@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View, Alert } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, Alert, FlatList } from 'react-native'
 import ProfileCard from '../../../components/ProfileCard';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
@@ -44,10 +44,6 @@ const FriendSuggestedScreen = () => {
                 console.error("loi khong xac dinh: ", error.message);
             }
         }
-    }
-
-    const delRequestFr = () => {
-
     }
 
     const handleSetRequest = async (id) => {
@@ -123,11 +119,13 @@ const FriendSuggestedScreen = () => {
     }, []);
 
     return (
-        <ScrollView>
+        <View style={{backgroundColor: '#fff'}}>
             <View>
-                <Text style={styles.title}>People you may know</Text>
+                <Text style={styles.title}>Những người bạn có thể biết</Text>
                 <View>
-                    {friendSuggestData.map((item) => <ProfileCard
+                    <FlatList 
+                        data={friendSuggestData}
+                        renderItem={({item}) => <ProfileCard
                         avatarImage={item.avatar}
                         userName={item.username}
                         userId={item.id}
@@ -135,10 +133,13 @@ const FriendSuggestedScreen = () => {
                         mutualFriend={item.same_friends}
                         pressAddFriend={() => {handleSetRequest(item.id)}}
                         pressCancel={() => {handleDelRequest(item.id)}}
-                    />)}
+                        />}
+                        keyExtractor={(item) => item.id.toString()}
+                        style={{height: '100%',}}
+                    />
                 </View>
             </View>
-        </ScrollView>
+        </View>
     )
 }
 

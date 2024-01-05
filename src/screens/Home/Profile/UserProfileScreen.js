@@ -215,18 +215,18 @@ const handleClickFriend = ()=>{
 useEffect(() => {
 // alert("handle get post")
   handleGetPosts(1);
-}, []);
+}, [route.params]);
 useEffect(() => {
   // alert("hello world")
   handleProfile();
   if(profileData.is_friend==0){
     setIsFriend(true);
   }
-}, [profileData.avatar]);
+}, [profileData.avatar, route.params]);
 useEffect(()=>{
   
   handleCountFriend();
-},[])
+},[route.params])
 
   return (
     <ScrollView onPress = {()=>{
@@ -362,7 +362,8 @@ useEffect(()=>{
               backgroundColor: '#E0E0E0'         
             }}
             onPress={()=>{
-              navigation.navigate('FriendList');
+              navigation.navigate('FriendList', {user_id: user_id});
+              console.log(user_id);
             }}
           />
         </View>
