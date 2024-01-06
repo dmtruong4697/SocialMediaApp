@@ -17,6 +17,7 @@ import {
 import { faFacebookMessenger } from "@fortawesome/free-brands-svg-icons";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { Image } from "react-native";
 
 const Tab = createBottomTabNavigator();
 
@@ -96,12 +97,16 @@ const HomeNavigator = () => {
         component={FeedScreen}
         options={{
           tabBarIcon: () => {
-            return <FontAwesomeIcon size={24} icon={faHome} />;
+            return <Image style={{height: 30, width: 30, marginLeft: 10, marginRight: 12,}} source={ require('../../assets/icons/home.png')}/>;
           },
           headerTitle: () => null,
           headerLeft: () => <MyHeaderLeftComponent text="facebook" color='#467ce6'/>,
           headerRight: () => <MyHeaderRightFeed />,
-          tabBarShowLabel: false,
+          //tabBarShowLabel: false,
+          tabBarLabel: 'Trang chủ',
+          tabBarLabelStyle: {
+            color: 'black'
+          },
           headerTintColor: '#467ce6',
         }}
       />
@@ -110,12 +115,15 @@ const HomeNavigator = () => {
         component={FriendRequestScreen}
         options={{
           tabBarIcon: () => {
-            return <FontAwesomeIcon size={24} icon={faUserFriends} />;
+            return <Image style={{height: 30, width: 30, marginLeft: 10, marginRight: 12,}} source={ require('../../assets/icons/friend.png')}/>;
           },
           headerTitle: () => null,
           headerLeft: () => <MyHeaderLeftComponent text="Bạn bè" />,
           headerRight: () => <HeaderRightFriend />,
-          tabBarShowLabel: false,
+          tabBarLabel: 'Bạn bè',
+          tabBarLabelStyle: {
+            color: 'black'
+          },
         }}
       />
       <Tab.Screen
@@ -123,12 +131,15 @@ const HomeNavigator = () => {
         component={NotificationScreen}
         options={{
           tabBarIcon: () => {
-            return <FontAwesomeIcon size={24} icon={faBell} />;
+            return <Image style={{height: 28, width: 28, marginLeft: 10, marginRight: 12,}} source={ require('../../assets/icons/notification.png')}/>;
           },
           headerTitle: () => null,
           headerLeft: () => <MyHeaderLeftComponent text="Thông báo" />,
           headerRight: () => <HeaderRightNotiAndMenu />,
-          tabBarShowLabel: false,
+          tabBarLabel: 'Thông báo',
+          tabBarLabelStyle: {
+            color: 'black'
+          },
         }}
       />
       <Tab.Screen
@@ -136,12 +147,15 @@ const HomeNavigator = () => {
         component={ProfileScreen}
         options={{
           tabBarIcon: () => {
-            return <FontAwesomeIcon size={24} icon={faGear} />;
+            return <Image style={{height: 30, width: 30, marginLeft: 10, marginRight: 12,}} source={ require('../../assets/icons/menu.png')}/>;
           },
           headerTitle: () => null,
           headerLeft: () => <MyHeaderLeftComponent text="Menu" />,
           headerRight: () => <HeaderRightNotiAndMenu />,
-          tabBarShowLabel: false,
+          tabBarLabel: 'Menu',
+          tabBarLabelStyle: {
+            color: 'black'
+          },
         }}
       />
     </Tab.Navigator>
