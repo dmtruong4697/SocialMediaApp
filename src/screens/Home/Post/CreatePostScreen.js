@@ -73,7 +73,7 @@ const CreatePostScreen = () => {
     </View>
   );
 
-  const handleAddPost = async () => {
+  const handleAddPostImage = async () => {
     try {
       const formData = new FormData();
 
@@ -86,6 +86,51 @@ const CreatePostScreen = () => {
           });
         });
       }
+
+      // if(videos != []) {
+      //   formData.append("video", {
+      //     uri: videos[0].uri,
+      //     type: "video/mp4",
+      //     name: `video_${new Date()}.mp4`,
+      //   });
+      // }
+
+      formData.append("described", described);
+      formData.append("auto_accept", "1");
+      formData.append("status", "Hyped");
+
+      const response = await axios.post(`${BACKEND_URL}/add_post`, formData, {
+        headers: {
+          Accept: "multipart/form-data",
+          Authorization: `Bearer ${currentUser.token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log("Create post response:", response);
+      if (response.status === 200) {
+        resetPostForm();
+        navigation.navigate({ name: "Home" });
+      }
+    } catch (error) {
+      console.error("Lỗi khi đăng bài:", error);
+      Alert.alert("Lỗi", "Lỗi khi đăng bài, vui lòng thử lại");
+    }
+  };
+
+  const handleAddPostVideo = async () => {
+    try {
+      const formData = new FormData();
+
+      // if(images != []){
+      //   images.forEach((image, index) => {
+      //     formData.append("image", {
+      //       uri: image.uri,
+      //       type: "image/jpeg",
+      //       name: `photo_${index}.jpg`,
+      //     });
+      //   });
+      // }
 
       if(videos != []) {
         formData.append("video", {
@@ -113,13 +158,14 @@ const CreatePostScreen = () => {
         navigation.navigate({ name: "Home" });
       }
     } catch (error) {
-      console.error("Lỗi khi đăng bài:", error.response.data);
+      console.error("Lỗi khi đăng bài:", error);
       Alert.alert("Lỗi", "Lỗi khi đăng bài, vui lòng thử lại");
     }
   };
 
   const resetPostForm = () => {
     setImages([]);
+    setVideos([]);
     setDescribed("");
   };
 
@@ -205,7 +251,13 @@ const CreatePostScreen = () => {
         />
       </View>
 
-      <TouchableOpacity onPress={handleAddPost} style={styles.submitButton}>
+      <TouchableOpacity 
+        onPress={() => {
+          if(videos.length != 0) handleAddPostVideo()
+          else handleAddPostImage();
+        }} 
+        style={styles.submitButton}
+      >
         <Text
           style={{
             color: "#ffffff",

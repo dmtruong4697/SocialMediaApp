@@ -28,6 +28,8 @@ import UserProfileScreen from '../screens/Home/Profile/UserProfileScreen';
 import EditAvatar from "../screens/Home/Profile/EditAvatar";
 import EditCover from "../screens/Home/Profile/EditCover";
 import SettingScreen from "../screens/Home/Setting/SettingScreen";
+import BlockListScreen from "../screens/Home/Friend/BlockListScreen";
+import EditPostScreen from "../screens/Home/Post/EditPostScreen";
 
 const Stack = createNativeStackNavigator();
 const MainNavigator = () => {
@@ -170,6 +172,22 @@ const MainNavigator = () => {
         component={PostDetailScreen}
         options={{
           title: "Bài đăng",
+        }}
+      />
+
+      <Stack.Screen
+        name="EditPost"
+        component={EditPostScreen}
+        options={{
+          title: "Sửa bài đăng",
+        }}
+      />
+
+      <Stack.Screen
+        name="BlockScreen"
+        component={BlockListScreen}
+        options={{
+          title: 'Chặn',
         }}
       />
     </Stack.Navigator>
