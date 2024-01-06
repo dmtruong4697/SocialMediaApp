@@ -5,6 +5,9 @@ import address_icon from '../../../../assets/icons/address.png'
 import city_icon from '../../../../assets/icons/location.png'
 import countries_icon from '../../../../assets/icons/countries.png'
 import description_icon from '../../../../assets/icons/cv.png'
+import { updateProfile } from '../../../redux/actions/profile.action'; // Adjust the path based on your project structure
+
+
 //import EditDescriptionScreen from './EditDescriptionScreen';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
@@ -13,11 +16,13 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 const EditProfileScreen = ({route}) => {
   const { avatar, cover_image, username,address, city, country, description } = route.params;
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [isEditDescription, setEditDescription] = useState(false)
   const [isMainEdit, setMainEdit] = useState(true)
   const [descriptionInput, setDescriptionInput] = useState('');
   const currentUser = useSelector((state) => state.auth.currentUser);
+  const profileData = useSelector((state) => state.profile);
   const handleSubmitDescription =async ()=>{
     try {
       const formData = new FormData();
@@ -30,6 +35,18 @@ const EditProfileScreen = ({route}) => {
       formData.append('cover_image', cover_image); // Empty value as specified in the API
       formData.append('link', ''); // Empty value as specified in the API
 
+      const newProfile = {
+        username: username,
+        description: descriptionInput,
+        
+        avatar: avatar,
+        address: address,
+        city: city,
+        country: country,
+        cover_image: cover_image,
+        link: ""
+        
+      };
       const response = await axios.post(
         'https://it4788.catan.io.vn/set_user_info',
         formData,
@@ -44,7 +61,7 @@ const EditProfileScreen = ({route}) => {
 
       // Handle the response as needed
       console.log(response.data);
-
+      dispatch(updateProfile(newProfile));
       // Assuming you want to navigate back to the previous screen after updating the avatar
       navigation.goBack();
     } catch (error) {
@@ -52,6 +69,10 @@ const EditProfileScreen = ({route}) => {
       console.error('Error updating avatar:', error);
     }
   }
+  useEffect(() => {
+    // alert("hello world")
+   // console.log("hello world")
+  }, [profileData]);
 
 
   
@@ -84,7 +105,7 @@ const EditProfileScreen = ({route}) => {
         </View>
         <View style={styles.avatar_image}>
           <TouchableOpacity style = {{marginTop: 20, marginBottom: 20}}>
-            <Image style = {{width: 140, height: 140, borderRadius: 1000}}  source={{uri: avatar}}/>
+            <Image style = {{width: 140, height: 140, borderRadius: 1000}}  source={{uri: profileData.avatar}}/>
           </TouchableOpacity>
         </View>
       </View>
@@ -111,7 +132,7 @@ const EditProfileScreen = ({route}) => {
         </View>
         <View style={styles.cover_image}>
           <TouchableOpacity style = {{marginTop: 20, marginBottom: 20}}>
-            <Image style = {{width: '100%',height: 200,resizeMode: 'cover'}}  source={{uri: cover_image}}/>
+            <Image style = {{width: '100%',height: 200,resizeMode: 'cover'}}  source={{uri: profileData.cover_image}}/>
           </TouchableOpacity>
         </View>
       </View>
@@ -167,19 +188,19 @@ const EditProfileScreen = ({route}) => {
         <View style = {styles.detail_infor}>
           <View style = {styles.infor}>
             <Image source={description_icon} style = {styles.icon_infor}/>
-            <Text style = {{fontSize: 15, flexShrink:1}}>{description}</Text>
+            <Text style = {{fontSize: 15, flexShrink:1}}>{profileData.description}</Text>
           </View>
           <View style = {styles.infor}>
             <Image source={address_icon} style = {styles.icon_infor}/>
-            <Text style = {{fontSize: 15}}>{address}</Text>
+            <Text style = {{fontSize: 15}}>{profileData.address}</Text>
           </View>
           <View style = {styles.infor}>
             <Image source={city_icon} style = {styles.icon_infor}/>
-            <Text style = {{fontSize: 15}}>{city}</Text>
+            <Text style = {{fontSize: 15}}>{profileData.city}</Text>
           </View>
           <View style = {styles.infor}>
             <Image source={countries_icon} style = {styles.icon_infor}/>
-            <Text style = {{fontSize: 15}}>{country}</Text>
+            <Text style = {{fontSize: 15}}>{profileData.country}</Text>
           </View>
           
           
