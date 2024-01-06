@@ -61,8 +61,8 @@ import axios from 'axios';
 export const getFcmToken = async (currentUser) => {
     console.log(currentUser);
     let token = null;
-    await checkApplicationNotificationPermission();
-    await registerAppWithFCM();
+    // await checkApplicationNotificationPermission();
+    // await registerAppWithFCM();
     try {
         token = await messaging().getToken();
         //console.log('getFcmToken-->', token);

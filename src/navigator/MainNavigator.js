@@ -29,6 +29,7 @@ import EditAvatar from "../screens/Home/Profile/EditAvatar";
 import EditCover from "../screens/Home/Profile/EditCover";
 import SettingScreen from "../screens/Home/Setting/SettingScreen";
 import EditPostScreen from "../screens/Home/Post/EditPostScreen";
+import ListFeelScreen from "../components/ListFeelScreen";
 
 const Stack = createNativeStackNavigator();
 const MainNavigator = () => {
@@ -179,6 +180,14 @@ const MainNavigator = () => {
         component={EditPostScreen}
         options={{
           title: "Sửa bài đăng",
+        }}
+      />
+
+      <Stack.Screen
+        name="ListFeel"
+        component={ListFeelScreen}
+        options={{
+          title: "Danh sách bày tỏ cảm xúc",
         }}
       />
     </Stack.Navigator>

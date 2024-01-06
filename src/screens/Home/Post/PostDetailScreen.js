@@ -34,6 +34,7 @@ const PostDetailScreen = ({ route }) => {
   const [mark, setMark] = useState([]);
   const [newMark, setNewMark] = useState("");
   const [newReply, setNewReply] = useState("");
+  const [markType, setMarkType] = useState(3);
   //const [inputType, setInputType] = useState("Mark");
 
   //focus input tạo mark khi nhấn nút "tạo mark"
@@ -114,7 +115,7 @@ const PostDetailScreen = ({ route }) => {
           index: 0,
           count: 10,
           mark_id: "",
-          type: 1,
+          type: markType,
         },
         {
           headers: {
@@ -190,6 +191,71 @@ const PostDetailScreen = ({ route }) => {
             handleAddMarkButton={() => {
               inputMarkRef.current.focus();
             }} />
+        </View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              //borderWidth: 1,
+              height: 30,
+              width: 55,
+              padding: 2,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 5,
+              backgroundColor: '#ededed',
+              //marginLeft: 20,
+            }}
+            onPress={() => {
+              if(markType != 1) setMarkType("1")
+                else setMarkType(3);
+            }}
+          >
+            <Text
+              style={{
+                color: (markType == 1)? '#21ad34':'#737373',
+                fontWeight: 'bold',
+              }}
+            >Trust</Text>
+          </TouchableOpacity>
+
+          <Text
+            style={{
+              alignSelf: 'center',
+              marginLeft: 10,
+              marginRight: 10,
+              fontWeight: 'bold',
+            }}
+          >Or</Text>
+
+          <TouchableOpacity
+            style={{
+              //borderWidth: 1,
+              height: 30,
+              width: 55,
+              padding: 2,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 5,
+              backgroundColor: '#ededed',
+            }}
+            onPress={() => {
+              if(markType != 0) setMarkType(0)
+                else setMarkType(3);
+            }}
+          >
+            <Text
+              style={{
+                color: (markType ==0)? '#a1271a':'#737373',
+                fontWeight: 'bold',
+              }}
+            >Fake</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.comment}>

@@ -76,6 +76,50 @@ const MarkCard = (props) => {
           </View>
 
         </View>
+        {(markDetail.type_of_mark == "1") &&
+        <View
+          style={{
+            //borderWidth: 1,
+            height: 24,
+            width: 45,
+            padding: 2,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 5,
+            backgroundColor: '#ededed',
+          }}
+        >
+          <Text
+            style={{
+              color: '#21ad34',
+              fontWeight: 'bold',
+            }}
+          >Trust</Text>
+        </View>
+        }
+
+        {(markDetail.type_of_mark == "0") &&
+        <View
+          style={{
+            //borderWidth: 1,
+            height: 24,
+            width: 45,
+            padding: 2,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 5,
+            backgroundColor: '#ededed',
+          }}
+        >
+          <Text
+            style={{
+              color: '#a1271a',
+              fontWeight: 'bold',
+            }}
+          >Fake</Text>
+        </View>
+        }
+
       </View>
 
       <View style={styles.comment}>

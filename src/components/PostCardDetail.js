@@ -1,4 +1,4 @@
-import { Alert, Dimensions, Image, ImageBackground, Modal, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { Alert, Dimensions, Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { Video, ResizeMode } from 'expo-av';
+import Modal from "react-native-modal";
 
 const PostCardDetail = (props) => {
 
@@ -214,15 +215,23 @@ const PostCardDetail = (props) => {
           
           <Modal
             animationType="slide"
+            onBackdropPress={() => setOptionModal(false)}
             transparent={true}
             visible={optionModal}
-            onRequestClose={() => {setOptionModal(false)}}
+            //onRequestClose={() => {setOptionModal(false)}}
+            backdropColor={"#919492"}
+            animationIn={"slideInUp"}
+            animationOut={"slideOutDown"}
+            style={{
+              width: '100%',
+              alignSelf: 'center'
+            }}
           >
             <TouchableWithoutFeedback onPress={() => {setOptionModal(false)}}>
             <View
               style={{
                 position: 'absolute',
-                bottom: 0,
+                bottom: -20,
                 height: 500,
                 width: '100%',
                 backgroundColor: '#f0f2f5',
@@ -312,6 +321,10 @@ const PostCardDetail = (props) => {
                     flexDirection: 'row',
                     //justifyContent: 'center',
                     alignItems: 'center',
+                  }}
+                  onPress={() => {
+                    setOptionModal(false);
+                    navigation.navigate('EditPost',{postId: postDetail.id});
                   }}
                 >
                   <Image style={{height: 30, width: 30, marginLeft: 10, marginRight: 12,}} source={ require('../../assets/icons/edit.png')}/>
@@ -416,7 +429,13 @@ const PostCardDetail = (props) => {
       }
 
       <View style={styles.likeView}>
-        <Text style={{fontSize: 15, fontWeight: '500', color: "#636363"}}>{Number(thisPost.kudos) + Number(thisPost.disappointed)} feels</Text>
+        <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("ListFeel", {postDetail: postDetail})
+            }}
+          >
+            <Text style={{fontSize: 15, fontWeight: '500', color: "#636363"}}>{Number(thisPost.kudos) + Number(thisPost.disappointed)} feels</Text>
+          </TouchableOpacity>
         {/* <Text style={{fontSize: 15}}>{postDetail.comment_mark} comments</Text> */}
       </View>
 
