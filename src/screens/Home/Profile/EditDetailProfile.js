@@ -9,9 +9,12 @@ import description_icon from '../../../../assets/icons/cv.png'
 import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { updateProfile } from '../../../redux/actions/profile.action';
 const EditDetailProfile = ({route}) => {
   const { avatar, cover_image, username,address, city, country, description } = route.params;
+  const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.currentUser);
+  const profileData = useSelector((state) => state.profile);
   const [addressInput, setAddressInput] = useState("");
   const [cityInput, setCityInput] = useState("");
   const [countryInput, setCountryInput] = useState("")
@@ -28,6 +31,18 @@ const EditDetailProfile = ({route}) => {
       formData.append('cover_image', cover_image); // Empty value as specified in the API
       formData.append('link', ''); // Empty value as specified in the API
 
+      const newProfile = {
+        username: username,
+        description: description,
+        
+        avatar: avatar,
+        address: addressInput,
+        city: cityInput,
+        country: countryInput,
+        cover_image: cover_image,
+        link: ""
+        
+      };
       const response = await axios.post(
         'https://it4788.catan.io.vn/set_user_info',
         formData,
@@ -42,7 +57,7 @@ const EditDetailProfile = ({route}) => {
 
       // Handle the response as needed
       console.log(response.data);
-
+      dispatch(updateProfile(newProfile));
       // Assuming you want to navigate back to the previous screen after updating the avatar
       navigation.goBack();
     } catch (error) {

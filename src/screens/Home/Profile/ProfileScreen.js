@@ -16,16 +16,20 @@ import countries_icon from "../../../../assets/icons/countries.png";
 import description_icon from "../../../../assets/icons/cv.png";
 import ListFriendScreen from "./ListFriendScreen";
 import PostCard from "../../../components/PostCard";
+import { updateProfile } from "../../../redux/actions/profile.action";
+
+
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import CreatePostScreen from '../Post/CreatePostScreen';
 const ProfileScreen = ({route}) => {
-  
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [postData, setPostData] = useState([]);
   const currentUser = useSelector((state) => state.auth.currentUser);
+  const profileData = useSelector((state) => state.profile);
   const user_id = currentUser.id
-  const [profileData, setProfileData] = useState({});
+  //const [profileData, setProfileData] = useState({});
   const [countFriend, setCountFriend] = useState(0);
   const [index, setIndex] = useState("0")
   const [friendListData, setFriendListData] = useState([]);
@@ -68,14 +72,29 @@ const ProfileScreen = ({route}) => {
       }
         
       );
-      setProfileData(response.data.data);
+      const newProfile = {
+        username:response.data.data.username,
+        description: response.data.data.description,
+        
+        avatar: response.data.data.avatar,
+        address: response.data.data.address,
+        city: response.data.data.city,
+        country: response.data.data.country,
+        cover_image: response.data.data.cover_image,
+        link: ""
+        
+      };
+      
+     // setProfileData(response.data.data);
+      dispatch(updateProfile(newProfile));
       // console.log(profileData)
-      console.log(response.data.data);
+      //console.log(response.data.data);
+      
       if (response.status === 200) {
         console.log("Get profile data succcess");
         setProfileData(response.data.data);
       } else {
-        console.log("response status: ", response.status);
+        //console.log("response status: ", response.status);
       }
     } catch (error) {
       console.error("Get data fail");
@@ -117,7 +136,7 @@ const ProfileScreen = ({route}) => {
       }
     }
   };
-  console.log(profileData);
+ // console.log(profileData);
   useEffect(() => {
     // alert("handle get post")
     handleGetPosts(1);
@@ -125,7 +144,7 @@ const ProfileScreen = ({route}) => {
   useEffect(() => {
     // alert("hello world")
     handleProfile();
-  }, [profileData.avatar]);
+  }, [profileData]);
   useEffect(() => {
     handleCountFriend();
     if(user_id!=currentUser.id){
@@ -143,7 +162,7 @@ const ProfileScreen = ({route}) => {
   },[])
   
   return (
-    <ScrollView nestedScrollEnabled={true}>
+    <ScrollView>
       <View style={styles.container}>
         <View style={styles.image_profile}>
           <View style={styles.cover_image}>

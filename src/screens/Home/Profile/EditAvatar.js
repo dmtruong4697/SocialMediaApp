@@ -5,11 +5,14 @@ import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { updateProfile } from '../../../redux/actions/profile.action';
 const EditAvatar = ({ route }) => {
   const [image, setImage] = useState(null);
   const { avatar, cover_image, username,address, city, country, description } = route.params;
   const navigation = useNavigation();
   const currentUser = useSelector((state) => state.auth.currentUser);
+  const profileData = useSelector((state) => state.profile);
+  const dispatch = useDispatch();
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -51,10 +54,22 @@ const EditAvatar = ({ route }) => {
           },
         }
       );
-
+      const newProfile = {
+        username: username,
+        description: description,
+        
+        avatar: image,
+        address: address,
+        city: city,
+        country: country,
+        cover_image: cover_image,
+        link: ""
+        
+      };
+      dispatch(updateProfile(newProfile))
       // Handle the response as needed
       console.log(response.data);
-
+      
       // Assuming you want to navigate back to the previous screen after updating the avatar
       navigation.goBack();
     } catch (error) {
@@ -71,7 +86,7 @@ const EditAvatar = ({ route }) => {
           {image ? (
             <Image style={styles.avatarImage} source={{ uri: image }} />
           ) : (
-            <Image style={styles.avatarImage} source={{ uri: avatar }} />
+            <Image style={styles.avatarImage} source={{ uri: profileData.avatar }} />
           )}
         </TouchableOpacity>
       </View>

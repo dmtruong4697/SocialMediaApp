@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView ,FlatList} from 'react-native';
+import { StyleSheet, Text, View,Modal, TouchableOpacity, Image, ScrollView ,FlatList} from 'react-native';
 import React ,{useEffect, useState} from 'react';
 import { Button } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
@@ -11,6 +11,7 @@ import PostCard from "../../../components/PostCard";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import CreatePostScreen from '../Post/CreatePostScreen';
+import { faL } from '@fortawesome/free-solid-svg-icons';
 const UserProfileScreen = ({route}) => {
   
 const navigation = useNavigation();
@@ -23,6 +24,8 @@ const [index, setIndex] = useState("0")
 const [friendListData, setFriendListData] = useState([]);
 const [myFriendListData, setMyFriendListData] = useState([])
 const [isFriend, setIsFriend] = useState(false);
+const [addedFriend, setAddedFriend] = useState(false);
+const [showUnFriend, setShowUnFriend] = useState(false);
 const handleGetPosts = async (pageNumber) => {
 
   try {
@@ -68,11 +71,15 @@ const handleProfile = async () => {
     });
     setProfileData(response.data.data);
     console.log("is friend: ", response.data.data.is_friend)
-    if(response.data.data.is_friend=='0'){
-      setIsFriend(false)
-    }
-    else{
+    if(response.data.data.is_friend=='1'){
       setIsFriend(true)
+    }
+    if(response.data.data.is_friend=='2'){
+      setIsFriend(false)
+      setAddedFriend(true)
+    }
+    if(response.data.data.is_friend =='0'){
+      setIsFriend(false)
     }
     console.log(response.data.data)
     if (response.status === 200) {
@@ -136,6 +143,8 @@ const handleSendFriendReq = async()=>{
     
     
     if (response.status === 200||response.status === 201) {
+      setIsFriend(false)
+      setAddedFriend(true)
       console.log("set req friend success")
     } else {      
       Alert.alert('Get fail');
@@ -147,6 +156,62 @@ const handleSendFriendReq = async()=>{
     } 
   }
 }
+const handleDeleteReqFriend = async()=>{
+  try {
+    const response = await axios.post('https://it4788.catan.io.vn/del_request_friend', {
+      user_id: user_id
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${currentUser.token}`,
+      },
+    });
+    
+    
+    if (response.status === 200||response.status === 201) {
+      setAddedFriend(false);
+      setIsFriend(false)
+      console.log("delete request friend success")
+    } else {      
+      Alert.alert('Get fail');
+    }
+  } catch (error) {     
+    if (error.response) {
+      console.error('response data: ', error.response.data);
+      ;
+    } 
+  }
+}
+const handleUnfriend = async()=>{
+  try {
+    console.log("hello mai dinh cong")
+    const response = await axios.post('https://it4788.catan.io.vn/unfriend', {
+      user_id: user_id
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${currentUser.token}`,
+      },
+    });
+    
+    
+    if (response.status === 200||response.status === 201) {
+      setAddedFriend(false);
+      setIsFriend(false)
+      console.log("unfriend request success")
+    } else {      
+      Alert.alert('Get fail');
+    }
+  } catch (error) {     
+    if (error.response) {
+      console.error('response data: ', error.response.data);
+      ;
+    } 
+  }
+}
+const handleClickFriend = ()=>{
+  setShowUnFriend(true)
+}
 useEffect(() => {
 // alert("handle get post")
   handleGetPosts(1);
@@ -154,7 +219,7 @@ useEffect(() => {
 useEffect(() => {
   // alert("hello world")
   handleProfile();
-  if(profileData.is_friend!=0){
+  if(profileData.is_friend==0){
     setIsFriend(true);
   }
 }, [profileData.avatar, route.params]);
@@ -164,7 +229,10 @@ useEffect(()=>{
 },[route.params])
 
   return (
-    <ScrollView>
+    <ScrollView onPress = {()=>{
+      console.log("hello")
+      setShowUnFriend(false)
+    }}>
     <View style={styles.container}>
       <View style={styles.image_profile}>
         <View style={styles.cover_image}>
@@ -196,6 +264,22 @@ useEffect(()=>{
               backgroundColor: '#BADFFC'
             }}
             onPress={() => {
+              handleClickFriend();
+            }}
+          />
+          :
+          addedFriend?
+          <Button
+            title= "Hủy lời mời"// Conditional rendering
+            type="clear"
+            titleStyle={{ fontSize: 18, color: '#0780DC', fontWeight: 600 }}
+            style={{
+              borderRadius: 8,
+              backgroundColor: '#BADFFC'
+            }}
+            onPress={() => {
+             
+                handleDeleteReqFriend();
               
             }}
           />
@@ -298,7 +382,46 @@ useEffect(()=>{
         />
       </View>
     </View>
+    <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showUnFriend}
+        onRequestClose={() => setShowUnFriend(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={{ fontSize: 18, marginBottom: 20 }}>Are you sure you want to unfriend?</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Button
+                title="Cancel"
+                type="clear"
+                titleStyle={{ fontSize: 18, color: '#0780DC', fontWeight: 600 }}
+                style={{
+                  borderRadius: 8,
+                  backgroundColor: '#BADFFC'
+                }}
+                onPress={() => setShowUnFriend(false)}
+              />
+              <Button
+                title="Unfriend"
+                type="clear"
+                titleStyle={{ fontSize: 18, color: '#0780DC', fontWeight: 600 }}
+                style={{
+                  borderRadius: 8,
+                  backgroundColor: '#BADFFC'
+                }}
+                onPress={() => {
+                  // Handle unfriend logic here
+                  handleUnfriend();
+                  setShowUnFriend(false);
+                }}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
+    
   );
 };
 
@@ -394,5 +517,17 @@ const styles = StyleSheet.create({
     
     marginBottom: 15,
     gap: 12
-  }
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+  },
 });
