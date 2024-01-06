@@ -1,4 +1,4 @@
-import { Image, ImageBackground, Modal, Pressable, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { Alert, Image, ImageBackground, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
@@ -11,6 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import {Entypo} from '@expo/vector-icons';
 import { Video, ResizeMode } from 'expo-av';
 import { Dimensions } from 'react-native';
+import Modal from "react-native-modal";
 
 const PostCard = (props) => {
 
@@ -29,6 +30,8 @@ const PostCard = (props) => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [optionModal, setOptionModal] = useState(false);
+  const [reportText, setReportText] = useState("");
+  const [rpInput, setRpInput] = useState(false);
 
   const imageURLs = [];
     postDetail.image.forEach(img => {
@@ -133,12 +136,42 @@ const PostCard = (props) => {
           },
         }
       );
-      
+      setOptionModal(false);
+      Alert.alert("Thành công", "Xóa bài viết thành công");
       console.log(response.data);
     } catch (error) {
       console.error("Lỗi khi xóa bài viết này:", error.response.data);
+      setOptionModal(false);
+      Alert.alert("Error", "Lỗi khi xóa bài viết");
     }
   };  
+
+  const handleReportPost = async () => {
+    try {
+      const response = await axios.post(
+        `${BACKEND_URL}/report_post`,
+        {
+          id: postDetail.id,
+          subject: "Report",
+          details: reportText,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+        }
+      );
+      setOptionModal(false);
+      setRpInput(false);
+      console.log(response.data);
+      Alert.alert("Thành công", "Bạn đã báo cáo bài viết thành công");
+    } catch (error) {
+      console.error("Lỗi khi báo cáo viết này:", error.response.data);
+      setOptionModal(false);
+      setRpInput(false);
+      Alert.alert("Error", "Lỗi khi báo cáo bài viết");
+    }
+  }; 
 
   useEffect(() => {
     if(isFelt == "-1") handleDeleteFeel();
@@ -195,9 +228,17 @@ const PostCard = (props) => {
           
           <Modal
             animationType="slide"
+            onBackdropPress={() => setOptionModal(false)}
             transparent={true}
             visible={optionModal}
-            onRequestClose={() => {setOptionModal(false)}}
+            //onRequestClose={() => {setOptionModal(false)}}
+            backdropColor={"#919492"}
+            animationIn={"slideInUp"}
+            animationOut={"slideOutDown"}
+            style={{
+              width: '100%',
+              alignSelf: 'center'
+            }}
           >
             <TouchableWithoutFeedback onPress={() => {setOptionModal(false)}}>
             <View
@@ -223,12 +264,63 @@ const PostCard = (props) => {
                     //justifyContent: 'center',
                     alignItems: 'center',
                   }}
+                  onPress={() => {
+                    setRpInput(!rpInput);
+                  }}
                 >
                   <Image style={{height: 32, width: 32, marginLeft: 10, marginRight: 10,}} source={ require('../../assets/icons/report.png')}/>
                   <Text
                     style={{fontSize: 16, fontWeight: 'bold'}}
                   >Báo cáo bài viết</Text>
                 </TouchableOpacity>
+
+                {
+                  (rpInput == true) && 
+                  <View>
+                    <TextInput
+                      style={{
+                        width: '95%',
+                        height: 60, 
+                        backgroundColor: '#FFFFFF',
+                        alignSelf: 'center',
+                        marginTop: 20,
+                        borderRadius: 15,
+                        padding: 10,
+                        fontSize: 18,
+                        borderColor: "#bfbfbf",
+                        borderWidth: 1.5,
+                      }}
+                      placeholder='Nội dung báo cáo ...'
+                      multiline
+                      onChangeText={(text) => {setReportText(text)}}
+                    />
+
+                    <TouchableOpacity
+                      style={{
+                        height: 50,
+                        width: 120,
+                        backgroundColor: "#c44037",
+                        alignSelf: 'center',
+                        marginTop: 10,
+                        borderRadius: 7,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                      onPress={() => {
+                        handleReportPost();
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: "#FFFFFF",
+                          fontSize: 20,
+                          alignSelf: 'center',
+                          fontWeight: 'bold',
+                        }}
+                      >Báo cáo</Text>
+                    </TouchableOpacity>
+                  </View>
+                }
 
                 {(postDetail.author.id == currentUser.id) && 
                 <TouchableOpacity
@@ -242,6 +334,10 @@ const PostCard = (props) => {
                     flexDirection: 'row',
                     //justifyContent: 'center',
                     alignItems: 'center',
+                  }}
+                  onPress={() => {
+                    setOptionModal(false);
+                    navigation.navigate('EditPost',{postId: postDetail.id});
                   }}
                 >
                   <Image style={{height: 30, width: 30, marginLeft: 10, marginRight: 12,}} source={ require('../../assets/icons/edit.png')}/>
