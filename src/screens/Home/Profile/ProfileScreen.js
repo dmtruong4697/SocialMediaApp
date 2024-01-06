@@ -7,7 +7,7 @@ import {
   ScrollView,
   FlatList,
 } from "react-native";
-import React, { useEffect, useState,SafeAreaView } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 import address_icon from "../../../../assets/icons/address.png";
@@ -162,7 +162,7 @@ const ProfileScreen = ({route}) => {
   },[])
   
   return (
-    <SafeAreaView>
+    <ScrollView>
       <View style={styles.container}>
         <View style={styles.image_profile}>
           <View style={styles.cover_image}>
@@ -308,7 +308,7 @@ const ProfileScreen = ({route}) => {
           />
         </View>
       </View>
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 
