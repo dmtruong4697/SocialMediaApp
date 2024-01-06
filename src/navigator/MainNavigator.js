@@ -185,17 +185,18 @@ const MainNavigator = () => {
       />
 
       <Stack.Screen
-<<<<<<< HEAD
         name="ListFeel"
         component={ListFeelScreen}
         options={{
           title: "Danh sách bày tỏ cảm xúc",
-=======
+        }}
+      />
+
+      <Stack.Screen
         name="BlockScreen"
         component={BlockListScreen}
         options={{
           title: 'Chặn',
->>>>>>> 635b065207d89aa8fd2f6e006e497287c7e44fcc
         }}
       />
     </Stack.Navigator>
