@@ -28,6 +28,7 @@ import UserProfileScreen from '../screens/Home/Profile/UserProfileScreen';
 import EditAvatar from "../screens/Home/Profile/EditAvatar";
 import EditCover from "../screens/Home/Profile/EditCover";
 import SettingScreen from "../screens/Home/Setting/SettingScreen";
+import BlockListScreen from "../screens/Home/Friend/BlockListScreen";
 import EditPostScreen from "../screens/Home/Post/EditPostScreen";
 import ListFeelScreen from "../components/ListFeelScreen";
 
@@ -184,10 +185,17 @@ const MainNavigator = () => {
       />
 
       <Stack.Screen
+<<<<<<< HEAD
         name="ListFeel"
         component={ListFeelScreen}
         options={{
           title: "Danh sách bày tỏ cảm xúc",
+=======
+        name="BlockScreen"
+        component={BlockListScreen}
+        options={{
+          title: 'Chặn',
+>>>>>>> 635b065207d89aa8fd2f6e006e497287c7e44fcc
         }}
       />
     </Stack.Navigator>

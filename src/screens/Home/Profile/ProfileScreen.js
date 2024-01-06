@@ -18,7 +18,7 @@ import ListFriendScreen from "./ListFriendScreen";
 import PostCard from "../../../components/PostCard";
 import { updateProfile } from "../../../redux/actions/profile.action";
 
-
+import { Dimensions } from 'react-native';
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import CreatePostScreen from '../Post/CreatePostScreen';
@@ -26,6 +26,7 @@ const ProfileScreen = ({route}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [postData, setPostData] = useState([]);
+  const [videoData, setVideoData] = useState([])
   const currentUser = useSelector((state) => state.auth.currentUser);
   const profileData = useSelector((state) => state.profile);
   const user_id = currentUser.id
@@ -35,6 +36,9 @@ const ProfileScreen = ({route}) => {
   const [friendListData, setFriendListData] = useState([]);
   const [isMyProfile, setMyProfile] = useState(true);
   const [isFriend, setIsFriend] = useState(false);
+  const [isInMain, setIsInMain] = useState(true)
+  const win = Dimensions.get('window');
+  const ratio = win.width/541;
   const handleGetPosts = async (pageNumber) => {
     try {
       const response = await axios.post(
@@ -58,6 +62,33 @@ const ProfileScreen = ({route}) => {
       console.error("Lỗi:", error);
     }
   };
+  const handleGetVideos = async () => {
+    try {
+      const response = await axios.post(
+        "https://it4788.catan.io.vn/get_list_videos",
+        {
+          user_id: user_id,
+          in_campaign: 1,
+          campaign_id:1,
+          latitude: 1.0,
+          longitude: 1.0,
+          last_id: null,
+          index: 0,
+          count: 10,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+        }
+      );
+     // console.log(response.data.data.post)
+      setVideoData(response.data.data.post);
+      console.log(videoData)
+    } catch (error) {
+      console.error("Lỗi:", error);
+    }
+  }
 
   const handleProfile = async () => {
     try {
@@ -141,6 +172,9 @@ const ProfileScreen = ({route}) => {
     // alert("handle get post")
     handleGetPosts(1);
   }, []);
+  useEffect(()=>{
+    handleGetVideos();
+  },[])
   useEffect(() => {
     // alert("hello world")
     handleProfile();
@@ -224,6 +258,9 @@ const ProfileScreen = ({route}) => {
                 borderRadius: 15,
                 backgroundColor: "#CCFFFF",
               }}
+              onPress={()=>{
+                setIsInMain(true)
+              }}
             />
           </View>
           <View style={styles.navbar_video}>
@@ -234,80 +271,123 @@ const ProfileScreen = ({route}) => {
               style={{
                 borderRadius: 8,
               }}
-            />
-          </View>
-        </View>
-        <View style={styles.detail_infor}>
-          <View style={{ marginBottom: 15 }}>
-            <Text style={{ fontSize: 18, fontWeight: 700 }}>Chi tiết</Text>
-          </View>
-          <View style={styles.infor}>
-            <Image source={description_icon} style={styles.icon_infor} />
-            <Text style={{ fontSize: 15, flexShrink: 1 }}>
-              {profileData.description}
-            </Text>
-          </View>
-          <View style={styles.infor}>
-            <Image source={address_icon} style={styles.icon_infor} />
-            <Text style={{ fontSize: 15 }}>{profileData.address}</Text>
-          </View>
-          <View style={styles.infor}>
-            <Image source={city_icon} style={styles.icon_infor} />
-            <Text style={{ fontSize: 15 }}>{profileData.city}</Text>
-          </View>
-          <View style={styles.infor}>
-            <Image source={countries_icon} style={styles.icon_infor} />
-            <Text style={{ fontSize: 15 }}>{profileData.country}</Text>
-          </View>
-        </View>
-        <View style={styles.friend_container}>
-          <Text style={{ fontSize: 18, fontWeight: 700 }}>Bạn bè</Text>
-          <Text style={{ fontSize: 18 }}>{countFriend} bạn bè</Text>
-          <View style={{ marginTop: 10 }}>
-            <Button
-              title="Xem tất cả bạn bè"
-              type="clear"
-              titleStyle={{ fontSize: 15, color: "#303030", fontWeight: 700 }}
-              style={{
-                borderRadius: 8,
-                backgroundColor: "#E0E0E0",
-              }}
-              onPress={() => {
-                navigation.navigate("FriendList");
+              onPress={()=>{
+                setIsInMain(false);
               }}
             />
           </View>
         </View>
-        <View style={styles.container_add_post}>
-          <View style={styles.add_post_avatar}>
-            <Image
-              style={{ borderRadius: 1000, width: 50, height: 50 }}
-              source={{ uri: profileData.avatar }}
-            />
+        {isInMain?
+        <View style = {styles.main_profile}>
+          <View style={styles.detail_infor}>
+            <View style={{ marginBottom: 15 }}>
+              <Text style={{ fontSize: 18, fontWeight: 700 }}>Chi tiết</Text>
+            </View>
+            {profileData.description!=""&&(
+            <View style={styles.infor}>
+              <Image source={description_icon} style={styles.icon_infor} />
+              <Text style={{ fontSize: 15, flexShrink: 1 }}>
+                {profileData.description}
+              </Text>
+            </View>
+            )}
+            {profileData.address!=""&&(
+            <View style={styles.infor}>
+              <Image source={address_icon} style={styles.icon_infor} />
+              <Text style={{ fontSize: 15 }}>{profileData.address}</Text>
+            </View>
+            )}
+            {profileData.city!=""&&(
+            <View style={styles.infor}>
+              <Image source={city_icon} style={styles.icon_infor} />
+              <Text style={{ fontSize: 15 }}>{profileData.city}</Text>
+            </View>
+            )}   
+            {profileData.country!=""&&(
+            <View style={styles.infor}>
+              <Image source={countries_icon} style={styles.icon_infor} />
+              <Text style={{ fontSize: 15 }}>{profileData.country}</Text>
+            </View>
+            )}
           </View>
-          <View style={{ marginLeft: 10 }}>
-            <Button
-              style={{ fontSize: 16, backgroundColor: "none" }}
-              title="Bạn đang nghĩ gì"
-              onPress={() => {
-                navigation.navigate("CreatePost");
-              }}
+          <View style={styles.friend_container}>
+            <Text style={{ fontSize: 18, fontWeight: 700 }}>Bạn bè</Text>
+            <Text style={{ fontSize: 18 }}>{countFriend} bạn bè</Text>
+            <View style={{ marginTop: 10 }}>
+              <Button
+                title="Xem tất cả bạn bè"
+                type="clear"
+                titleStyle={{ fontSize: 15, color: "#303030", fontWeight: 700 }}
+                style={{
+                  borderRadius: 8,
+                  backgroundColor: "#E0E0E0",
+                }}
+                onPress={() => {
+                  navigation.navigate("FriendList");
+                }}
+              />
+            </View>
+          </View>
+          <View style={styles.container_add_post}>
+            <View style={styles.add_post_avatar}>
+              <Image
+                style={{ borderRadius: 1000, width: 50, height: 50 }}
+                source={{ uri: profileData.avatar }}
+              />
+            </View>
+            <View style={{ marginLeft: 10 }}>
+              <Button
+                style={{ fontSize: 16, backgroundColor: "none" }}
+                title="Bạn đang nghĩ gì"
+                onPress={() => {
+                  navigation.navigate("CreatePost");
+                }}
+              />
+            </View>
+          </View>
+          <View style={{ flex: 1 }}>
+            <FlatList
+              data={postData}
+              renderItem={({ item }) => <PostCard postDetail={item} />}
+              keyExtractor={(item) => item.id.toString()}
+              onEndReachedThreshold={0.5}
+              // onEndReached={handleLoadMore}
+              // refreshControl={
+              //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              // }
             />
           </View>
         </View>
-        <View style={{ flex: 1 }}>
-          <FlatList
-            data={postData}
-            renderItem={({ item }) => <PostCard postDetail={item} />}
-            keyExtractor={(item) => item.id.toString()}
-            onEndReachedThreshold={0.5}
-            // onEndReached={handleLoadMore}
-            // refreshControl={
-            //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            // }
-          />
-        </View>
+        :
+        <View style = {styles.main_video}>
+          <View style = {styles.main_video}>
+        {videoData.map((item, index) => (
+  item.author.id == user_id && (
+    <Video
+      key={index}
+      ref={video}
+      source={{
+        uri: item.video.url,
+      }}
+      useNativeControls
+      resizeMode='cover'
+      isLooping
+      style={{
+        flex: 1,
+        alignSelf: 'stretch',
+        width: win.width,
+        height: 362 * ratio, 
+        marginBottom: 20
+      }}
+    />
+  )
+))}
+
       </View>
+        </View>
+}
+      </View>
+              
     </ScrollView>
   );
 };
@@ -400,5 +480,18 @@ const styles = StyleSheet.create({
 
     marginBottom: 15,
     gap: 12,
+  },
+  main_video: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    //backgroundColor: '#000', // Set a background color for the video container
+    marginBottom: 20,
+  },
+
+  video: {
+    width: '100%',
+    height: 200,
+    marginBottom: 10,
   },
 });
