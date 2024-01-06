@@ -195,6 +195,7 @@ const BlockList = () => {
   const currentUser = useSelector((state) => state.auth.currentUser);
   const [open, setOpen] = useState(false);
   const [userList, setUserList] = useState([]);
+  const navigation = useNavigation();
   useEffect(() => {
     axios
       .post(
@@ -219,6 +220,7 @@ const BlockList = () => {
         style={styles.dropdownButton}
         onPress={() => {
           setOpen((state) => !state);
+          navigation.navigate("BlockScreen", { BlockListUser: userList})
         }}
       >
         <Text style={styles.selectedOption}>{"Danh sách chặn"}</Text>

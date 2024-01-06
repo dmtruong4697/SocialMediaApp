@@ -28,6 +28,7 @@ import UserProfileScreen from '../screens/Home/Profile/UserProfileScreen';
 import EditAvatar from "../screens/Home/Profile/EditAvatar";
 import EditCover from "../screens/Home/Profile/EditCover";
 import SettingScreen from "../screens/Home/Setting/SettingScreen";
+import BlockListScreen from "../screens/Home/Friend/BlockListScreen";
 
 const Stack = createNativeStackNavigator();
 const MainNavigator = () => {
@@ -172,6 +173,15 @@ const MainNavigator = () => {
           title: "Bài đăng",
         }}
       />
+
+      <Stack.Screen
+        name="BlockScreen"
+        component={BlockListScreen}
+        options={{
+          title: 'Chặn',
+        }}
+      />
+
     </Stack.Navigator>
   );
 };
