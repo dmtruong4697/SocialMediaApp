@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, FlatList, RefreshControl } from "react-native";
+import { View, StyleSheet, FlatList, RefreshControl, Button } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import PostCard from "../../../components/PostCard";
+import { Video, ResizeMode } from 'expo-av';
+
 const FeedScreen = () => {
 
   const BACKEND_URL = 'https://it4788.catan.io.vn'
@@ -16,6 +18,9 @@ const FeedScreen = () => {
   const [postData, setPostData] = useState([]);
   const [page, setPage] = useState(1);
   const [loadMoreTimeout, setLoadMoreTimeout] = useState(null);
+
+  const video = React.useRef(null);
+  const [status, setStatus] = React.useState({});
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -83,6 +88,29 @@ const FeedScreen = () => {
       <View style = {styles.header}>
         
       </View>
+
+      {/* <Video
+            ref={video}
+            //style={styles.video}
+            source={{
+              uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+            }}
+            useNativeControls
+            resizeMode={ResizeMode.CONTAIN}
+            isLooping
+            onPlaybackStatusUpdate={status => setStatus(() => status)}
+            style={{
+              height: 200,
+              width:'100%',
+            }}
+          />
+
+          <Button
+            title={status.isPlaying ? 'Pause' : 'Play'}
+            onPress={() =>
+              status.isPlaying ? video.current.pauseAsync() : video.current.playAsync()
+            }
+          /> */}
       <FlatList
         data={postData}
         renderItem={({ item }) => <PostCard postDetail={item} />}

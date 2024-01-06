@@ -1,4 +1,4 @@
-import { Image, ImageBackground, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, Image, ImageBackground, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
@@ -8,6 +8,7 @@ import { Button } from 'react-native';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import { Video, ResizeMode } from 'expo-av';
 
 const PostCardDetail = (props) => {
 
@@ -17,6 +18,14 @@ const PostCardDetail = (props) => {
   const {postDetail, handleAddMarkButton} = props;
   const [isFelt, setIsFelt] = useState(postDetail.is_felt);
   const [thisPost, setThisPost] = useState({});
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [optionModal, setOptionModal] = useState(false);
+
+  const video = React.useRef(null);
+  const [status, setStatus] = React.useState({});
+  const win = Dimensions.get('window');
+  const ratio = win.width/541; //541 is actual image width
 
   const imageURLs = [];
     postDetail.image.forEach(img => {
@@ -106,7 +115,27 @@ const PostCardDetail = (props) => {
     } catch (error) {
       console.error("Lỗi khi tải bài viết này:", error.response.data);
     }
-  };  
+  }; 
+  
+  const handleDeletePost = async () => {
+    try {
+      const response = await axios.post(
+        `${BACKEND_URL}/delete_post`,
+        {
+          id: postDetail.id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+        }
+      );
+      
+      console.log(response.data);
+    } catch (error) {
+      console.error("Lỗi khi xóa bài viết này:", error.response.data);
+    }
+  }; 
 
   useEffect(() => {
     if(isFelt == "-1") handleDeleteFeel();
@@ -134,11 +163,100 @@ const PostCardDetail = (props) => {
           <Text style={{fontSize: 14, fontWeight: '500', color: '#0075DE'}}>{time}</Text>
         </View>
 
-          <TouchableOpacity 
+        <TouchableOpacity 
             style={styles.optionButton}
+            onPress={() => {
+              setOptionModal(true);
+            }}
           >
             <FontAwesomeIcon icon={faEllipsis} size={24}/>
           </TouchableOpacity>
+          
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={optionModal}
+            onRequestClose={() => {setOptionModal(false)}}
+          >
+            <TouchableWithoutFeedback onPress={() => {setOptionModal(false)}}>
+            <View
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                height: 500,
+                width: '100%',
+                backgroundColor: '#f0f2f5',
+                borderTopRightRadius: 15,
+                borderTopLeftRadius: 15,
+              }}
+            >
+                <TouchableOpacity
+                  style={{
+                    width: '95%',
+                    height: 60,
+                    backgroundColor: '#FFFFFF',
+                    alignSelf: 'center',
+                    marginTop: 20,
+                    borderRadius: 10,
+                    flexDirection: 'row',
+                    //justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Image style={{height: 32, width: 32, marginLeft: 10, marginRight: 10,}} source={ require('../../assets/icons/report.png')}/>
+                  <Text
+                    style={{fontSize: 16, fontWeight: 'bold'}}
+                  >Báo cáo bài viết</Text>
+                </TouchableOpacity>
+
+                {(postDetail.author.id == currentUser.id) && 
+                <TouchableOpacity
+                  style={{
+                    width: '95%',
+                    height: 60,
+                    backgroundColor: '#FFFFFF',
+                    alignSelf: 'center',
+                    marginTop: 20,
+                    borderRadius: 10,
+                    flexDirection: 'row',
+                    //justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Image style={{height: 30, width: 30, marginLeft: 10, marginRight: 12,}} source={ require('../../assets/icons/edit.png')}/>
+                  <Text
+                    style={{fontSize: 16, fontWeight: 'bold'}}
+                  >Chỉnh sửa bài viết</Text>
+                </TouchableOpacity>
+                }
+            
+            {(postDetail.author.id == currentUser.id) && 
+                <TouchableOpacity
+                  style={{
+                    width: '95%',
+                    height: 60,
+                    backgroundColor: '#FFFFFF',
+                    alignSelf: 'center',
+                    marginTop: 20,
+                    borderRadius: 10,
+                    flexDirection: 'row',
+                    //justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+
+                  onPress={() => {
+                    handleDeletePost();
+                  }}
+                >
+                  <Image style={{height: 30, width: 30, marginLeft: 10, marginRight: 12,}} source={ require('../../assets/icons/delete.png')}/>
+                  <Text
+                    style={{fontSize: 16, fontWeight: 'bold'}}
+                  >Xóa bài viết</Text>
+              </TouchableOpacity>
+              }
+            </View>
+            </TouchableWithoutFeedback>
+          </Modal>
 
       </View>
 
@@ -176,53 +294,126 @@ const PostCardDetail = (props) => {
         </View>
       }
 
+{
+        (postDetail.video) && 
+        
+        <View style={styles.video}>
+          <Video
+            ref={video}
+            //style={styles.video}
+            source={{
+              uri: postDetail.video.url,
+            }}
+            useNativeControls
+            resizeMode='cover'
+            isLooping
+            onPlaybackStatusUpdate={status => setStatus(() => status)}
+            style={{
+              flex: 1,
+              alignSelf: 'stretch',
+              width: win.width,
+              height: 362 * ratio, //362 is actual height of image
+            }}
+          />
+{/* 
+          <Button
+            title={status.isPlaying ? 'Pause' : 'Play'}
+            onPress={() =>
+              status.isPlaying ? video.current.pauseAsync() : video.current.playAsync()
+            }
+          /> */}
+        </View>
+      }
+
       <View style={styles.likeView}>
-        <Text style={{fontSize: 15}}>{Number(thisPost.kudos) + Number(thisPost.disappointed)} feels</Text>
+        <Text style={{fontSize: 15, fontWeight: '500', color: "#636363"}}>{Number(thisPost.kudos) + Number(thisPost.disappointed)} feels</Text>
         {/* <Text style={{fontSize: 15}}>{postDetail.comment_mark} comments</Text> */}
       </View>
 
       <View style={styles.buttonView}>
-        {/* 2 nut feel */}
         <View
           style={styles.button}
         >
-          {/* nut upvote */}
-            <TouchableOpacity 
-              style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: 'auto',}}
-              onPress={() => {
-                if(isFelt == "1") setIsFelt("-1");
-                if(isFelt == "0") setIsFelt("1");
-                if(isFelt == "-1") setIsFelt("1");
-                // if (isFelt == "1") handleFeel(isFelt);
-                // if (isFelt == "-1") handleDeleteFeel();
-              }}
-            >
-              <Image style={{height: 24, width: 24, marginRight: 5,}} source={(isFelt == "1")? require('../../assets/icons/upvote-on.png'):require('../../assets/icons/upvote-off.png')}/>
-            </TouchableOpacity>
-
-          {/* nut downvote */}
-            <TouchableOpacity 
-              style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: 'auto', marginLeft: 10,}}
-              onPress={() => {
-                if(isFelt == "0") setIsFelt("-1");
-                if(isFelt == "1") setIsFelt("0");
-                if(isFelt == "-1") setIsFelt("0");
-                // if (isFelt == "0") handleFeel(isFelt);
-                // if (isFelt == "-1") handleDeleteFeel();
-              }}
-            >
-              <Image style={{height: 24, width: 24, marginRight: 5,}} source={(isFelt == "0")? require('../../assets/icons/downvote-on.png'):require('../../assets/icons/downvote-off.png')}/>
-            </TouchableOpacity>
+            {/* nut like mac dinh */}
+              <TouchableOpacity 
+                style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: 'auto', marginLeft: 10,}}
+                onPress={() => {
+                  if(isFelt == "-1") setIsFelt("1")
+                    else setIsFelt("-1");
+                }}
+                onLongPress={() => {
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                {(isFelt == "-1") && <Image style={{height: 24, width: 24, marginRight: 5,}} source={ require('../../assets/icons/like.png')}/>}
+                {(isFelt == "1") && <Image style={{height: 24, width: 24, marginRight: 5,}} source={ require('../../assets/icons/care.png')}/>}
+                {(isFelt == "0") && <Image style={{height: 24, width: 24, marginRight: 5,}} source={ require('../../assets/icons/angry.png')}/>}
+                {(isFelt == "-1") && <Text style={{fontSize: 16, fontWeight: '500', color: "#636363"}}>Thích</Text>}
+                {(isFelt == "1") && <Text style={{fontSize: 16, fontWeight: '500', color: "#fcba03"}}>Kudos</Text>}
+                {(isFelt == "0") && <Text style={{fontSize: 16, fontWeight: '500', color: "#fc6f03"}}>Disapointed</Text>}
+              </TouchableOpacity>
 
         </View>
 
         {/* nut comment */}
         <TouchableOpacity 
           style={styles.button}
-          onPress={handleAddMarkButton}
+          onPress={() => {
+            handleGetPost();
+            navigation.navigate('PostDetail',{postDetail: thisPost});
+          }}
         >
-          <Text style={{fontSize: 16, fontWeight: '500',}}>Tạo Mark</Text>
+          <Image style={{height: 24, width: 24, marginRight: 5,}} source={require('../../assets/icons/comment.png')}/>
+          <Text style={{fontSize: 16, fontWeight: '500', color: "#636363"}}>Tạo Mark</Text>
         </TouchableOpacity>
+
+      </View>
+
+      <View style={{width: '100%'}}>
+      {(modalVisible == true) && 
+          <View
+            style={{
+              height: 50,
+              width: 'auto',
+              backgroundColor: '#FFFFFF',
+              position: 'absolute',
+              alignSelf: 'center',
+              bottom: 75,
+              flexDirection: 'row',
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 1,
+              },
+              shadowOpacity: 0.20,
+              shadowRadius: 1.41,
+              elevation: 2,
+              borderRadius: 24,
+            }}
+          >
+              <TouchableOpacity 
+                style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: 'auto', marginLeft: 5, marginRight: 5,}}
+                onPress={() => {
+                  setIsFelt("1");
+                  setModalVisible(false);
+                }}
+
+              >
+                <Image style={{height: 40, width: 40, marginLeft: 5,}} source={ require('../../assets/icons/care.png')}/>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: 'auto', marginLeft: 5, marginRight: 5,}}
+                onPress={() => {
+                  setIsFelt("0");
+                  setModalVisible(false);
+                }}
+
+              >
+                <Image style={{height: 40, width: 40, marginRight: 5,}} source={ require('../../assets/icons/angry.png')}/>
+              </TouchableOpacity>
+          </View>
+        } 
       </View>
 
     </View>
@@ -246,6 +437,12 @@ const styles = StyleSheet.create({
     //backgroundColor: 'green',
     flexDirection: 'row',
     padding: 7,
+  },
+
+  video: {
+    width: '100%',
+    //backgroundColor: 'gray',
+    //height: 300,
   },
 
   avatarImage: {
