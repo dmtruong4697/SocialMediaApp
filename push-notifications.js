@@ -1,7 +1,7 @@
 // import notifee, { EventType } from '@notifee/react-native';
-// import messaging from '@react-native-firebase/messaging';
-// import { PERMISSIONS, request } from 'react-native-permissions';
-// import axios from 'axios';
+import messaging from '@react-native-firebase/messaging';
+import { PERMISSIONS, request } from 'react-native-permissions';
+import axios from 'axios';
 
 // export const handleChangePage = async (type, objectId, currentUser, navigation) => {
 //     if ((+type >= 3) && currentUser && currentUser.token) {
@@ -57,46 +57,46 @@
 //     }
 // }
 
-// //method was called to get FCM token for notification
-// export const getFcmToken = async (currentUser) => {
-//     console.log(currentUser);
-//     let token = null;
-//     await checkApplicationNotificationPermission();
-//     await registerAppWithFCM();
-//     try {
-//         token = await messaging().getToken();
-//         //console.log('getFcmToken-->', token);
-//         if (token) {
-//             try {
-//                 const response = await axios.post(
-//                     "https://it4788.catan.io.vn/set_devtoken",
-//                     {
-//                         devtype: "1",
-//                         devtoken: token
-//                     },
-//                     {
-//                         headers: {
-//                             Authorization: `Bearer ${currentUser.token}`,
-//                         },
-//                     }
-//                 );
-//                 if (response.status === 200) {
-//                     console.log("Set dev token data succcess");
-//                 } else {
-//                     console.log("response status: ", response.status);
-//                 }
-//             } catch (error) {
-//                 console.log("set dev token error", error);
-//             }
-//         }
+//method was called to get FCM token for notification
+export const getFcmToken = async (currentUser) => {
+    console.log(currentUser);
+    let token = null;
+    // await checkApplicationNotificationPermission();
+    // await registerAppWithFCM();
+    try {
+        token = await messaging().getToken();
+        //console.log('getFcmToken-->', token);
+        if (token) {
+            try {
+                const response = await axios.post(
+                    "https://it4788.catan.io.vn/set_devtoken",
+                    {
+                        devtype: "1",
+                        devtoken: token
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${currentUser.token}`,
+                        },
+                    }
+                );
+                if (response.status === 200) {
+                    console.log("Set dev token data succcess");
+                } else {
+                    console.log("response status: ", response.status);
+                }
+            } catch (error) {
+                console.log("set dev token error", error);
+            }
+        }
 
-//     } catch (error) {
-//         console.log('getFcmToken Device Token error ', error);
-//     }
-//     return token;
-// };
+    } catch (error) {
+        console.log('getFcmToken Device Token error ', error);
+    }
+    return token;
+};
 
-// //method was called on  user register with firebase FCM for notification
+//method was called on  user register with firebase FCM for notification
 // export async function registerAppWithFCM() {
 //     console.log(
 //         'registerAppWithFCM status',
@@ -114,7 +114,7 @@
 //     }
 // }
 
-// //method was called on un register the user from firebase for stoping receiving notifications
+//method was called on un register the user from firebase for stoping receiving notifications
 // export async function unRegisterAppWithFCM() {
 //     console.log(
 //         'unRegisterAppWithFCM status',

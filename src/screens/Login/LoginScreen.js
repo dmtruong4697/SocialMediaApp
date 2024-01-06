@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { text } from '@fortawesome/fontawesome-svg-core';
 import { loginRequest } from '../../redux/actions/auth.action';
-//import { getFcmToken, registerListenerWithFCM } from '../../../push-notifications';
+// import { getFcmToken } from '../../../push-notifications';
 
 
 
@@ -26,8 +26,8 @@ const LoginScreen = () => {
 
   // useEffect(() => {
   //   getFcmToken(currentUser);
-  //   const unsubscribe = registerListenerWithFCM(currentUser, navigation);
-  //   return unsubscribe;
+  //   // const unsubscribe = registerListenerWithFCM(currentUser, navigation);
+  //   // return unsubscribe;
   // }, [currentUser])
 
 

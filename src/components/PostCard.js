@@ -1,4 +1,4 @@
-import { Alert, Image, ImageBackground, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { Alert, FlatList, Image, ImageBackground, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
@@ -22,6 +22,7 @@ const PostCard = (props) => {
   const [isFelt, setIsFelt] = useState(postDetail.is_felt);
   const [thisPost, setThisPost] = useState({});
   const [deleteMessage, setDeleteMessage] = useState("");
+  const [listFeel, setListFeel] = useState([]);
 
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
@@ -30,6 +31,7 @@ const PostCard = (props) => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [optionModal, setOptionModal] = useState(false);
+  const [feelModal, setFeelModal] = useState(false);
   const [reportText, setReportText] = useState("");
   const [rpInput, setRpInput] = useState(false);
 
@@ -77,6 +79,29 @@ const PostCard = (props) => {
       //console.log(response.data);
     } catch (error) {
       console.error("Lỗi khi feel:", error.response.data);
+    }
+  };    
+
+  const handleGetListFeel = async () => {
+    try {
+      const response = await axios.post(
+        `${BACKEND_URL}/get_list_feels`,
+        {
+          id: postDetail.id,
+          index: 0,
+          count: 1000,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+        }
+      );
+      
+      //console.log(response.data);
+      setListFeel(response.data.data);
+    } catch (error) {
+      console.error("Lỗi khi get list feel:", error.response.data);
     }
   };    
 
@@ -179,6 +204,11 @@ const PostCard = (props) => {
     
   }, [isFelt])
 
+  useEffect(() => {
+    //handleGetPost();
+    //handleGetListFeel();
+  })
+
   const [position, setPosition] = useState({x: 0, y: 0});
   
 
@@ -244,7 +274,7 @@ const PostCard = (props) => {
             <View
               style={{
                 position: 'absolute',
-                bottom: 0,
+                bottom: -20,
                 height: 500,
                 width: '100%',
                 backgroundColor: '#f0f2f5',
@@ -374,6 +404,8 @@ const PostCard = (props) => {
             </View>
             </TouchableWithoutFeedback>
           </Modal>
+          {/* modal list feels */}
+
       </View>
 
       <TouchableOpacity 
@@ -443,7 +475,13 @@ const PostCard = (props) => {
       }
 
       <View style={styles.likeView}>
-        <Text style={{fontSize: 15, fontWeight: '500', color: "#636363"}}>{Number(thisPost.kudos) + Number(thisPost.disappointed)} feels</Text>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("ListFeel", {postDetail: postDetail})
+          }}
+        >
+          <Text style={{fontSize: 15, fontWeight: '500', color: "#636363"}}>{Number(thisPost.kudos) + Number(thisPost.disappointed)} feels</Text>
+        </TouchableOpacity>
         <Text style={{fontSize: 15, fontWeight: '500', color: "#636363"}}>{postDetail.comment_mark} Marks & Comments</Text>
       </View>
 
