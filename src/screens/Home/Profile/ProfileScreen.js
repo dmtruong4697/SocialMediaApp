@@ -91,6 +91,7 @@ const ProfileScreen = ({route}) => {
   }
 
   const handleProfile = async () => {
+    console.log("get my profile")
     try {
       const response = await axios.post('https://it4788.catan.io.vn/get_user_info', {
         user_id: user_id
@@ -123,7 +124,7 @@ const ProfileScreen = ({route}) => {
       
       if (response.status === 200) {
         console.log("Get profile data succcess");
-        setProfileData(response.data.data);
+        //setProfileData(response.data.data);
       } else {
         //console.log("response status: ", response.status);
       }
@@ -178,7 +179,7 @@ const ProfileScreen = ({route}) => {
   useEffect(() => {
     // alert("hello world")
     handleProfile();
-  }, [profileData]);
+  }, []);
   useEffect(() => {
     handleCountFriend();
     if(user_id!=currentUser.id){

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import PostCard from "../../../components/PostCard";
 import { Video, ResizeMode } from 'expo-av';
-
+import { updateProfile } from "../../../redux/actions/profile.action";
 const FeedScreen = () => {
 
   const BACKEND_URL = 'https://it4788.catan.io.vn'

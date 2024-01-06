@@ -6,12 +6,16 @@ import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutRequest } from "../../../redux/actions/auth.action";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ProfileScreen from "../Profile/ProfileScreen";
+import { updateProfile } from "../../../redux/actions/profile.action";
 import axios from "axios";
+
 const SettingScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.currentUser);
   const errorMessage = useSelector((state) => state.auth.errorMessage);
+  
   useEffect(() => {
     if (!currentUser) {
       navigation.navigate({ name: "Login" });
@@ -19,6 +23,7 @@ const SettingScreen = () => {
   }, [currentUser]);
   return (
     <ScrollView style={{ backgroundColor: "#fff" }}>
+      <ProfileScreenSetting/>
       <NotificationSetting />
       <BlockList />
       <ChangePassword />
@@ -43,6 +48,108 @@ const SettingScreen = () => {
     </ScrollView>
   );
 };
+const ProfileScreenSetting = ()=>{
+  const profileData = useSelector((state) => state.profile)
+  const currentUser = useSelector((state) => state.auth.currentUser);
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const user_id = currentUser.id;
+  const handleProfile = async () => {
+    console.log("get my profile in setting")
+    try {
+      const response = await axios.post('https://it4788.catan.io.vn/get_user_info', {
+        user_id: user_id
+      },
+      
+      {
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`,
+        },
+      }
+        
+      );
+      const newProfile = {
+        username:response.data.data.username,
+        description: response.data.data.description,
+        
+        avatar: response.data.data.avatar,
+        address: response.data.data.address,
+        city: response.data.data.city,
+        country: response.data.data.country,
+        cover_image: response.data.data.cover_image,
+        link: ""
+        
+      };
+      
+     // setProfileData(response.data.data);
+      dispatch(updateProfile(newProfile));
+      // console.log(profileData)
+      //console.log(response.data.data);
+      
+      if (response.status === 200) {
+        console.log("Get profile data succcess");
+        setProfileData(response.data.data);
+      } else {
+        //console.log("response status: ", response.status);
+      }
+    } catch (error) {
+      console.error("Get data fail");
+
+      if (error.response) {
+        console.error("response data: ", error.response.data);
+      } else if (error.request) {
+        console.error("Request data:", error.request);
+      } else {
+        console.error("Lỗi không xác định:", error.message);
+      }
+    }
+  };
+  useEffect(() => {
+    // alert("hello world")
+    handleProfile();
+  }, []);
+  return(
+    <View style = {{ borderRadius: 25,
+      
+      paddingTop: 5,
+      paddingBottom: 5,
+      borderRadius: 25,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5, // This is for Android
+    overflow: 'hidden',
+    backgroundColor:'#E7F9FC',
+    marginTop: 10
+    }}>
+      <TouchableOpacity style = {{flexDirection: 'row', gap: 10,}} 
+        onPress={() => {
+          navigation.navigate("Profile");
+        }}
+      >
+      <View style = {styles.avatar_image}>
+        
+        <Image
+          style={{
+            width: 40,
+            height: 40,
+            resizeMode: "cover",
+            borderRadius: 1000,
+            marginLeft: 10
+          }}
+          source={{ uri: profileData.avatar }}
+        />
+      </View>
+      <View style = {{alignItems: 'center', justifyContent:'center'}}>
+        <Text style = {{fontSize: 18, fontWeight: 600}}>{profileData.username}</Text>
+      </View>
+      </TouchableOpacity>
+    </View>
+  )
+}
 const NotificationSetting = () => {
   const obj = {
     like_comment: "Bình luận",

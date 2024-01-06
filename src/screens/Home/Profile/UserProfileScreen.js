@@ -92,7 +92,7 @@ const handleGetVideos = async () => {
 
 
 const handleProfile = async () => {
-  
+  console.log("get profile user")
   try {
     const response = await axios.post('https://it4788.catan.io.vn/get_user_info', {
       user_id: user_id

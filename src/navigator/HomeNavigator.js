@@ -144,7 +144,7 @@ const HomeNavigator = () => {
       />
       <Tab.Screen
         name="Setting"
-        component={ProfileScreen}
+        component={SettingScreen}
         options={{
           tabBarIcon: () => {
             return <Image style={{height: 30, width: 30, marginLeft: 10, marginRight: 12,}} source={ require('../../assets/icons/menu.png')}/>;
