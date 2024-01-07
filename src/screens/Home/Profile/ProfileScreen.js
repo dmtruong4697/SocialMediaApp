@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   FlatList,
+  
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Button } from "@rneui/themed";
@@ -213,7 +214,7 @@ const ProfileScreen = ({route}) => {
     <ScrollView>
       
     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-  
+     
       <View style={styles.container}>
         <View style={styles.image_profile}>
           <View style={styles.cover_image}>
@@ -340,7 +341,7 @@ const ProfileScreen = ({route}) => {
                   backgroundColor: "#E0E0E0",
                 }}
                 onPress={() => {
-                  navigation.navigate("FriendList");
+                  navigation.navigate('FriendList', {user_id: user_id});
                 }}
               />
             </View>
