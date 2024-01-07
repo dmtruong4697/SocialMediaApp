@@ -386,7 +386,7 @@ const EditPostScreen = ({route}) => {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => {console.log(newVideos)}} style={styles.submitButton}>
+      {/* <TouchableOpacity onPress={() => {console.log(newVideos)}} style={styles.submitButton}>
         <Text
           style={{
             color: "#ffffff",
@@ -396,7 +396,7 @@ const EditPostScreen = ({route}) => {
         >
           check
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </ScrollView>
   );
 };

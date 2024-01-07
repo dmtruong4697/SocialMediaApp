@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Button, Icon } from "@rneui/themed";
 import { FlatList, Image, ScrollView, TextInput } from "react-native";
@@ -215,6 +215,36 @@ const NotificationSetting = () => {
       });
   };
 
+  const [buyCoin, setBuyCoin] = useState(false);
+  const [coin, setCoin] = useState(0);
+  const [userCoin, setUserCoin] = useState(Number(currentUser.coins));
+  const handleBuyCoin = async () => {
+    try {
+      const response = await axios.post(
+        `https://it4788.catan.io.vn/buy_coins`,
+        {
+          code: "string",
+          coins: coin,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+        }
+      );
+
+      console.log(response.data);
+      Alert.alert("Thành công", "Mua coin thành công");
+      setCoin(0);
+      setBuyCoin(false);
+      setUserCoin(Number(userCoin) + Number(coin));
+      //console.log(thisPost);
+    } catch (error) {
+      console.error("Lỗi khi mua coin:", error.response.data);
+      Alert.alert("Error", "Lỗi khi mua coin, vui lòng thử lại");
+    }
+  }; 
+
   return (
     <View>
       <View style={styles.container1}>
@@ -283,6 +313,74 @@ const NotificationSetting = () => {
           </Text>
         </TouchableOpacity>
       )}
+      {/* mua coin */}
+        <TouchableOpacity
+          style={styles.dropdownButton}
+          onPress={() => setBuyCoin(!buyCoin)}
+        >
+          <Text style={styles.selectedOption}>{"Mua coin"}</Text>
+          <Text style={styles.dropdownIcon}>{buyCoin ? "▲" : "▼"}</Text>
+        </TouchableOpacity>
+        {(buyCoin) &&
+        <View>
+          <Text
+            style={{
+              alignSelf: 'center',
+              margin: 10,
+              fontSize: 18,
+              fontWeight: 'bold',
+            }}
+          >Số coin còn lại: {userCoin}</Text>
+          <View style={{flexDirection: 'row',}}>
+            <TextInput
+              placeholder="Nhập số coin"
+              onChangeText={(text) => setCoin(text)}
+              style={{
+                width: '60%',
+                height: 40,
+                //backgroundColor: 'pink',
+                fontSize: 16,
+                borderWidth: 1,
+                //alignSelf: 'center',
+                marginLeft: 20,
+                borderRadius: 5,
+                padding: 3,
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 1,
+                },
+                shadowOpacity: 0.20,
+                shadowRadius: 1.41,
+                
+                elevation: 2,
+              }}
+            />
+            <TouchableOpacity
+              style={{
+                height: 40,
+                width: 100,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: '#1d6ec4',
+                marginLeft: 20,
+                borderRadius: 5,
+              }}
+              onPress={() => {
+                handleBuyCoin();
+              }}
+            >
+              <Text
+                style={{
+                  color: '#FFFFFF',
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                }}
+              >Xác nhận</Text>
+            </TouchableOpacity>
+          </View>
+          </View>
+        }
     </View>
   );
 };
