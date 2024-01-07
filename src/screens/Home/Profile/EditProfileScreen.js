@@ -84,7 +84,7 @@ const EditProfileScreen = ({route}) => {
       <View style = {styles.container_edit_avatar}>
         <View style = {{flexDirection:'row', alignItems: 'center', justifyContent:'space-between'}}>
           <Text style = {{fontWeight: 600, fontSize: 19,}}>Ảnh đại diện</Text>
-          <Button title="Chỉnh sửa" style = {{fontSize: 18, color: '#1E90FF'}}
+          <TouchableOpacity
             onPress={()=>{
               navigation.navigate('EditAvatar',{
                 avatar: avatar,
@@ -100,7 +100,26 @@ const EditProfileScreen = ({route}) => {
               
               );
             }}
-          />
+          >
+            <Text style = {{fontSize: 18, fontWeight: 500,color: "#2990F0"}}>Chỉnh sửa</Text>
+          </TouchableOpacity>
+          {/* <Button title="Chỉnh sửa" style = {{fontSize: 18, backgroundColor:'#D3DBDD'}}
+            onPress={()=>{
+              navigation.navigate('EditAvatar',{
+                avatar: avatar,
+                cover_image: cover_image,
+                
+                username: username,
+                address: address,
+                city: city,
+                country: country,
+                description: description
+                
+              }
+              
+              );
+            }}
+          /> */}
           {/* <Text style = {{fontSize: 18, color: '#1E90FF'}}>Chỉnh sửa</Text> */}
         </View>
         <View style={styles.avatar_image}>
@@ -113,7 +132,26 @@ const EditProfileScreen = ({route}) => {
       <View style = {styles.container_edit_cover}>
         <View style = {{flexDirection:'row', alignItems: 'center', justifyContent:'space-between'}}>
           <Text style = {{fontWeight: 600, fontSize: 19,}}>Ảnh bìa</Text>
-          <Button title="Chỉnh sửa" style = {{fontSize: 18, color: '#1E90FF'}}
+          <TouchableOpacity
+            onPress={()=>{
+              navigation.navigate('EditCover',{
+                avatar: avatar,
+                cover_image: cover_image,
+                
+                username: username,
+                address: address,
+                city: city,
+                country: country,
+                description: description
+                
+              }
+              
+              );
+            }}
+          >
+            <Text style = {{fontSize: 18, fontWeight: 500,color: "#2990F0"}}>Chỉnh sửa</Text>
+          </TouchableOpacity>
+          {/* <Button title="Chỉnh sửa" style = {{fontSize: 18, color: '#1E90FF'}}
             onPress={()=>{
               navigation.navigate('EditCover',{
                 avatar: avatar,
@@ -128,7 +166,7 @@ const EditProfileScreen = ({route}) => {
               
               );
             }}
-          />
+          /> */}
         </View>
         <View style={styles.cover_image}>
           <TouchableOpacity style = {{marginTop: 20, marginBottom: 20}}>
@@ -140,7 +178,14 @@ const EditProfileScreen = ({route}) => {
       <View style = {styles.container_edit_biography}>
         <View style = {{flexDirection:'row', alignItems: 'center', justifyContent:'space-between'}}>
             <Text style = {{fontWeight: 600, fontSize: 19,}}>Tiểu sử</Text>
-            <Text style = {{fontSize: 18, color: '#1E90FF'}}>Chỉnh sửa</Text>
+            <TouchableOpacity
+            onPress={()=>{
+              setEditDescription(true)
+              setMainEdit(false)
+            }}
+          >
+            <Text style = {{fontSize: 18, fontWeight: 500,color: "#2990F0"}}>Chỉnh sửa</Text>
+          </TouchableOpacity>
         </View>
         <View style = {styles.button_edit_biography}>
           <Button
@@ -169,7 +214,26 @@ const EditProfileScreen = ({route}) => {
       <View style = {styles.container_detail_infor}>
         <View style = {{flexDirection:'row', alignItems: 'center', justifyContent:'space-between'}}>
             <Text style = {{fontWeight: 600, fontSize: 19,}}>Chi tiết</Text>
-            <Button style = {styles.EditDetail} onPress={()=>{
+            <TouchableOpacity
+            onPress={()=>{
+              navigation.navigate('Edit Detail Profile',{
+                avatar: avatar,
+                cover_image: cover_image,
+                
+                username: username,
+                address: address,
+                city: city,
+                country: country,
+                description: description
+                
+              }
+              
+              );
+            }}
+          >
+            <Text style = {{fontSize: 18, fontWeight: 500,color: "#2990F0"}}>Chỉnh sửa</Text>
+          </TouchableOpacity>
+            {/* <Button style = {styles.EditDetail} onPress={()=>{
               navigation.navigate('Edit Detail Profile',
               
               {
@@ -182,7 +246,7 @@ const EditProfileScreen = ({route}) => {
                 country: country,
                 description: description
               })
-            }}>Chỉnh sửa</Button>
+            }}>Chỉnh sửa</Button> */}
         </View>
         
         <View style = {styles.detail_infor}>

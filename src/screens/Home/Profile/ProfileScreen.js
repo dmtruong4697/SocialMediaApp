@@ -17,8 +17,8 @@ import description_icon from "../../../../assets/icons/cv.png";
 import ListFriendScreen from "./ListFriendScreen";
 import PostCard from "../../../components/PostCard";
 import { updateProfile } from "../../../redux/actions/profile.action";
-
-import { Dimensions } from 'react-native';
+import { Video } from 'expo-av';
+import { Dimensions,RefreshControl } from 'react-native';
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import CreatePostScreen from '../Post/CreatePostScreen';
@@ -27,6 +27,7 @@ const ProfileScreen = ({route}) => {
   const navigation = useNavigation();
   const [postData, setPostData] = useState([]);
   const [videoData, setVideoData] = useState([])
+  const video = React.useRef(null);
   const currentUser = useSelector((state) => state.auth.currentUser);
   const profileData = useSelector((state) => state.profile);
   const user_id = currentUser.id
@@ -37,6 +38,7 @@ const ProfileScreen = ({route}) => {
   const [isMyProfile, setMyProfile] = useState(true);
   const [isFriend, setIsFriend] = useState(false);
   const [isInMain, setIsInMain] = useState(true)
+  const [refreshing, setRefreshing] = useState(false);
   const win = Dimensions.get('window');
   const ratio = win.width/541;
   const handleGetPosts = async (pageNumber) => {
@@ -168,6 +170,17 @@ const ProfileScreen = ({route}) => {
       }
     }
   };
+  const onRefresh = async () => {
+    setRefreshing(true);
+    console.log("this is refresh")
+    // Gọi các hàm xử lý cần thiết để lấy dữ liệu mới, ví dụ:
+    await handleProfile();
+    await handleGetPosts(1);
+    await handleCountFriend();
+    await handleGetVideos();
+  
+    setRefreshing(false);
+  };
  // console.log(profileData);
   useEffect(() => {
     // alert("handle get post")
@@ -198,6 +211,9 @@ const ProfileScreen = ({route}) => {
   
   return (
     <ScrollView>
+      
+    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+  
       <View style={styles.container}>
         <View style={styles.image_profile}>
           <View style={styles.cover_image}>
@@ -337,6 +353,7 @@ const ProfileScreen = ({route}) => {
               />
             </View>
             <View style={{ marginLeft: 10 }}>
+              
               <Button
                 style={{ fontSize: 16, backgroundColor: "none" }}
                 title="Bạn đang nghĩ gì"

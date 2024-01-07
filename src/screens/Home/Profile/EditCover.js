@@ -28,6 +28,11 @@ const EditCover = ({ route }) => {
 
   const changeAvatar = async () => {
     try {
+      if (!image) {
+        // Nếu ảnh không được chọn, hiển thị thông báo hoặc thực hiện các xử lý khác tùy thuộc vào yêu cầu của bạn.
+        console.warn("Vui lòng chọn ảnh bìa trước khi thay đổi.");
+        return;
+      }
       const formData = new FormData();
       formData.append('username', username); // Empty value as specified in the API
       formData.append('description', description); // Empty value as specified in the API
@@ -94,6 +99,7 @@ const EditCover = ({ route }) => {
           title="Thay đổi"
           style={styles.changeButton}
           onPress={changeAvatar}
+          
         />
         <Button
           title="Hủy bỏ"

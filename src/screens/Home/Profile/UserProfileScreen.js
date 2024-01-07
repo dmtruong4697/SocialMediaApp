@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View,Modal, TouchableOpacity, Image, ScrollView ,FlatList} from 'react-native';
+import { StyleSheet, Text, View,Modal, TouchableOpacity, Image, ScrollView ,FlatList, RefreshControl} from 'react-native';
 import React ,{useEffect, useState} from 'react';
 import { Button } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
@@ -32,6 +32,7 @@ const [isInMain, setIsInMain] = useState(true)
 const video = React.useRef(null);
 const win = Dimensions.get('window');
 const ratio = win.width/541;
+const [refreshing, setRefreshing] = useState(false);
 const handleGetPosts = async (pageNumber) => {
 
   try {
@@ -287,6 +288,17 @@ const handleAcceptFriendReq =async()=>{
     }
   }
 }
+const onRefresh = async () => {
+  setRefreshing(true);
+  console.log("this is refresh")
+  // Gọi các hàm xử lý cần thiết để lấy dữ liệu mới, ví dụ:
+  await handleProfile();
+  await handleGetPosts(1);
+  await handleCountFriend();
+  await handleGetVideos();
+
+  setRefreshing(false);
+};
 const handleClickFriend = ()=>{
   setShowUnFriend(true)
 }
@@ -314,6 +326,7 @@ useEffect(()=>{
       console.log("hello")
       setShowUnFriend(false)
     }}>
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
     <View style={styles.container}>
       <View style={styles.image_profile}>
         <View style={styles.cover_image}>
