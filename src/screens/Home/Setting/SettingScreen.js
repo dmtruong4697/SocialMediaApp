@@ -217,7 +217,7 @@ const NotificationSetting = () => {
 
   const [buyCoin, setBuyCoin] = useState(false);
   const [coin, setCoin] = useState(0);
-
+  const [userCoin, setUserCoin] = useState(Number(currentUser.coins));
   const handleBuyCoin = async () => {
     try {
       const response = await axios.post(
@@ -237,6 +237,7 @@ const NotificationSetting = () => {
       Alert.alert("Thành công", "Mua coin thành công");
       setCoin(0);
       setBuyCoin(false);
+      setUserCoin(Number(userCoin) + Number(coin));
       //console.log(thisPost);
     } catch (error) {
       console.error("Lỗi khi mua coin:", error.response.data);
@@ -321,6 +322,15 @@ const NotificationSetting = () => {
           <Text style={styles.dropdownIcon}>{buyCoin ? "▲" : "▼"}</Text>
         </TouchableOpacity>
         {(buyCoin) &&
+        <View>
+          <Text
+            style={{
+              alignSelf: 'center',
+              margin: 10,
+              fontSize: 18,
+              fontWeight: 'bold',
+            }}
+          >Số coin còn lại: {userCoin}</Text>
           <View style={{flexDirection: 'row',}}>
             <TextInput
               placeholder="Nhập số coin"
@@ -368,6 +378,7 @@ const NotificationSetting = () => {
                 }}
               >Xác nhận</Text>
             </TouchableOpacity>
+          </View>
           </View>
         }
     </View>
