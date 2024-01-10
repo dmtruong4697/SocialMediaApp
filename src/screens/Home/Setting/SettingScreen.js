@@ -9,13 +9,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ProfileScreen from "../Profile/ProfileScreen";
 import { updateProfile } from "../../../redux/actions/profile.action";
 import axios from "axios";
-
+import {
+  buyCoinRequest,
+  updateCoinRequest,
+} from "../../../redux/actions/coin.action";
 const SettingScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  dispatch(updateCoinRequest());
   const currentUser = useSelector((state) => state.auth.currentUser);
   const errorMessage = useSelector((state) => state.auth.errorMessage);
-  
+
   useEffect(() => {
     if (!currentUser) {
       navigation.navigate({ name: "Login" });
@@ -23,13 +27,13 @@ const SettingScreen = () => {
   }, [currentUser]);
   return (
     <ScrollView style={{ backgroundColor: "#fff" }}>
-      <ProfileScreenSetting/>
+      <ProfileScreenSetting />
       <NotificationSetting />
       <BlockList />
       <ChangePassword />
       <LogoutButton
         onPress={() => {
-          // dispatch(logoutRequest(currentUser));
+          dispatch(logoutRequest(currentUser));
           navigation.navigate({ name: "Login" });
         }}
       />
@@ -48,44 +52,44 @@ const SettingScreen = () => {
     </ScrollView>
   );
 };
-const ProfileScreenSetting = ()=>{
-  const profileData = useSelector((state) => state.profile)
+const ProfileScreenSetting = () => {
+  const profileData = useSelector((state) => state.profile);
   const currentUser = useSelector((state) => state.auth.currentUser);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const user_id = currentUser.id;
   const handleProfile = async () => {
-    console.log("get my profile in setting")
+    console.log("get my profile in setting");
     try {
-      const response = await axios.post('https://it4788.catan.io.vn/get_user_info', {
-        user_id: user_id
-      },
-      
-      {
-        headers: {
-          Authorization: `Bearer ${currentUser.token}`,
+      const response = await axios.post(
+        "https://it4788.catan.io.vn/get_user_info",
+        {
+          user_id: user_id,
         },
-      }
-        
+
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+        }
       );
       const newProfile = {
-        username:response.data.data.username,
+        username: response.data.data.username,
         description: response.data.data.description,
-        
+
         avatar: response.data.data.avatar,
         address: response.data.data.address,
         city: response.data.data.city,
         country: response.data.data.country,
         cover_image: response.data.data.cover_image,
-        link: ""
-        
+        link: "",
       };
-      
-     // setProfileData(response.data.data);
+
+      // setProfileData(response.data.data);
       dispatch(updateProfile(newProfile));
       // console.log(profileData)
       //console.log(response.data.data);
-      
+
       if (response.status === 200) {
         console.log("Get profile data succcess");
         setProfileData(response.data.data);
@@ -108,48 +112,53 @@ const ProfileScreenSetting = ()=>{
     // alert("hello world")
     handleProfile();
   }, []);
-  return(
-    <View style = {{ borderRadius: 25,
-      
-      paddingTop: 5,
-      paddingBottom: 5,
-      borderRadius: 25,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5, // This is for Android
-    overflow: 'hidden',
-    backgroundColor:'#E7F9FC',
-    marginTop: 10
-    }}>
-      <TouchableOpacity style = {{flexDirection: 'row', gap: 10,}} 
+  return (
+    <View
+      style={{
+        borderRadius: 25,
+
+        paddingTop: 5,
+        paddingBottom: 5,
+        borderRadius: 25,
+        borderWidth: 1,
+        borderColor: "#ddd",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5, // This is for Android
+        overflow: "hidden",
+        backgroundColor: "#E7F9FC",
+        marginTop: 10,
+      }}
+    >
+      <TouchableOpacity
+        style={{ flexDirection: "row", gap: 10 }}
         onPress={() => {
           navigation.navigate("Profile");
         }}
       >
-      <View style = {styles.avatar_image}>
-        
-        <Image
-          style={{
-            width: 40,
-            height: 40,
-            resizeMode: "cover",
-            borderRadius: 1000,
-            marginLeft: 10
-          }}
-          source={{ uri: profileData.avatar }}
-        />
-      </View>
-      <View style = {{alignItems: 'center', justifyContent:'center'}}>
-        <Text style = {{fontSize: 18, fontWeight: 600}}>{profileData.username}</Text>
-      </View>
+        <View style={styles.avatar_image}>
+          <Image
+            style={{
+              width: 40,
+              height: 40,
+              resizeMode: "cover",
+              borderRadius: 1000,
+              marginLeft: 10,
+            }}
+            source={{ uri: profileData.avatar }}
+          />
+        </View>
+        <View style={{ alignItems: "center", justifyContent: "center" }}>
+          <Text style={{ fontSize: 18, fontWeight: 600 }}>
+            {profileData.username}
+          </Text>
+        </View>
       </TouchableOpacity>
     </View>
-  )
-}
+  );
+};
 const NotificationSetting = () => {
   const obj = {
     like_comment: "Bình luận",
@@ -214,36 +223,41 @@ const NotificationSetting = () => {
         setFirstState(_setting);
       });
   };
-
+  const dispatch = useDispatch();
+  const userCoin = useSelector((state) => state.coin.coin);
+  const errorMessageCoin = useSelector((state) => state.coin.errorMessage);
+  console.log(useSelector((state) => state.coin));
   const [buyCoin, setBuyCoin] = useState(false);
   const [coin, setCoin] = useState(0);
-  const [userCoin, setUserCoin] = useState(Number(currentUser.coins));
+  // const [userCoin, setUserCoin] = useState(Number(currentUser.coins));
   const handleBuyCoin = async () => {
     try {
-      const response = await axios.post(
-        `https://it4788.catan.io.vn/buy_coins`,
-        {
-          code: "string",
-          coins: coin,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${currentUser.token}`,
-          },
-        }
-      );
+      // const response = await axios.post(
+      //   `https://it4788.catan.io.vn/buy_coins`,
+      //   {
+      //     code: "string",
+      //     coins: coin,
+      //   },
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${currentUser.token}`,
+      //     },
+      //   }
+      // );
 
-      console.log(response.data);
-      Alert.alert("Thành công", "Mua coin thành công");
+      // console.log(response.data);
+      dispatch(buyCoinRequest(coin));
+      // Alert.alert("Thành công", "Mua coin thành công");
       setCoin(0);
-      setBuyCoin(false);
-      setUserCoin(Number(userCoin) + Number(coin));
+      // setBuyCoin(false);
+
+      // setUserCoin(Number(userCoin) + Number(coin));
       //console.log(thisPost);
     } catch (error) {
       console.error("Lỗi khi mua coin:", error.response.data);
       Alert.alert("Error", "Lỗi khi mua coin, vui lòng thử lại");
     }
-  }; 
+  };
 
   return (
     <View>
@@ -314,29 +328,31 @@ const NotificationSetting = () => {
         </TouchableOpacity>
       )}
       {/* mua coin */}
-        <TouchableOpacity
-          style={styles.dropdownButton}
-          onPress={() => setBuyCoin(!buyCoin)}
-        >
-          <Text style={styles.selectedOption}>{"Mua coin"}</Text>
-          <Text style={styles.dropdownIcon}>{buyCoin ? "▲" : "▼"}</Text>
-        </TouchableOpacity>
-        {(buyCoin) &&
+      <TouchableOpacity
+        style={styles.dropdownButton}
+        onPress={() => setBuyCoin(!buyCoin)}
+      >
+        <Text style={styles.selectedOption}>{"Mua coin"}</Text>
+        <Text style={styles.dropdownIcon}>{buyCoin ? "▲" : "▼"}</Text>
+      </TouchableOpacity>
+      {buyCoin && (
         <View>
           <Text
             style={{
-              alignSelf: 'center',
+              alignSelf: "center",
               margin: 10,
               fontSize: 18,
-              fontWeight: 'bold',
+              fontWeight: "bold",
             }}
-          >Số coin còn lại: {userCoin}</Text>
-          <View style={{flexDirection: 'row',}}>
+          >
+            Số coin còn lại: {userCoin}
+          </Text>
+          <View style={{ flexDirection: "row" }}>
             <TextInput
               placeholder="Nhập số coin"
               onChangeText={(text) => setCoin(text)}
               style={{
-                width: '60%',
+                width: "60%",
                 height: 40,
                 //backgroundColor: 'pink',
                 fontSize: 16,
@@ -350,9 +366,9 @@ const NotificationSetting = () => {
                   width: 0,
                   height: 1,
                 },
-                shadowOpacity: 0.20,
+                shadowOpacity: 0.2,
                 shadowRadius: 1.41,
-                
+
                 elevation: 2,
               }}
             />
@@ -360,9 +376,9 @@ const NotificationSetting = () => {
               style={{
                 height: 40,
                 width: 100,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#1d6ec4',
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#1d6ec4",
                 marginLeft: 20,
                 borderRadius: 5,
               }}
@@ -372,15 +388,27 @@ const NotificationSetting = () => {
             >
               <Text
                 style={{
-                  color: '#FFFFFF',
+                  color: "#FFFFFF",
                   fontSize: 16,
-                  fontWeight: 'bold',
+                  fontWeight: "bold",
                 }}
-              >Xác nhận</Text>
+              >
+                Xác nhận
+              </Text>
             </TouchableOpacity>
           </View>
-          </View>
-        }
+          <Text
+            style={{
+              color: "red",
+              alignSelf: "center",
+              fontSize: 15,
+              marginTop: 10,
+            }}
+          >
+            {errorMessageCoin}
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -425,7 +453,7 @@ const BlockList = () => {
         style={styles.dropdownButton}
         onPress={() => {
           setOpen((state) => !state);
-          navigation.navigate("BlockScreen", { BlockListUser: userList})
+          navigation.navigate("BlockScreen", { BlockListUser: userList });
         }}
       >
         <Text style={styles.selectedOption}>{"Danh sách chặn"}</Text>
