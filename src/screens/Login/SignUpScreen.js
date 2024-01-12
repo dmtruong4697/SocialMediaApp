@@ -159,7 +159,7 @@ const SignUpScreen = () => {
                 <View>
                     <Button
                         buttonStyle = {{borderRadius: 30}}
-                        title="Register" 
+                        title="Đăng ký" 
                         // onPress={() =>
                         //     navigation.navigate({name: 'VerifyCode'})
                         // }

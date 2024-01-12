@@ -63,7 +63,11 @@ const MainNavigator = () => {
         options={{ headerShown: false }}
       />
 
-      <Stack.Screen name="SignUp" component={SignUpScreen} />
+      <Stack.Screen 
+        name="SignUp" 
+        component={SignUpScreen} 
+        options={{headerTitle: "Đăng ký tài khoản"}}  
+      />
 
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
       {/* <Stack.Screen name="ForgotPassword2" component={ForgotPasswordScreen2} /> */}
