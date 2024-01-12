@@ -11,6 +11,7 @@ FriendRequestCard.propTypes = {
   pressAccept: PropTypes.func,
   pressDel: PropTypes.func,
   mutualFriend: PropTypes.string,
+  time: PropTypes.string,
 };
 
 function FriendRequestCard(props) {
@@ -21,6 +22,7 @@ function FriendRequestCard(props) {
     pressAccept,
     pressDel,
     mutualFriend,
+    time,
   } = props;
   const [isHidden, setIsHidden] = useState(false);
   const avatarBackUp = "https://imgur.com/BwwePkj.jpg";
@@ -52,9 +54,12 @@ function FriendRequestCard(props) {
                 translateToProfile(userId);
               }}
             >
+              <View style={{flexDirection: 'row', justifyContent: 'space-between',}}>
               <Text style={{ fontSize: 18, fontWeight: "500" }}>
                 {userName}
               </Text>
+              <Text style={{ fontSize: 12, fontWeight: '200', color: 'gray' }}>{time}</Text>
+              </View>
 
               <Text style={{ fontSize: 14, color: "#A8A8A8" }}>
                 {mutualFriend} bạn chung

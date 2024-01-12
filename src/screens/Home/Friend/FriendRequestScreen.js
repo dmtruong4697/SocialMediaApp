@@ -138,6 +138,27 @@ const FriendRequestScreen = () => {
     }
   }
 
+  const formatTime = (timeString) => {
+    const currentTime = new Date();
+    const createdTime = new Date(timeString);
+    const timeDiff = currentTime - createdTime;
+
+    const seconds = Math.floor(timeDiff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) {
+      return `${days} ngày trước`;
+    } else if (hours > 0) {
+      return `${hours} giờ trước`;
+    } else if (minutes > 0) {
+      return `${minutes} phút trước`;
+    } else {
+      return `${seconds} giây trước`;
+    }
+  }
+
   useEffect(() => {
     handleGetRequestFr();
   }, []);
@@ -200,6 +221,7 @@ const FriendRequestScreen = () => {
                     mutualFriend={item.same_friends}
                     pressAccept={() => handleAcceptFr(item.id)}
                     pressDel={() => handleDelRequest(item.id)}
+                    time={formatTime(item.created)}
                     key={item.id}
                   />
                   ))}
