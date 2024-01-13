@@ -34,6 +34,7 @@ const ProfileCard = (props) => {
     pressAddFriend,
     pressCancel,
     blockUser,
+    isFriendSearch,
   } = props;
   const [optionVisible, setOptionVisible] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
@@ -243,7 +244,7 @@ const ProfileCard = (props) => {
                     </View>
                   </TouchableOpacity>
 
-                  <TouchableOpacity
+                  {isFriendSearch ? <TouchableOpacity
                     style={styles.optionAction}
                     onPress={() => {
                       pressUnFriend();
@@ -266,7 +267,7 @@ const ProfileCard = (props) => {
                         Hủy kết bạn với {userName}
                       </Text>
                     </View>
-                  </TouchableOpacity>
+                  </TouchableOpacity> : null}
 
                   <TouchableOpacity
                     style={[styles.optionAction, { paddingBottom: 10 }]}
@@ -309,11 +310,13 @@ ProfileCard.propTypes = {
   isNotFriend: PropTypes.bool,
   pressUnFriend: PropTypes.func,
   mutualFriend: PropTypes.string,
+  isFriendSearch: PropTypes.bool,
   pressAddFriend: PropTypes.func,
   pressCancel: PropTypes.func,
   blockUser: PropTypes.func,
   translateToProfile: PropTypes.func,
 };
+
 
 export default ProfileCard;
 const styles = StyleSheet.create({

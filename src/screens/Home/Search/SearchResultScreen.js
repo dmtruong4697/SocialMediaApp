@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, FlatList, RefreshControl } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, FlatList, RefreshControl, Image } from 'react-native'
 import React, { useEffect, useState, useCallback } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
@@ -298,13 +298,15 @@ const handleSearch = async (id) => {
         {pressBtn === 'all' ? 
           <View style={styles.all}>
               <ScrollView style={{marginBottom: '40%',}}>
+              {!(listFrSearchData.length == 0 && listPostSearch.length == 0) ? <View>
                 <View style={{borderBottomWidth: 5, borderColor: 'gray',}}>
                   <Text style={{fontSize: 20, fontWeight: 600, padding: 18,}}>Mọi người</Text>
-                  {listFrSearchData.length > 0 ? (listFrSearchData.map((item, key) => <ProfileCard
+                  {listFrSearchData.length > 0 ? 
+                    (listFrSearchData.map((item, key) => <ProfileCard
                     avatarImage={item.avatar}
                     userName={item.username}
                     userId={item.id}
-                    // isNotFriend={item.isNotFriend}
+                    isFriendSearch={false}
                     blockUser={() => {
                       handleBlock(item.id);
                     }}
@@ -323,6 +325,7 @@ const handleSearch = async (id) => {
                   <Text style={{fontSize: 20, fontWeight: 600, padding: 18,}}>Bài viết</Text>
                   {listPostSearch.length > 0 ? (listPostSearch.map((item, key) => <PostCard postDetail={item} key={key} />)) : <Text style={{paddingLeft: 10,}}>Không tìm thấy bài viết nào...</Text>}
                 </View>
+                </View> : <View><Image source={require('../../../../assets/NotFound.jpg')} resizeMode='cover' style={{width: '100%',}}/></View>}
               </ScrollView>
           </View> : <View></View>}
         {pressBtn === 'people' ? 
@@ -335,7 +338,7 @@ const handleSearch = async (id) => {
                         avatarImage={item.avatar}
                         userName={item.username}
                         userId={item.id}
-                        // isNotFriend={item.isNotFriend}
+                        isFriendSearch={false}
                         key={key}
                         />)
                       }
