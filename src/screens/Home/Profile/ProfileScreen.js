@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   FlatList,
+  
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Button } from "@rneui/themed";
@@ -41,6 +42,8 @@ const ProfileScreen = ({route}) => {
   const [refreshing, setRefreshing] = useState(false);
   const win = Dimensions.get('window');
   const ratio = win.width/541;
+  const [haveAvatar, setHaveAvatar] = useState(false);
+  const [haveCover, setHaveCover] = useState(false);
   const handleGetPosts = async (pageNumber) => {
     try {
       const response = await axios.post(
@@ -121,9 +124,18 @@ const ProfileScreen = ({route}) => {
       
      // setProfileData(response.data.data);
       dispatch(updateProfile(newProfile));
-      // console.log(profileData)
-      //console.log(response.data.data);
-      
+      if(response.data.data.avatar!=""){
+        console.log("i set have avatar: true")
+        setHaveAvatar(true);
+        
+        console.log(haveAvatar)
+      }
+      if(response.data.data.cover_image!=""){
+        setHaveCover(true);
+      }
+      console.log("they have avatar: ", haveAvatar)
+      console.log("they have cover: ", haveCover)
+      console.log(response.data.data)
       if (response.status === 200) {
         console.log("Get profile data succcess");
         //setProfileData(response.data.data);
@@ -213,23 +225,83 @@ const ProfileScreen = ({route}) => {
     <ScrollView>
       
     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-  
+     
       <View style={styles.container}>
         <View style={styles.image_profile}>
           <View style={styles.cover_image}>
             <TouchableOpacity style={styles.coverImage}>
-              <Image
-                style={styles.image_cover}
-                source={{ uri: profileData.cover_image }}
-              />
+              {profileData.cover_image!=""?
+                <Image
+                  style={styles.image_cover}
+                  source={{ uri: profileData.cover_image }}
+                />
+                :
+                <TouchableOpacity 
+                onPress={()=>{
+                  navigation.navigate('EditCover',{
+                    avatar: profileData.avatar,
+                    cover_image: profileData.cover_image,
+                    
+                    username: profileData.username,
+                    address: profileData.address,
+                    city: profileData.city,
+                    country: profileData.country,
+                    description: profileData.description
+                    
+                  }
+                  
+                  );
+                }}
+                style = {{backgroundColor: '#CEF9C2',
+                  width: "100%",
+                  height: 200,
+                  resizeMode: "cover",
+                  alignItems: 'center',
+                  // justifyContent:'center',
+                  borderWidth: 2,
+                  borderColor: '#2A2F28',
+                }}>
+                  <Text style = {{color:'#DF2359', fontSize: 19, fontWeight: 500, marginTop: 50}}>Thêm ảnh bìa !</Text>
+                </TouchableOpacity>
+              }
             </TouchableOpacity>
           </View>
           <View style={styles.avatar_image}>
             <TouchableOpacity style={styles.avatarImage}>
-              <Image
-                style={styles.image_avatar}
-                source={{ uri: profileData.avatar }}
-              />
+              {profileData.avatar!=""?
+                <Image
+                  style={styles.image_avatar}
+                  source={{ uri: profileData.avatar }}
+                />
+                :
+                <TouchableOpacity 
+                onPress={()=>{
+                  navigation.navigate('EditAvatar',{
+                    avatar: profileData.avatar,
+                    cover_image: profileData.cover_image,
+                    
+                    username: profileData.username,
+                    address: profileData.address,
+                    city: profileData.city,
+                    country: profileData.country,
+                    description: profileData.description
+                    
+                  }
+                  
+                  );
+                }}
+                  style = {{backgroundColor: '#FCFAD3',width: 160,
+                  height: 160,
+                  resizeMode: "cover",
+                  borderRadius: 1000,
+                  alignItems: 'center',
+                  justifyContent:'center',
+                  borderWidth: 2,
+                  borderColor: '#2A2F28'
+                }}>
+                  <Text style = {{color:'#DF2359', fontSize: 17, fontWeight: 500}}>Thêm ảnh !</Text>
+                </TouchableOpacity>
+              } 
             </TouchableOpacity>
           </View>
         </View>
@@ -340,7 +412,7 @@ const ProfileScreen = ({route}) => {
                   backgroundColor: "#E0E0E0",
                 }}
                 onPress={() => {
-                  navigation.navigate("FriendList");
+                  navigation.navigate('FriendList', {user_id: user_id});
                 }}
               />
             </View>
