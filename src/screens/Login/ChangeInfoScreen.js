@@ -36,16 +36,17 @@ const ChangeInfoScreen = () => {
 
   const handleSubmit = async() => {
     try {
-      const avatar = new FormData();
-      avatar.append('file', {
+      const form = new FormData();
+      form.append('avatar', {
         uri: avatarImage,
+        type: "image/jpeg",
+        name: `photo_1.jpg`,
       });
 
+      form.append('username', userName);
+
       const response = await axios.post('https://it4788.catan.io.vn/change_profile_after_signup', 
-        {
-          username: userName,
-          avatar: avatar,
-        },
+        form,
         {
           headers: {
             'Authorization': `Bearer ${currentUser.token}`,
