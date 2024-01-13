@@ -113,7 +113,7 @@ const CreatePostScreen = () => {
         navigation.navigate({ name: "Home" });
       }
     } catch (error) {
-      console.error("Lỗi khi đăng bài:", error);
+      console.error("Lỗi khi đăng bài:", error.response.data);
       Alert.alert("Lỗi", "Lỗi khi đăng bài, vui lòng thử lại");
     }
   };
@@ -158,7 +158,7 @@ const CreatePostScreen = () => {
         navigation.navigate({ name: "Home" });
       }
     } catch (error) {
-      console.error("Lỗi khi đăng bài:", error);
+      console.error("Lỗi khi đăng bài:", error.response.data);
       Alert.alert("Lỗi", "Lỗi khi đăng bài, vui lòng thử lại");
     }
   };
