@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { text } from "@fortawesome/fontawesome-svg-core";
 import { loginRequest } from "../../redux/actions/auth.action";
-// import { getFcmToken } from '../../../push-notifications';
+import { getFcmToken, registerListenerWithFCM } from '../../../push-notifications';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -31,11 +31,11 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("");
   const [uuid, setUuid] = useState("uuid");
 
-  // useEffect(() => {
-  //   getFcmToken(currentUser);
-  //   // const unsubscribe = registerListenerWithFCM(currentUser, navigation);
-  //   // return unsubscribe;
-  // }, [currentUser])
+  useEffect(() => {
+    getFcmToken(currentUser);
+    const unsubscribe = registerListenerWithFCM(currentUser, navigation);
+    return unsubscribe;
+  }, [currentUser])
 
   useEffect(() => {
     if (currentUser && currentUser.userName !== "") {

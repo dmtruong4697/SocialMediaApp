@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -27,8 +29,14 @@
       "favicon": "./assets/favicon.png"
     },
     "sdkVersion": "49.0.0",
-    "extra": {}
+    "extra": {
+      "eas": {
+        "projectId": "7bdea467-496c-4598-aa4d-f5ddbed9a3d4"
+      }
+    }
   },
   "name": "socialmediaapp",
-  "plugins": ["@notifee/react-native"]
+  "plugins": [
+    "@notifee/react-native"
+  ]
 }
