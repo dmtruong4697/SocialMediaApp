@@ -1,10 +1,12 @@
-import { StyleSheet, Text, View, } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import LoginScreen from "../screens/Login/LoginScreen";
 import SignUpScreen from "../screens/Login/SignUpScreen";
-import ForgotPasswordScreen from "../screens/Login/ForgotPasswordScreen";
+import ForgotPasswordScreen from "../screens/ForgotPassword/ForgotPasswordScreen";
+import ForgotPasswordVerifyCodeScreen from "../screens/ForgotPassword/VerifyCodeScreen";
+// import ForgotPasswordScreen2 from "../screens/ForgotPassword/ForgotPasswordScreen2";
 import HomeNavigator from "./HomeNavigator";
 import EditProfileScreen from "../screens/Home/Profile/EditProfileScreen";
 import ProfileScreen from "../screens/Home/Profile/ProfileScreen";
@@ -17,14 +19,19 @@ import ListFriendScreen from "../screens/Home/Profile/ListFriendScreen";
 import { faL } from "@fortawesome/free-solid-svg-icons";
 import AllSearchRecent from "../screens/Home/Search/AllSearchRecent";
 import VerifyCode from "../screens/Login/VerifyCode";
-import ChangeInfoScreen from '../screens/Login/ChangeInfoScreen';
-import CreatePostScreen from '../screens/Home/Post/CreatePostScreen';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faArrowLeft, faCancel, faMultiply, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { Pressable } from 'react-native';
-import { TouchableOpacity } from 'react-native';
-import PostDetailScreen from '../screens/Home/Post/PostDetailScreen';
-import UserProfileScreen from '../screens/Home/Profile/UserProfileScreen';
+import ChangeInfoScreen from "../screens/Login/ChangeInfoScreen";
+import CreatePostScreen from "../screens/Home/Post/CreatePostScreen";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {
+  faArrowLeft,
+  faCancel,
+  faMultiply,
+  faMagnifyingGlass,
+} from "@fortawesome/free-solid-svg-icons";
+import { Pressable } from "react-native";
+import { TouchableOpacity } from "react-native";
+import PostDetailScreen from "../screens/Home/Post/PostDetailScreen";
+import UserProfileScreen from "../screens/Home/Profile/UserProfileScreen";
 import EditAvatar from "../screens/Home/Profile/EditAvatar";
 import EditCover from "../screens/Home/Profile/EditCover";
 import SettingScreen from "../screens/Home/Setting/SettingScreen";
@@ -47,7 +54,7 @@ const MainNavigator = () => {
         </TouchableOpacity>
       </View>
     );
-  }
+  };
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -56,48 +63,35 @@ const MainNavigator = () => {
         options={{ headerShown: false }}
       />
 
-      <Stack.Screen name="SignUp" component={SignUpScreen} />
+      <Stack.Screen 
+        name="SignUp" 
+        component={SignUpScreen} 
+        options={{headerTitle: "Đăng ký tài khoản"}}  
+      />
 
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-
+      {/* <Stack.Screen name="ForgotPassword2" component={ForgotPasswordScreen2} /> */}
+      <Stack.Screen
+        name="ForgotPasswordVerifyCode"
+        component={ForgotPasswordVerifyCodeScreen}
+      />
       <Stack.Screen
         name="Home"
         component={HomeNavigator}
         options={{ headerShown: false }}
       />
 
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+      <Stack.Screen name="EditAvatar" component={EditAvatar} />
+      <Stack.Screen name="EditCover" component={EditCover} />
+      <Stack.Screen name="ListFriend" component={ListFriendScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="User Profile" component={UserProfileScreen} />
       <Stack.Screen
-        name='EditProfile'
-        component={EditProfileScreen}
-
-      />
-      <Stack.Screen
-        name='EditAvatar'
-        component={EditAvatar}
-
-      />
-      <Stack.Screen
-        name='EditCover'
-        component={EditCover}
-
-      />
-      <Stack.Screen
-        name='ListFriend'
-        component={ListFriendScreen}
-      />
-      <Stack.Screen
-        name='Profile'
-        component={ProfileScreen}
-      />
-      <Stack.Screen
-        name='User Profile'
-        component={UserProfileScreen}
-      />
-      <Stack.Screen
-        name='FriendList'
+        name="FriendList"
         component={FriendListScreen}
         options={{
-          headerTitle: 'Bạn bè',
+          headerTitle: "Bạn bè",
           headerRight: () => <HeaderRightFriend />,
         }}
       />
@@ -113,7 +107,11 @@ const MainNavigator = () => {
                 navigation.navigate({ name: "Search" });
               }}
             >
-              <FontAwesomeIcon size={20} color="black" icon={faMagnifyingGlass} />
+              <FontAwesomeIcon
+                size={20}
+                color="black"
+                icon={faMagnifyingGlass}
+              />
             </TouchableOpacity>
           ),
         }}
@@ -127,7 +125,7 @@ const MainNavigator = () => {
       <Stack.Screen
         name="SettingHeader"
         component={SettingScreen}
-      // options={{ headerShown: false }}
+        // options={{ headerShown: false }}
       />
 
       <Stack.Screen
@@ -196,7 +194,7 @@ const MainNavigator = () => {
         name="BlockScreen"
         component={BlockListScreen}
         options={{
-          title: 'Chặn',
+          title: "Chặn",
         }}
       />
     </Stack.Navigator>
@@ -227,11 +225,11 @@ const styles = StyleSheet.create({
   },
 
   buttonHeader: {
-      borderWidth: 8,
-      borderRadius: 50,
-      borderColor: "#e4e6eb",
-      backgroundColor: "#e4e6eb",
-      marginLeft: 8,
-      marginRight: 0,
+    borderWidth: 8,
+    borderRadius: 50,
+    borderColor: "#e4e6eb",
+    backgroundColor: "#e4e6eb",
+    marginLeft: 8,
+    marginRight: 0,
   },
 });

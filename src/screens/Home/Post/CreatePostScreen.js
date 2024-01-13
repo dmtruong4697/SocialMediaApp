@@ -24,7 +24,7 @@ const CreatePostScreen = () => {
   const currentUser = useSelector((state) => state.auth.currentUser);
 
   const [images, setImages] = useState([]);
-  const [videos, setVideos] = useState([]); 
+  const [videos, setVideos] = useState([]);
   const [described, setDescribed] = useState("");
 
   const pickImage = async () => {
@@ -36,10 +36,10 @@ const CreatePostScreen = () => {
     });
 
     if (!result.canceled) {
-      const mediaType = result.assets[0].type.split('/')[0];
-      if (mediaType === 'image') {
+      const mediaType = result.assets[0].type.split("/")[0];
+      if (mediaType === "image") {
         setImages((prevImages) => [...prevImages, ...result.assets]);
-      } else if (mediaType === 'video') {
+      } else if (mediaType === "video") {
         setVideos((prevVideos) => [...prevVideos, ...result.assets]);
       }
     }
@@ -59,13 +59,18 @@ const CreatePostScreen = () => {
 
   const renderImageItem = ({ item, index }) => (
     <View style={styles.imageContainer}>
-      {item.type === 'image' ? (
+      {item.type === "image" ? (
         <Image source={{ uri: item.uri }} style={styles.imageItem} />
       ) : (
-        <Image source={{ uri: "https://cdn-icons-png.flaticon.com/512/4404/4404094.png" }} style={styles.imageItem} />
+        <Image
+          source={{
+            uri: "https://cdn-icons-png.flaticon.com/512/4404/4404094.png",
+          }}
+          style={styles.imageItem}
+        />
       )}
       <TouchableOpacity
-        onPress={() => removeImage(index, item.type === 'video')}
+        onPress={() => removeImage(index, item.type === "video")}
         style={styles.deleteButton}
       >
         <Text style={styles.deleteButtonText}>x</Text>
@@ -73,11 +78,11 @@ const CreatePostScreen = () => {
     </View>
   );
 
-  const handleAddPostImage = async () => {
+  const handleAddPost = async () => {
     try {
       const formData = new FormData();
 
-      if(images != []){
+      if (images != []) {
         images.forEach((image, index) => {
           formData.append("image", {
             uri: image.uri,
@@ -87,52 +92,7 @@ const CreatePostScreen = () => {
         });
       }
 
-      // if(videos != []) {
-      //   formData.append("video", {
-      //     uri: videos[0].uri,
-      //     type: "video/mp4",
-      //     name: `video_${new Date()}.mp4`,
-      //   });
-      // }
-
-      formData.append("described", described);
-      formData.append("auto_accept", "1");
-      formData.append("status", "Hyped");
-
-      const response = await axios.post(`${BACKEND_URL}/add_post`, formData, {
-        headers: {
-          Accept: "multipart/form-data",
-          Authorization: `Bearer ${currentUser.token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      console.log("Create post response:", response);
-      if (response.status === 200) {
-        resetPostForm();
-        navigation.navigate({ name: "Home" });
-      }
-    } catch (error) {
-      console.error("Lỗi khi đăng bài:", error);
-      Alert.alert("Lỗi", "Lỗi khi đăng bài, vui lòng thử lại");
-    }
-  };
-
-  const handleAddPostVideo = async () => {
-    try {
-      const formData = new FormData();
-
-      // if(images != []){
-      //   images.forEach((image, index) => {
-      //     formData.append("image", {
-      //       uri: image.uri,
-      //       type: "image/jpeg",
-      //       name: `photo_${index}.jpg`,
-      //     });
-      //   });
-      // }
-
-      if(videos != []) {
+      if (videos != []) {
         formData.append("video", {
           uri: videos[0].uri,
           type: "video/mp4",
@@ -158,14 +118,13 @@ const CreatePostScreen = () => {
         navigation.navigate({ name: "Home" });
       }
     } catch (error) {
-      console.error("Lỗi khi đăng bài:", error);
+      console.error("Lỗi khi đăng bài:", error.response.data);
       Alert.alert("Lỗi", "Lỗi khi đăng bài, vui lòng thử lại");
     }
   };
 
   const resetPostForm = () => {
     setImages([]);
-    setVideos([]);
     setDescribed("");
   };
 
@@ -251,13 +210,7 @@ const CreatePostScreen = () => {
         />
       </View>
 
-      <TouchableOpacity 
-        onPress={() => {
-          if(videos.length != 0) handleAddPostVideo()
-          else handleAddPostImage();
-        }} 
-        style={styles.submitButton}
-      >
+      <TouchableOpacity onPress={handleAddPost} style={styles.submitButton}>
         <Text
           style={{
             color: "#ffffff",
@@ -363,4 +316,3 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
-
