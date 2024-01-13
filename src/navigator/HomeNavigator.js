@@ -18,14 +18,17 @@ import { faFacebookMessenger } from "@fortawesome/free-brands-svg-icons";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "react-native";
-
+import { updateCoinRequest } from "../redux/actions/coin.action";
+import { useDispatch } from "react-redux";
 const Tab = createBottomTabNavigator();
 
 const MyHeaderLeftComponent = (props) => {
-  const { text, color = 'black' } = props;
+  const { text, color = "black" } = props;
   return (
     <View style={{ marginLeft: 16 }}>
-      <Text style={{ fontSize: 29, fontWeight: "bold", color: color, }}>{text}</Text>
+      <Text style={{ fontSize: 29, fontWeight: "bold", color: color }}>
+        {text}
+      </Text>
     </View>
   );
 };
@@ -90,6 +93,7 @@ const HeaderRightNotiAndMenu = () => {
 };
 
 const HomeNavigator = () => {
+  const dispatch = useDispatch();
   return (
     <Tab.Navigator>
       <Tab.Screen
@@ -97,17 +101,29 @@ const HomeNavigator = () => {
         component={FeedScreen}
         options={{
           tabBarIcon: () => {
-            return <Image style={{height: 30, width: 30, marginLeft: 10, marginRight: 12,}} source={ require('../../assets/icons/home.png')}/>;
+            return (
+              <Image
+                style={{
+                  height: 30,
+                  width: 30,
+                  marginLeft: 10,
+                  marginRight: 12,
+                }}
+                source={require("../../assets/icons/home.png")}
+              />
+            );
           },
           headerTitle: () => null,
-          headerLeft: () => <MyHeaderLeftComponent text="facebook" color='#467ce6'/>,
+          headerLeft: () => (
+            <MyHeaderLeftComponent text="facebook" color="#467ce6" />
+          ),
           headerRight: () => <MyHeaderRightFeed />,
           //tabBarShowLabel: false,
-          tabBarLabel: 'Trang chủ',
+          tabBarLabel: "Trang chủ",
           tabBarLabelStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTintColor: '#467ce6',
+          headerTintColor: "#467ce6",
         }}
       />
       <Tab.Screen
@@ -115,14 +131,24 @@ const HomeNavigator = () => {
         component={FriendRequestScreen}
         options={{
           tabBarIcon: () => {
-            return <Image style={{height: 30, width: 30, marginLeft: 10, marginRight: 12,}} source={ require('../../assets/icons/friend.png')}/>;
+            return (
+              <Image
+                style={{
+                  height: 30,
+                  width: 30,
+                  marginLeft: 10,
+                  marginRight: 12,
+                }}
+                source={require("../../assets/icons/friend.png")}
+              />
+            );
           },
           headerTitle: () => null,
           headerLeft: () => <MyHeaderLeftComponent text="Bạn bè" />,
           headerRight: () => <HeaderRightFriend />,
-          tabBarLabel: 'Bạn bè',
+          tabBarLabel: "Bạn bè",
           tabBarLabelStyle: {
-            color: 'black'
+            color: "black",
           },
         }}
       />
@@ -131,30 +157,59 @@ const HomeNavigator = () => {
         component={NotificationScreen}
         options={{
           tabBarIcon: () => {
-            return <Image style={{height: 28, width: 28, marginLeft: 10, marginRight: 12,}} source={ require('../../assets/icons/notification.png')}/>;
+            return (
+              <Image
+                style={{
+                  height: 28,
+                  width: 28,
+                  marginLeft: 10,
+                  marginRight: 12,
+                }}
+                source={require("../../assets/icons/notification.png")}
+              />
+            );
           },
           headerTitle: () => null,
           headerLeft: () => <MyHeaderLeftComponent text="Thông báo" />,
           headerRight: () => <HeaderRightNotiAndMenu />,
-          tabBarLabel: 'Thông báo',
+          tabBarLabel: "Thông báo",
           tabBarLabelStyle: {
-            color: 'black'
+            color: "black",
           },
         }}
       />
       <Tab.Screen
         name="Setting"
         component={SettingScreen}
+        listeners={{
+          tabPress: () => {
+            dispatch(updateCoinRequest());
+          },
+          tabLongPress: () => {
+            dispatch(updateCoinRequest());
+          },
+        }}
         options={{
           tabBarIcon: () => {
-            return <Image style={{height: 30, width: 30, marginLeft: 10, marginRight: 12,}} source={ require('../../assets/icons/menu.png')}/>;
+            return (
+              <Image
+                style={{
+                  height: 30,
+                  width: 30,
+                  marginLeft: 10,
+                  marginRight: 12,
+                }}
+                source={require("../../assets/icons/menu.png")}
+              />
+            );
           },
           headerTitle: () => null,
           headerLeft: () => <MyHeaderLeftComponent text="Menu" />,
           headerRight: () => <HeaderRightNotiAndMenu />,
-          tabBarLabel: 'Menu',
+
+          tabBarLabel: "Menu",
           tabBarLabelStyle: {
-            color: 'black'
+            color: "black",
           },
         }}
       />
@@ -168,8 +223,8 @@ const styles = StyleSheet.create({
   buttonHeader: {
     borderWidth: 8,
     borderRadius: 50,
-    borderColor: '#e4e6eb',
-    backgroundColor: '#e4e6eb',
+    borderColor: "#e4e6eb",
+    backgroundColor: "#e4e6eb",
     marginLeft: 8,
   },
 });
