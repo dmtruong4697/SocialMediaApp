@@ -453,7 +453,7 @@ const BlockList = () => {
         style={styles.dropdownButton}
         onPress={() => {
           setOpen((state) => !state);
-          navigation.navigate("BlockScreen", { BlockListUser: userList });
+          navigation.navigate("BlockScreen");
         }}
       >
         <Text style={styles.selectedOption}>{"Danh sách chặn"}</Text>

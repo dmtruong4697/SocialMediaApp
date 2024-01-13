@@ -194,6 +194,7 @@ const FriendListScreen = ({route}) => {
             isFriend={item.isFriend}
             avatarImage={item.avatar}
             userName={item.username}
+            isFriendSearch={true}
             pressUnFriend={() => { handleUnFriend(item.id); setCount(count - '0' - 1) }}
             blockUser={() => { handleBlock(item.id); setCount(count - '0' - 1) }}
             mutualFriend={item.same_friends}

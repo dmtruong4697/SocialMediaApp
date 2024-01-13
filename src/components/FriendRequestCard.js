@@ -69,12 +69,12 @@ function FriendRequestCard(props) {
               <Button
                 title="Xác nhận"
                 type="clear"
-                titleStyle={{ fontSize: 16, color: "#000000" }}
+                titleStyle={{ fontSize: 16, color: "#fff" }}
                 style={{
                   marginRight: 10,
                   width: 140,
                   borderRadius: 8,
-                  backgroundColor: "#1373ab",
+                  backgroundColor: "#0866ff",
                 }}
                 onPress={() => {
                   pressAccept();
