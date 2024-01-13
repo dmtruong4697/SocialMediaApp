@@ -452,14 +452,14 @@ const BlockList = () => {
       <TouchableOpacity
         style={styles.dropdownButton}
         onPress={() => {
-          setOpen((state) => !state);
+          // setOpen((state) => !state);
           navigation.navigate("BlockScreen");
         }}
       >
         <Text style={styles.selectedOption}>{"Danh sách chặn"}</Text>
         <Text style={styles.dropdownIcon}>{open ? "▲" : "▼"}</Text>
       </TouchableOpacity>
-      {open && (
+      {/* {open && (
         <FlatList
           keyExtractor={(item) => item.id}
           data={userList}
@@ -467,7 +467,7 @@ const BlockList = () => {
             <BlockUser user={item} index={index} setUserList={setUserList} />
           )}
         />
-      )}
+      )} */}
     </View>
   );
 };
