@@ -114,6 +114,8 @@ const NotificationScreen = () => {
   const onRefresh = async () => {
     setRefreshing(true);
     await countNewItem();
+    handleNewItems();
+    handleListNotification();
     setRefreshing(false);
   };
 
